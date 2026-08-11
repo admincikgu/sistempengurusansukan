@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin View — SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
+<style>
+.status-pill{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:#f1f1f5;color:#666;font-size:12px;font-weight:700}
+</style>
 </head>
 <body>
 
@@ -53,6 +56,10 @@
     <div class="hero-kicker">ANTARAMUKA ADMIN</div>
     <h1>Dashboard Pengurusan Sukan</h1>
     <p>Semua pendaftaran Teacher View dipaparkan terus daripada MongoDB.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <span id="secureStatus" class="status-pill">● Secure Access: Checking...</span>
+      <span id="dbStatus" class="status-pill">● Live Database: Checking...</span>
+    </div>
   </div>
   <button class="secondary" type="button" onclick="window.print()">🖨 Cetak</button>
 </section>
@@ -113,19 +120,19 @@ function togglePassword() {
   input.type = input.type === "password" ? "text" : "password";
 }
 
-async function requestJSON(url, options = {}) {
-  const response = await fetch(url, {
+async function api(path, options = {}) {
+  const response = await fetch("/api" + path, {
     cache: "no-store",
     ...options
   });
 
   const text = await response.text();
-
   let data;
+
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error("HTTP " + response.status + ": server tidak memulangkan JSON.");
+    throw new Error("Server tidak memulangkan JSON. HTTP " + response.status);
   }
 
   if (!response.ok) {
@@ -133,6 +140,13 @@ async function requestJSON(url, options = {}) {
   }
 
   return data;
+}
+
+function setStatus(id, text, good) {
+  const el = $(id);
+  el.textContent = text;
+  el.style.background = good ? "#e8f7ef" : "#fff0f0";
+  el.style.color = good ? "#287a4b" : "#b33a3a";
 }
 
 async function login() {
@@ -148,23 +162,22 @@ async function login() {
   $("loginError").textContent = "";
 
   try {
-    // api/[...path].js expects { pin }, NOT { password }.
-    const data = await requestJSON("/api/admin/unlock", {
+    const data = await api("/admin/unlock", {
       method: "POST",
       headers: {"Content-Type":"application/json"},
       body: JSON.stringify({ pin })
     });
 
-    if (!data.ok) {
-      throw new Error(data.message || "PIN tidak sah.");
-    }
+    if (!data.ok) throw new Error(data.message || "Akses ditolak.");
 
     sessionStorage.setItem("smkAdminUnlocked", "1");
+
     $("login").classList.add("hidden");
     $("dashboard").classList.remove("hidden");
 
-    await loadAll();
+    setStatus("secureStatus", "● Secure Access: Unlocked", true);
 
+    await loadDashboard();
   } catch (error) {
     $("loginError").textContent = "✕ " + error.message;
   } finally {
@@ -178,59 +191,57 @@ function logout() {
   location.reload();
 }
 
-async function loadAll() {
-  $("rows").innerHTML =
-    '<tr><td colspan="7" class="empty">Membaca pendaftaran MongoDB...</td></tr>';
+async function loadDashboard() {
+  await checkDatabase();
+  await loadOverview();
+  await loadRegistrations();
+  await loadLeaderboard();
+}
 
-  $("alert").classList.add("hidden");
+async function checkDatabase() {
+  try {
+    const data = await api("/admin/status");
+    setStatus(
+      "dbStatus",
+      "● Live Database: Connected · " + (data.total ?? 0) + " pendaftaran",
+      true
+    );
+  } catch (error) {
+    setStatus("dbStatus", "● Live Database: Offline", false);
+    showError("MongoDB: " + error.message);
+  }
+}
+
+async function loadOverview() {
+  try {
+    const data = await api("/admin/overview");
+    $("total").textContent = data.total ?? 0;
+    $("events").textContent = data.eventsOngoing ?? 0;
+  } catch (error) {
+    $("total").textContent = "!";
+    showError("Statistik admin: " + error.message);
+  }
+}
+
+async function loadRegistrations() {
+  $("rows").innerHTML =
+    '<tr><td colspan="7" class="empty">Membaca data MongoDB...</td></tr>';
 
   try {
-    // THIS IS THE ACTUAL V6 ROUTE.
-    // It returns an ARRAY directly.
-    const data = await requestJSON("/api/admin/registrations");
+    const q = $("search").value.trim();
+    const data = await api(
+      "/admin/registrations" + (q ? "?q=" + encodeURIComponent(q) : "")
+    );
 
     registrations = Array.isArray(data)
       ? data
       : (Array.isArray(data.data) ? data.data : []);
 
-    $("total").textContent = registrations.length;
-
-    const eventSet = new Set(
-      registrations.map(x => x.event).filter(Boolean)
-    );
-    $("events").textContent = eventSet.size;
-
     renderTable();
   } catch (error) {
     $("rows").innerHTML =
       `<tr><td colspan="7" class="empty">${esc(error.message)}</td></tr>`;
-
-    $("alert").className = "notice warn";
-    $("alert").textContent =
-      "GAGAL MEMBACA PENDAFTARAN: " + error.message;
-    $("alert").classList.remove("hidden");
-  }
-
-  // Leaderboard is independent. Even if it fails, registrations stay visible.
-  try {
-    const data = await requestJSON("/api/admin/leaderboard");
-    const list = Array.isArray(data)
-      ? data
-      : (Array.isArray(data.data) ? data.data : []);
-
-    $("leaderboard").innerHTML = list.length
-      ? list.map((x, i) => `
-        <li style="padding:9px 0;border-bottom:1px solid #f0edf4">
-          <b>${i + 1}. ${esc(x.studentName)}</b>
-          <br><small>${esc(x.house || "-")} · ${Number(x.points || 0)} mata</small>
-        </li>
-      `).join("")
-      : "<li>Belum ada keputusan.</li>";
-
-    $("results").textContent = list.filter(x => Number(x.points || 0) > 0).length;
-  } catch (error) {
-    $("results").textContent = "—";
-    $("leaderboard").innerHTML = `<li>${esc(error.message)}</li>`;
+    showError("Pendaftaran admin: " + error.message);
   }
 }
 
@@ -260,7 +271,38 @@ function renderTable() {
   `).join("");
 }
 
-$("search").addEventListener("input", renderTable);
+async function loadLeaderboard() {
+  try {
+    const data = await api("/admin/leaderboard");
+
+    const list = Array.isArray(data)
+      ? data
+      : (Array.isArray(data.data) ? data.data : []);
+
+    $("leaderboard").innerHTML = list.length
+      ? list.map((x, i) => `
+        <li style="padding:9px 0;border-bottom:1px solid #f0edf4">
+          <b>${i + 1}. ${esc(x.studentName)}</b>
+          <br><small>${esc(x.house || "-")} · ${Number(x.points || 0)} mata</small>
+        </li>
+      `).join("")
+      : "<li>Belum ada keputusan.</li>";
+
+    $("results").textContent =
+      list.filter(x => Number(x.points || 0) > 0).length;
+  } catch (error) {
+    $("results").textContent = "—";
+    $("leaderboard").innerHTML = `<li>${esc(error.message)}</li>`;
+  }
+}
+
+function showError(message) {
+  $("alert").className = "notice warn";
+  $("alert").textContent = message;
+  $("alert").classList.remove("hidden");
+}
+
+$("search").addEventListener("input", loadRegistrations);
 
 $("password").addEventListener("keydown", e => {
   if (e.key === "Enter") login();
@@ -270,7 +312,8 @@ window.addEventListener("DOMContentLoaded", () => {
   if (sessionStorage.getItem("smkAdminUnlocked") === "1") {
     $("login").classList.add("hidden");
     $("dashboard").classList.remove("hidden");
-    loadAll();
+    setStatus("secureStatus", "● Secure Access: Unlocked", true);
+    loadDashboard();
   }
 });
 </script>
