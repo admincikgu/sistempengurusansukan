@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
 <section id="login" class="login-page">
   <div class="login-wrap">
     <div class="login-top">
@@ -22,7 +21,6 @@
       <div class="lock-icon">🔐</div>
       <h2>Admin Access</h2>
       <p class="help">Masukkan kata laluan pentadbir.</p>
-
       <div class="field" style="text-align:left">
         <label>KATA LALUAN</label>
         <div class="password-wrap">
@@ -30,7 +28,6 @@
           <button class="show-password" type="button" onclick="togglePassword()">◉</button>
         </div>
       </div>
-
       <button id="loginBtn" class="primary login-button" type="button" onclick="login()">
         Buka Admin Dashboard →
       </button>
@@ -71,7 +68,7 @@
 
 <section class="card" style="margin-top:16px">
   <h2>Master Data Pendaftaran</h2>
-  <p class="card-sub">Data yang telah disimpan oleh Teacher View.</p>
+  <p class="card-sub">Semua peserta yang telah didaftarkan melalui Teacher View.</p>
 
   <div class="search-row">
     <input id="search" class="search" placeholder="🔎 Cari nama, ID, acara, kategori, rumah atau guru...">
@@ -126,18 +123,24 @@ async function login() {
     return;
   }
 
+  $("loginBtn").disabled = true;
+  $("loginError").textContent = "";
+
   try {
+    // Backend V6 expects "pin", not "password".
     const response = await fetch("/api/admin/unlock", {
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ pin: password })
     });
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(data.message || "Login gagal.");
+    if (!response.ok) {
+      throw new Error(data.message || "PIN admin tidak sah.");
+    }
 
-    token = data.token;
+    token = data.token || password;
     sessionStorage.setItem("smkAdminToken", token);
 
     $("login").classList.add("hidden");
@@ -146,6 +149,8 @@ async function login() {
     await loadData();
   } catch (error) {
     $("loginError").textContent = "✕ " + error.message;
+  } finally {
+    $("loginBtn").disabled = false;
   }
 }
 
@@ -154,38 +159,64 @@ function logout() {
   location.reload();
 }
 
+async function fetchJson(url) {
+  const response = await fetch(url, { cache: "no-store" });
+  let data = {};
+
+  try {
+    data = await response.json();
+  } catch (_) {
+    throw new Error("Server tidak memulangkan JSON yang sah untuk " + url);
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || data.error || ("HTTP " + response.status));
+  }
+
+  return data;
+}
+
 async function loadData() {
   $("rows").innerHTML =
-    '<tr><td colspan="7" class="empty">Membaca MongoDB...</td></tr>';
+    '<tr><td colspan="7" class="empty">Membaca data pendaftaran...</td></tr>';
 
   $("alert").classList.add("hidden");
 
   try {
-    const response = await fetch("/api/admin-data", {
-      method: "GET",
-      headers: {
-        "x-admin-password": token
-      }
-    });
+    /*
+      PENTING:
+      /api/admin-data TIDAK WUJUD dalam V6.
+      Backend V6 menggunakan 3 route ini:
+        /api/admin/overview
+        /api/admin/registrations
+        /api/admin/leaderboard
+    */
+    const [overview, registrations, leaderboard] = await Promise.all([
+      fetchJson("/api/admin/overview"),
+      fetchJson("/api/admin/registrations"),
+      fetchJson("/api/admin/leaderboard")
+    ]);
 
-    const data = await response.json();
+    allRegistrations = Array.isArray(registrations)
+      ? registrations
+      : (registrations.data || []);
 
-    if (!response.ok) {
-      throw new Error(
-        data.message ||
-        data.error ||
-        ("HTTP " + response.status)
-      );
-    }
+    $("total").textContent =
+      overview.total ?? allRegistrations.length;
 
-    allRegistrations = data.registrations || [];
+    $("events").textContent =
+      overview.eventsOngoing ?? 0;
 
-    $("total").textContent = data.totalStudents ?? 0;
-    $("events").textContent = data.eventsOngoing ?? 0;
-    $("results").textContent = data.totalResults ?? 0;
+    // V6 overview doesn't expose result count.
+    // Count results from leaderboard only isn't reliable, so show "—".
+    $("results").textContent = "—";
 
     renderTable();
-    renderLeaderboard(data.leaderboard || []);
+    renderLeaderboard(
+      Array.isArray(leaderboard)
+        ? leaderboard
+        : (leaderboard.data || [])
+    );
 
   } catch (error) {
     $("rows").innerHTML =
