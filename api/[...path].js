@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 
 let cache = global.__sportsMongo;
 if (!cache) cache = global.__sportsMongo = { conn: null, promise: null };
@@ -42,6 +44,19 @@ function route(req){
 module.exports=async(req,res)=>{
  try{
   const r=route(req);
+
+  // Fallback page/static serving: this keeps the site working even if a
+  // deployment routes the root request through the catch-all function.
+  if(req.method==="GET" && (r==="/" || r==="/teacher" || r==="/admin" || r==="/style.css")){
+    const file = r==="/" ? "index.html" : r==="/teacher" ? "teacher.html" : r==="/admin" ? "admin.html" : "style.css";
+    const filePath = path.join(process.cwd(), file);
+    if(fs.existsSync(filePath)){
+      const ext=path.extname(file);
+      const type=ext===".css" ? "text/css; charset=utf-8" : "text/html; charset=utf-8";
+      res.statusCode=200; res.setHeader("Content-Type",type);
+      return res.end(fs.readFileSync(filePath));
+    }
+  }
 
   if(req.method==="GET" && r==="/health") return json(res,200,{ok:true,service:"school-sports-api"});
   if(req.method==="GET" && r==="/master") return json(res,200,master);
