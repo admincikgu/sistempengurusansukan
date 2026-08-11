@@ -1,7 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    { "source": "/teacher", "destination": "/teacher.html" },
-    { "source": "/admin", "destination": "/admin.html" }
-  ]
-}
+{"$schema":"https://openapi.vercel.sh/vercel.json"}
