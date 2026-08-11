@@ -1,21 +1,7 @@
-const { connectDB, Registration } = require("./_db");
-
-module.exports = async function handler(req, res) {
-  try {
-    await connectDB();
-    const count = await Registration.countDocuments();
-    return res.status(200).json({
-      ok: true,
-      mongodb: "connected",
-      database: "school_sports",
-      registrations: count
-    });
-  } catch (e) {
-    console.error("DB TEST:", e);
-    return res.status(500).json({
-      ok: false,
-      mongodb: "failed",
-      error: e.message
-    });
-  }
+const {getDb,send,DB_NAME}=require("./_db");
+module.exports=async(req,res)=>{
+ if(req.method!=="GET")return send(res,405,{ok:false,message:"GET sahaja untuk endpoint ini."});
+ try{const db=await getDb();await db.command({ping:1});const registrations=await db.collection("registrations").countDocuments();return send(res,200,{ok:true,mongodb:"connected",database:DB_NAME,registrations});}
+ catch(e){console.error(e);return send(res,500,{ok:false,mongodb:"failed",error:e.message});}
 };
+

@@ -1,9 +1,11 @@
 {
-  "name": "school-sports-management-smkdhab",
-  "version": "6.0.0",
+  "name": "smkdhbadawi-sports",
+  "version": "4.0.0",
   "private": true,
-  "description": "Sistem Pengurusan Sukan Sekolah - SMK Datuk Haji Ahmad Badawi",
+  "engines": {
+    "node": ">=20.x"
+  },
   "dependencies": {
-    "mongoose": "^8.18.0"
+    "mongodb": "^6.19.0"
   }
 }
