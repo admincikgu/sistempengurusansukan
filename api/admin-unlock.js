@@ -1,12 +1,16 @@
-const { json } = require("./_db");
+const ADMIN_PASSWORD = "smkbadawi2026";
 
 module.exports = async function handler(req, res) {
-  if (req.method !== "POST") return json(res, 405, { message: "Method not allowed." });
+  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed." });
 
-  const pin = String((req.body || {}).pin || "");
-  const expected = String(process.env.ADMIN_PIN || "smkbadawi2026");
+  const pin = String((req.body || {}).pin || "").trim();
 
-  if (pin !== expected) return json(res, 401, { message: "PIN tidak sah." });
+  if (pin !== ADMIN_PASSWORD) {
+    return res.status(401).json({ message: "PIN tidak sah." });
+  }
 
-  return json(res, 200, { ok: true, token: expected });
+  return res.status(200).json({
+    ok: true,
+    token: ADMIN_PASSWORD
+  });
 };
