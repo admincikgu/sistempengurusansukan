@@ -3,143 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Access — SMK Datuk Haji Ahmad Badawi</title>
+<title>Admin View — SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
-<style>
-:root{--navy:#18213f;--purple:#7158cf;--purple2:#8d76e8;--ink:#252b3d;--muted:#8990a0;--line:#ece9f3}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f8f6fc,#f2f6f5);color:var(--ink)}
-a{text-decoration:none}
-.access-page{min-height:100vh;display:grid;place-items:center;padding:28px;background:
-radial-gradient(circle at 12% 10%,rgba(150,126,235,.17),transparent 28%),
-radial-gradient(circle at 88% 85%,rgba(255,194,211,.16),transparent 30%)}
-.access-wrap{width:min(470px,100%)}
-.access-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.access-nav a{color:#6f7382;font-size:13px}
-.secure{padding:7px 11px;border-radius:99px;background:#eeebfa;color:#6954bd;font-size:10px;font-weight:800;letter-spacing:1px}
-.access-card{background:rgba(255,255,255,.95);border:1px solid rgba(230,226,239,.9);border-radius:30px;padding:38px 36px 28px;box-shadow:0 25px 70px rgba(53,54,82,.10);text-align:center}
-.emblem{width:72px;height:72px;margin:0 auto 16px;border-radius:22px;display:grid;place-items:center;color:#fff;font-size:29px;background:linear-gradient(135deg,var(--purple),var(--purple2));box-shadow:0 15px 30px rgba(113,88,207,.24)}
-.school{font-size:10px;letter-spacing:1.5px;font-weight:900;color:#7669a9}
-.access-card h1{font-size:30px;color:var(--navy);margin:8px 0 3px}
-.sub{font-size:13px;color:var(--muted);margin:0}
-.sep{height:1px;background:var(--line);margin:25px 0}
-.shield{width:48px;height:48px;border-radius:15px;margin:0 auto 11px;display:grid;place-items:center;background:#f1effc;color:var(--purple);font-size:22px}
-.access-card h2{font-size:19px;color:var(--navy);margin:0 0 7px}
-.help{font-size:12px;color:#8c92a0;line-height:1.6;margin:0 auto 22px;max-width:360px}
-.form-label{text-align:left;display:block;font-size:10px;font-weight:900;letter-spacing:1.1px;color:#687083}
-.password-box{position:relative;margin-top:7px}
-.password-box input{width:100%;height:50px;border:1px solid #e1deea;border-radius:14px;padding:0 48px 0 15px;font-size:15px;outline:none;background:#fcfbfe}
-.password-box input:focus{border-color:#9a89e4;box-shadow:0 0 0 4px rgba(113,88,207,.08)}
-.eye{position:absolute;right:7px;top:7px;width:36px;height:36px;border:0;border-radius:10px;background:#f1effb;color:#7158cf;cursor:pointer}
-.login-btn{width:100%;height:51px;border:0;border-radius:14px;margin-top:14px;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 10px 22px rgba(113,88,207,.18)}
-.login-btn:hover{transform:translateY(-1px)}
-.error{min-height:20px;margin-top:10px;color:#c35f72;font-size:12px;font-weight:700}
-.foot{border-top:1px solid var(--line);margin-top:16px;padding-top:15px;color:#9aa0ac;font-size:11px}
-#dashboard{display:none}
-.admin-shell{max-width:1250px;margin:auto;padding:26px}
-.admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}
-.brand{color:var(--navy);font-weight:900;font-size:18px}
-.admin-top-right{display:flex;gap:10px;align-items:center}
-.back{color:#777d8c;font-size:13px}
-.logout{border:1px solid #e3dfeb;background:#fff;border-radius:10px;padding:9px 12px;color:#6d7180;cursor:pointer}
-.hero{background:linear-gradient(135deg,#f8f5ff,#fff8fb);border:1px solid #ebe6f3;border-radius:25px;padding:26px;margin-bottom:18px}
-.hero small{color:#7865b9;font-weight:900;letter-spacing:1.2px}.hero h1{margin:6px 0;color:var(--navy)}.hero p{margin:0;color:#878d9b}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.stat{background:#fff;border:1px solid #ebe8f0;border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(70,70,100,.05)}.stat small{color:#858b99}.stat b{display:block;font-size:29px;color:var(--navy);margin-top:6px}
-.card{background:#fff;border:1px solid #ebe8f0;border-radius:20px;padding:20px;margin-bottom:18px;box-shadow:0 10px 30px rgba(70,70,100,.05)}.card h2{margin:0 0 15px;color:var(--navy);font-size:18px}
-.search{width:100%;height:44px;border:1px solid #e3e0e9;border-radius:12px;padding:0 13px;margin-bottom:12px}
-.table-wrap{overflow:auto}.table-wrap table{width:100%;border-collapse:collapse;font-size:13px}.table-wrap th,.table-wrap td{text-align:left;padding:12px;border-bottom:1px solid #f0edf4;white-space:nowrap}.table-wrap th{color:#7d8290;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
-.split{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field-grid label{font-size:11px;color:#7b8190;font-weight:800}.field-grid input,.field-grid select{width:100%;height:42px;margin-top:5px;border:1px solid #e3e0e9;border-radius:11px;padding:0 10px;background:#fff}
-.action{margin-top:14px;border:0;border-radius:11px;padding:11px 16px;background:linear-gradient(135deg,#7158cf,#8d76e8);color:#fff;font-weight:800;cursor:pointer}.print{background:#eef0f5;color:#555d6d;margin-top:0}
-.leaderboard{margin:0;padding-left:22px}.leaderboard li{padding:11px 5px;border-bottom:1px solid #f0edf4}.leaderboard b{color:var(--navy)}
-@media(max-width:760px){.stats,.split{grid-template-columns:1fr}.access-card{padding:30px 22px}.admin-shell{padding:16px}.field-grid{grid-template-columns:1fr}.admin-top{align-items:flex-start;gap:10px}.admin-top-right{flex-direction:column;align-items:flex-end}}
-</style>
 </head>
 <body>
 
-<section id="access" class="access-page">
-  <div class="access-wrap">
-    <div class="access-nav">
-      <a href="/">← Kembali ke halaman utama</a>
+<section id="login" class="login-page">
+  <div class="login-wrap">
+    <div class="login-top">
+      <a href="/">← Kembali</a>
       <span class="secure">● SECURE ACCESS</span>
     </div>
-    <div class="access-card">
-      <div class="emblem">★</div>
-      <div class="school">SMK DATUK HAJI AHMAD BADAWI</div>
+
+    <div class="login-card">
+      <div class="school-mark">★</div>
+      <div class="kicker">SMK DATUK HAJI AHMAD BADAWI</div>
       <h1>Admin Portal</h1>
       <p class="sub">Sistem Pengurusan Sukan Sekolah</p>
-      <div class="sep"></div>
-      <div class="shield">🔐</div>
+
+      <div class="lock-icon">🔐</div>
       <h2>Admin Access</h2>
-      <p class="help">Akses ini dilindungi. Masukkan kata laluan pentadbir untuk membuka dashboard pengurusan sukan.</p>
-      <label class="form-label">KATA LALUAN
-        <div class="password-box">
-          <input id="adminPassword" type="password" autocomplete="off" placeholder="Masukkan kata laluan">
-          <button class="eye" type="button" onclick="togglePassword()">◉</button>
+      <p class="help">Masukkan kata laluan pentadbir untuk membuka dashboard.</p>
+
+      <div class="field" style="text-align:left">
+        <label>KATA LALUAN</label>
+        <div class="password-wrap">
+          <input id="password" type="password" placeholder="Masukkan kata laluan" autocomplete="off">
+          <button class="show-password" type="button" onclick="togglePassword()">◉</button>
         </div>
-      </label>
-      <button class="login-btn" type="button" onclick="login()">Buka Admin Dashboard&nbsp; →</button>
-      <div id="loginError" class="error"></div>
-      <div class="foot">🔒 Akses terhad kepada pentadbir sistem</div>
+      </div>
+
+      <button id="loginBtn" class="primary login-button" type="button" onclick="login()">
+        Buka Admin Dashboard →
+      </button>
+
+      <div id="loginError" class="login-error"></div>
+      <div class="login-foot">🔒 Akses terhad kepada pentadbir sistem</div>
     </div>
   </div>
 </section>
 
-<section id="dashboard">
-  <div class="admin-shell">
-    <div class="admin-top">
-      <a class="brand" href="/">🏃 SukanSekolah</a>
-      <div class="admin-top-right">
-        <a class="back" href="/teacher.html">Teacher View →</a>
-        <button class="logout" onclick="logout()">Log keluar</button>
-      </div>
-    </div>
+<div id="dashboard" class="hidden">
+<header class="topbar">
+  <a class="brand" href="/">
+    <span class="brand-mark">🏃</span>
+    <span><strong>Admin View</strong><span>SMK Datuk Haji Ahmad Badawi</span></span>
+  </a>
+  <nav class="nav-actions">
+    <a class="nav-link" href="/teacher.html">Teacher View</a>
+    <button class="nav-link" type="button" onclick="logout()">Log keluar</button>
+  </nav>
+</header>
 
-    <div class="hero">
-      <small>ANTARAMUKA ADMIN</small>
-      <h1>Dashboard Pengurusan Sukan</h1>
-      <p>SMK Datuk Haji Ahmad Badawi · Pemantauan pendaftaran, keputusan dan prestasi peserta.</p>
-    </div>
+<main class="container">
 
-    <div class="stats">
-      <div class="stat"><small>Total Peserta</small><b id="total">0</b></div>
-      <div class="stat"><small>Acara Berdaftar</small><b id="events">0</b></div>
-      <div class="stat"><small>Rumah Sukan</small><b>4</b></div>
-    </div>
+<section class="hero">
+  <div>
+    <div class="hero-kicker">ANTARAMUKA ADMIN</div>
+    <h1>Dashboard Pengurusan Sukan</h1>
+    <p>Data pendaftaran guru akan dipaparkan di sini secara terus daripada MongoDB.</p>
+  </div>
+  <button class="secondary" type="button" onclick="window.print()">🖨 Cetak</button>
+</section>
 
-    <section class="card">
-      <h2>📋 Master Data Pendaftaran</h2>
-      <input id="search" class="search" placeholder="🔎 Cari nama, ID, acara atau rumah sukan...">
-      <div class="table-wrap">
-        <table><thead><tr><th>Pelajar</th><th>ID</th><th>Acara</th><th>Kategori</th><th>Rumah</th><th>Guru</th></tr></thead>
-        <tbody id="rows"><tr><td colspan="6">Memuatkan...</td></tr></tbody></table>
-      </div>
-    </section>
+<div id="adminAlert" class="notice hidden"></div>
 
-    <div class="split">
-      <section class="card">
-        <h2>🏆 Keputusan</h2>
-        <label class="form-label">PESERTA
-          <select id="participant" class="search"></select>
-        </label>
-        <div class="field-grid">
-          <label>KEDUDUKAN<input id="position" type="number" min="1"></label>
-          <label>MATA<input id="points" type="number" min="0"></label>
-          <label>MASA<input id="timing" placeholder="12.45s"></label>
-          <label>SKOR<input id="score" type="number" step="0.01"></label>
-        </div>
-        <button class="action" onclick="saveResult()">Simpan Keputusan</button>
-        <span id="resultMsg"></span>
-      </section>
-
-      <section class="card">
-        <h2>🥇 Peserta Terbaik</h2>
-        <ol id="leaders" class="leaderboard"><li>Memuatkan...</li></ol>
-      </section>
-    </div>
-
-    <button class="action print" onclick="window.print()">🖨 Cetak Laporan</button>
+<section class="grid-3">
+  <div class="stat">
+    <div class="stat-icon">👥</div>
+    <small>Total Pendaftaran</small>
+    <b id="total">0</b>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🏃</div>
+    <small>Acara Berdaftar</small>
+    <b id="events">0</b>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🏆</div>
+    <small>Keputusan</small>
+    <b id="results">0</b>
   </div>
 </section>
+
+<section class="card" style="margin-top:16px">
+  <h2>Master Data Pendaftaran</h2>
+  <p class="card-sub">
+    Semua peserta yang disimpan oleh Teacher View.
+    <strong id="dbStatus"></strong>
+  </p>
+
+  <div class="search-row">
+    <input id="search" class="search"
+      placeholder="🔎 Cari nama, ID, acara, kategori, rumah atau guru...">
+    <button class="secondary" type="button" onclick="loadRegistrations()">↻ Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Pelajar</th>
+          <th>ID</th>
+          <th>Acara</th>
+          <th>Kategori</th>
+          <th>Rumah</th>
+          <th>Guru</th>
+          <th>Tarikh</th>
+        </tr>
+      </thead>
+      <tbody id="registrationRows">
+        <tr><td colspan="7" class="empty">Memuatkan data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="grid-2" style="margin-top:16px">
+<section class="card">
+  <h2>Keputusan</h2>
+  <p class="card-sub">Masukkan keputusan peserta.</p>
+
+  <div class="field">
+    <label>PESERTA</label>
+    <select id="participant">
+      <option value="">Memuatkan...</option>
+    </select>
+  </div>
+
+  <div class="form-grid" style="margin-top:13px">
+    <div class="field">
+      <label>KEDUDUKAN</label>
+      <input id="position" type="number" min="1">
+    </div>
+    <div class="field">
+      <label>MATA</label>
+      <input id="points" type="number" min="0">
+    </div>
+    <div class="field">
+      <label>MASA</label>
+      <input id="timing" placeholder="12.45s">
+    </div>
+    <div class="field">
+      <label>SKOR</label>
+      <input id="score" type="number" step="0.01">
+    </div>
+  </div>
+
+  <button class="primary" style="margin-top:14px" type="button" onclick="saveResult()">
+    Simpan Keputusan
+  </button>
+  <div id="resultMessage" class="message"></div>
+</section>
+
+<section class="card">
+  <h2>Peserta Terbaik</h2>
+  <p class="card-sub">Top peserta berdasarkan mata.</p>
+  <ol id="leaderboard"><li>Memuatkan...</li></ol>
+</section>
+</section>
+
+</main>
+</div>
 
 <script>
 const ADMIN_PASSWORD = "smkbadawi2026";
@@ -148,144 +173,258 @@ let registrations = [];
 
 const $ = id => document.getElementById(id);
 
-async function login(){
-  const password = $("adminPassword").value.trim();
-  const error = $("loginError");
-  error.textContent = "";
-
-  if(!password){
-    error.textContent = "Sila masukkan kata laluan.";
-    $("adminPassword").focus();
-    return;
-  }
-
-  try{
-    const response = await fetch("/api/admin-unlock",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({pin:password})
-    });
-
-    const data = await response.json().catch(()=>({}));
-
-    if(!response.ok){
-      error.textContent = data.message || "Kata laluan tidak sah.";
-      $("adminPassword").select();
-      return;
-    }
-
-    token = data.token || ADMIN_PASSWORD;
-    sessionStorage.setItem("adminToken", token);
-    $("access").style.display = "none";
-    $("dashboard").style.display = "block";
-    await loadDashboard();
-  }catch(e){
-    error.textContent = "Tidak dapat menyambung ke server. Sila cuba lagi.";
-  }
-}
-
-function togglePassword(){
-  const input = $("adminPassword");
-  input.type = input.type === "password" ? "text" : "password";
-}
-
-function logout(){
-  token = "";
-  sessionStorage.removeItem("adminToken");
-  $("dashboard").style.display = "none";
-  $("access").style.display = "grid";
-  $("adminPassword").value = "";
-  $("loginError").textContent = "";
-}
-
-function api(url, options={}){
-  options.headers = Object.assign({
-    "Content-Type":"application/json",
-    "x-admin-pin":token
-  }, options.headers || {});
-  return fetch(url, options);
-}
-
-async function loadDashboard(){
-  try{
-    const [overviewResponse, registrationsResponse, leaderboardResponse] = await Promise.all([
-      api("/api/admin-overview"),
-      api("/api/admin-registrations"),
-      api("/api/admin-leaderboard")
-    ]);
-
-    if(!overviewResponse.ok || !registrationsResponse.ok || !leaderboardResponse.ok){
-      throw new Error("Gagal mendapatkan data admin.");
-    }
-
-    const overview = await overviewResponse.json();
-    registrations = await registrationsResponse.json();
-    const leaders = await leaderboardResponse.json();
-
-    $("total").textContent = overview.total ?? 0;
-    $("events").textContent = overview.eventsOngoing ?? 0;
-
-    renderRegistrations();
-    renderParticipants();
-    $("leaders").innerHTML = leaders.length
-      ? leaders.map((x,i)=>`<li><b>${i+1}. ${escapeHtml(x.studentName)}</b> — ${escapeHtml(x.house || "-")} · ${x.points || 0} mata</li>`).join("")
-      : "<li>Belum ada keputusan.</li>";
-  }catch(e){
-    $("rows").innerHTML = `<tr><td colspan="6">${escapeHtml(e.message)}</td></tr>`;
-  }
-}
-
-function renderRegistrations(){
-  const q = $("search").value.toLowerCase().trim();
-  const filtered = registrations.filter(x => JSON.stringify(x).toLowerCase().includes(q));
-
-  $("rows").innerHTML = filtered.length
-    ? filtered.map(x=>`<tr>
-      <td>${escapeHtml(x.studentName)}</td>
-      <td>${escapeHtml(x.studentId)}</td>
-      <td>${escapeHtml(x.event)}</td>
-      <td>${escapeHtml(x.category)}</td>
-      <td>${escapeHtml(x.house)}</td>
-      <td>${escapeHtml(x.teacher || "-")}</td>
-    </tr>`).join("")
-    : '<tr><td colspan="6">Tiada rekod.</td></tr>';
-}
-
-function renderParticipants(){
-  $("participant").innerHTML = registrations.length
-    ? registrations.map(x=>`<option value="${x._id}">${escapeHtml(x.studentName)} — ${escapeHtml(x.event)}</option>`).join("")
-    : '<option value="">Tiada peserta</option>';
-}
-
-async function saveResult(){
-  const id = $("participant").value;
-  if(!id) return;
-
-  const response = await api("/api/admin-results",{
-    method:"POST",
-    body:JSON.stringify({
-      registrationId:id,
-      position:Number($("position").value || 0),
-      points:Number($("points").value || 0),
-      timing:$("timing").value.trim(),
-      score:Number($("score").value || 0)
-    })
-  });
-
-  const data = await response.json().catch(()=>({}));
-  $("resultMsg").textContent = response.ok ? " ✓ Disimpan" : ` ${data.message || "Gagal"}`;
-  if(response.ok) await loadDashboard();
-}
-
-function escapeHtml(value){
+function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
   }[c]));
 }
 
-$("search").addEventListener("input", renderRegistrations);
-$("adminPassword").addEventListener("keydown", e => {
-  if(e.key === "Enter") login();
+function authHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "x-admin-password": token
+  };
+}
+
+function togglePassword() {
+  const input = $("password");
+  input.type = input.type === "password" ? "text" : "password";
+}
+
+async function login() {
+  const password = $("password").value.trim();
+
+  if (!password) {
+    $("loginError").textContent = "Sila masukkan kata laluan.";
+    return;
+  }
+
+  $("loginBtn").disabled = true;
+  $("loginBtn").textContent = "Menyemak...";
+  $("loginError").textContent = "";
+
+  try {
+    const response = await fetch("/api/admin/unlock", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({password})
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Kata laluan tidak sah.");
+    }
+
+    token = data.token || ADMIN_PASSWORD;
+    sessionStorage.setItem("smkAdminToken", token);
+
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+
+    await loadDashboard();
+
+  } catch (error) {
+    $("loginError").textContent = "✕ " + error.message;
+  } finally {
+    $("loginBtn").disabled = false;
+    $("loginBtn").textContent = "Buka Admin Dashboard →";
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem("smkAdminToken");
+  token = "";
+  location.reload();
+}
+
+function showAlert(message, type="warn") {
+  $("adminAlert").className = "notice " + type;
+  $("adminAlert").textContent = message;
+  $("adminAlert").classList.remove("hidden");
+}
+
+async function loadDashboard() {
+  // Penting: setiap API dipanggil secara berasingan.
+  // Kalau leaderboard gagal, master data tetap akan dipaparkan.
+  await loadOverview();
+  await loadRegistrations();
+  await loadLeaderboard();
+}
+
+async function loadOverview() {
+  try {
+    const response = await fetch("/api/admin/overview", {
+      headers: authHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Overview gagal.");
+    }
+
+    $("total").textContent = data.totalStudents ?? 0;
+    $("events").textContent = data.eventsOngoing ?? 0;
+    $("results").textContent = data.totalResults ?? 0;
+
+  } catch (error) {
+    showAlert("Statistik admin gagal dimuatkan: " + error.message);
+  }
+}
+
+async function loadRegistrations() {
+  $("registrationRows").innerHTML =
+    '<tr><td colspan="7" class="empty">Membaca data MongoDB...</td></tr>';
+
+  try {
+    const q = $("search").value.trim();
+
+    const response = await fetch(
+      "/api/admin/registrations?q=" + encodeURIComponent(q),
+      {headers: authHeaders()}
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Gagal membaca pendaftaran.");
+    }
+
+    registrations = data.data || [];
+
+    $("dbStatus").textContent =
+      " · " + registrations.length + " rekod diterima";
+
+    renderRegistrations();
+    renderParticipantSelect();
+
+  } catch (error) {
+    $("dbStatus").textContent = "";
+    $("registrationRows").innerHTML =
+      `<tr><td colspan="7" class="empty">${esc(error.message)}</td></tr>`;
+  }
+}
+
+function renderRegistrations() {
+  if (!registrations.length) {
+    $("registrationRows").innerHTML =
+      '<tr><td colspan="7" class="empty">Tiada pendaftaran dijumpai.</td></tr>';
+    return;
+  }
+
+  $("registrationRows").innerHTML = registrations.map(item => `
+    <tr>
+      <td>${esc(item.studentName)}</td>
+      <td>${esc(item.studentId)}</td>
+      <td>${esc(item.event)}</td>
+      <td>${esc(item.category)}</td>
+      <td>${esc(item.house)}</td>
+      <td>${esc(item.teacher)}</td>
+      <td>${item.createdAt ? new Date(item.createdAt).toLocaleString("ms-MY") : "-"}</td>
+    </tr>
+  `).join("");
+}
+
+function renderParticipantSelect() {
+  $("participant").innerHTML =
+    '<option value="">Pilih peserta...</option>' +
+    registrations.map(item => `
+      <option value="${esc(item._id)}">
+        ${esc(item.studentName)} — ${esc(item.event)}
+      </option>
+    `).join("");
+}
+
+async function loadLeaderboard() {
+  try {
+    const response = await fetch("/api/admin/leaderboard", {
+      headers: authHeaders()
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Leaderboard gagal.");
+    }
+
+    const rows = data.data || [];
+
+    $("leaderboard").innerHTML = rows.length
+      ? rows.map((item, index) => `
+          <li style="padding:9px 0;border-bottom:1px solid #f0edf4">
+            <b>${index + 1}. ${esc(item.studentName)}</b>
+            <br>
+            <small>${esc(item.house || "-")} · ${item.points || 0} mata</small>
+          </li>
+        `).join("")
+      : "<li>Belum ada keputusan.</li>";
+
+  } catch (error) {
+    $("leaderboard").innerHTML =
+      `<li>${esc(error.message)}</li>`;
+  }
+}
+
+async function saveResult() {
+  const registrationId = $("participant").value;
+
+  if (!registrationId) {
+    $("resultMessage").className = "message error";
+    $("resultMessage").textContent = "Pilih peserta dahulu.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/admin/result", {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        registrationId,
+        position: $("position").value,
+        points: $("points").value,
+        timing: $("timing").value,
+        score: $("score").value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Gagal simpan keputusan.");
+    }
+
+    $("resultMessage").className = "message ok";
+    $("resultMessage").textContent = "✓ " + data.message;
+
+    await loadOverview();
+    await loadLeaderboard();
+
+  } catch (error) {
+    $("resultMessage").className = "message error";
+    $("resultMessage").textContent = "✕ " + error.message;
+  }
+}
+
+$("search").addEventListener("input", loadRegistrations);
+
+$("password").addEventListener("keydown", event => {
+  if (event.key === "Enter") login();
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const savedToken = sessionStorage.getItem("smkAdminToken");
+
+  if (savedToken) {
+    token = savedToken;
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    await loadDashboard();
+  }
 });
 </script>
 </body>
