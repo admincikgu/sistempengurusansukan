@@ -7,27 +7,32 @@
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
 <section id="login" class="login-page">
   <div class="login-wrap">
     <div class="login-top">
       <a href="/">← Kembali</a>
       <span class="secure">● SECURE ACCESS</span>
     </div>
+
     <div class="login-card">
       <div class="school-mark">★</div>
       <div class="kicker">SMK DATUK HAJI AHMAD BADAWI</div>
       <h1>Admin Portal</h1>
       <p class="sub">Sistem Pengurusan Sukan Sekolah</p>
+
       <div class="lock-icon">🔐</div>
       <h2>Admin Access</h2>
       <p class="help">Masukkan kata laluan pentadbir.</p>
+
       <div class="field" style="text-align:left">
         <label>KATA LALUAN</label>
         <div class="password-wrap">
-          <input id="password" type="password" placeholder="Masukkan kata laluan">
+          <input id="password" type="password" placeholder="Masukkan kata laluan" autocomplete="off">
           <button class="show-password" type="button" onclick="togglePassword()">◉</button>
         </div>
       </div>
+
       <button id="loginBtn" class="primary login-button" type="button" onclick="login()">
         Buka Admin Dashboard →
       </button>
@@ -53,7 +58,7 @@
   <div>
     <div class="hero-kicker">ANTARAMUKA ADMIN</div>
     <h1>Dashboard Pengurusan Sukan</h1>
-    <p>Semua data dibaca terus daripada collection <b>registrations</b> MongoDB.</p>
+    <p>Data pendaftaran diambil terus daripada MongoDB.</p>
   </div>
   <button class="secondary" type="button" onclick="window.print()">🖨 Cetak</button>
 </section>
@@ -61,9 +66,21 @@
 <div id="alert" class="notice hidden"></div>
 
 <section class="grid-3">
-  <div class="stat"><div class="stat-icon">👥</div><small>Total Pendaftaran</small><b id="total">0</b></div>
-  <div class="stat"><div class="stat-icon">🏃</div><small>Acara</small><b id="events">0</b></div>
-  <div class="stat"><div class="stat-icon">🏆</div><small>Keputusan</small><b id="results">0</b></div>
+  <div class="stat">
+    <div class="stat-icon">👥</div>
+    <small>Total Pendaftaran</small>
+    <b id="total">0</b>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🏃</div>
+    <small>Acara</small>
+    <b id="events">0</b>
+  </div>
+  <div class="stat">
+    <div class="stat-icon">🏆</div>
+    <small>Keputusan</small>
+    <b id="results">—</b>
+  </div>
 </section>
 
 <section class="card" style="margin-top:16px">
@@ -71,20 +88,26 @@
   <p class="card-sub">Semua peserta yang telah didaftarkan melalui Teacher View.</p>
 
   <div class="search-row">
-    <input id="search" class="search" placeholder="🔎 Cari nama, ID, acara, kategori, rumah atau guru...">
-    <button class="secondary" type="button" onclick="loadData()">↻ Refresh</button>
+    <input id="search" class="search"
+      placeholder="🔎 Cari nama, ID, acara, kategori, rumah atau guru...">
+    <button class="secondary" type="button" onclick="loadRegistrations()">↻ Refresh</button>
   </div>
 
   <div class="table-wrap">
     <table class="table">
       <thead>
         <tr>
-          <th>Pelajar</th><th>ID</th><th>Acara</th><th>Kategori</th>
-          <th>Rumah</th><th>Guru</th><th>Tarikh</th>
+          <th>Pelajar</th>
+          <th>ID</th>
+          <th>Acara</th>
+          <th>Kategori</th>
+          <th>Rumah</th>
+          <th>Guru</th>
+          <th>Tarikh</th>
         </tr>
       </thead>
       <tbody id="rows">
-        <tr><td colspan="7" class="empty">Memuatkan data...</td></tr>
+        <tr><td colspan="7" class="empty">Memuatkan...</td></tr>
       </tbody>
     </table>
   </div>
@@ -93,20 +116,25 @@
 <section class="card" style="margin-top:16px">
   <h2>Peserta Terbaik</h2>
   <p class="card-sub">Berdasarkan mata keputusan.</p>
-  <ol id="leaderboard"><li>Memuatkan...</li></ol>
+  <ol id="leaderboard">
+    <li>Memuatkan...</li>
+  </ol>
 </section>
 </main>
 </div>
 
 <script>
-let token = "";
-let allRegistrations = [];
+let registrations = [];
 
 const $ = id => document.getElementById(id);
 
-function esc(v) {
-  return String(v ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
   }[c]));
 }
 
@@ -115,58 +143,17 @@ function togglePassword() {
   input.type = input.type === "password" ? "text" : "password";
 }
 
-async function login() {
-  const password = $("password").value.trim();
+async function getJSON(url, options = {}) {
+  const response = await fetch(url, {
+    cache: "no-store",
+    ...options
+  });
 
-  if (!password) {
-    $("loginError").textContent = "Sila masukkan kata laluan.";
-    return;
-  }
-
-  $("loginBtn").disabled = true;
-  $("loginError").textContent = "";
-
-  try {
-    // Backend V6 expects "pin", not "password".
-    const response = await fetch("/api/admin/unlock", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ pin: password })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "PIN admin tidak sah.");
-    }
-
-    token = data.token || password;
-    sessionStorage.setItem("smkAdminToken", token);
-
-    $("login").classList.add("hidden");
-    $("dashboard").classList.remove("hidden");
-
-    await loadData();
-  } catch (error) {
-    $("loginError").textContent = "✕ " + error.message;
-  } finally {
-    $("loginBtn").disabled = false;
-  }
-}
-
-function logout() {
-  sessionStorage.removeItem("smkAdminToken");
-  location.reload();
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url, { cache: "no-store" });
   let data = {};
-
   try {
     data = await response.json();
   } catch (_) {
-    throw new Error("Server tidak memulangkan JSON yang sah untuk " + url);
+    throw new Error("Server tidak memulangkan JSON yang sah. HTTP " + response.status);
   }
 
   if (!response.ok) {
@@ -176,110 +163,178 @@ async function fetchJson(url) {
   return data;
 }
 
-async function loadData() {
-  $("rows").innerHTML =
-    '<tr><td colspan="7" class="empty">Membaca data pendaftaran...</td></tr>';
+async function login() {
+  const pin = $("password").value.trim();
 
-  $("alert").classList.add("hidden");
+  if (!pin) {
+    $("loginError").textContent = "Sila masukkan kata laluan.";
+    return;
+  }
+
+  $("loginBtn").disabled = true;
+  $("loginBtn").textContent = "Menyemak...";
+  $("loginError").textContent = "";
 
   try {
     /*
-      PENTING:
-      /api/admin-data TIDAK WUJUD dalam V6.
-      Backend V6 menggunakan 3 route ini:
-        /api/admin/overview
-        /api/admin/registrations
-        /api/admin/leaderboard
+      V6 backend expects:
+      POST /api/admin/unlock
+      body: { pin: "..." }
     */
-    const [overview, registrations, leaderboard] = await Promise.all([
-      fetchJson("/api/admin/overview"),
-      fetchJson("/api/admin/registrations"),
-      fetchJson("/api/admin/leaderboard")
-    ]);
+    const data = await getJSON("/api/admin/unlock", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ pin })
+    });
 
-    allRegistrations = Array.isArray(registrations)
-      ? registrations
-      : (registrations.data || []);
+    if (!data.ok) {
+      throw new Error(data.message || "Akses admin gagal.");
+    }
 
-    $("total").textContent =
-      overview.total ?? allRegistrations.length;
+    sessionStorage.setItem("smkAdminUnlocked", "1");
 
-    $("events").textContent =
-      overview.eventsOngoing ?? 0;
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
 
-    // V6 overview doesn't expose result count.
-    // Count results from leaderboard only isn't reliable, so show "—".
-    $("results").textContent = "—";
+    await loadDashboard();
+
+  } catch (error) {
+    $("loginError").textContent = "✕ " + error.message;
+  } finally {
+    $("loginBtn").disabled = false;
+    $("loginBtn").textContent = "Buka Admin Dashboard →";
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem("smkAdminUnlocked");
+  location.reload();
+}
+
+async function loadDashboard() {
+  $("rows").innerHTML =
+    '<tr><td colspan="7" class="empty">Membaca data MongoDB...</td></tr>';
+
+  $("alert").classList.add("hidden");
+
+  /*
+    IMPORTANT:
+    Current V6 backend DOES NOT HAVE /api/admin-data.
+    It has these exact endpoints:
+      /api/admin/overview
+      /api/admin/registrations
+      /api/admin/leaderboard
+  */
+
+  try {
+    const overview = await getJSON("/api/admin/overview");
+
+    $("total").textContent = overview.total ?? 0;
+    $("events").textContent = overview.eventsOngoing ?? 0;
+
+  } catch (error) {
+    $("total").textContent = "!";
+    showError("Gagal mendapatkan statistik admin: " + error.message);
+  }
+
+  await loadRegistrations();
+  await loadLeaderboard();
+}
+
+async function loadRegistrations() {
+  $("rows").innerHTML =
+    '<tr><td colspan="7" class="empty">Membaca pendaftaran...</td></tr>';
+
+  try {
+    const q = $("search").value.trim();
+
+    /*
+      Current backend returns an ARRAY directly.
+      It does NOT return { ok:true, data:[...] }.
+    */
+    const data = await getJSON(
+      "/api/admin/registrations?q=" + encodeURIComponent(q)
+    );
+
+    registrations = Array.isArray(data)
+      ? data
+      : Array.isArray(data.data)
+        ? data.data
+        : [];
 
     renderTable();
-    renderLeaderboard(
-      Array.isArray(leaderboard)
-        ? leaderboard
-        : (leaderboard.data || [])
-    );
 
   } catch (error) {
     $("rows").innerHTML =
       `<tr><td colspan="7" class="empty">${esc(error.message)}</td></tr>`;
 
-    $("alert").className = "notice warn";
-    $("alert").textContent =
-      "ERROR ADMIN: " + error.message;
-    $("alert").classList.remove("hidden");
+    showError("Gagal mendapatkan data admin: " + error.message);
   }
 }
 
 function renderTable() {
-  const q = $("search").value.toLowerCase().trim();
-
-  const data = allRegistrations.filter(x =>
-    JSON.stringify(x).toLowerCase().includes(q)
-  );
-
-  if (!data.length) {
+  if (!registrations.length) {
     $("rows").innerHTML =
-      '<tr><td colspan="7" class="empty">Tiada pendaftaran.</td></tr>';
+      '<tr><td colspan="7" class="empty">Tiada pendaftaran dijumpai.</td></tr>';
     return;
   }
 
-  $("rows").innerHTML = data.map(x => `
+  $("rows").innerHTML = registrations.map(item => `
     <tr>
-      <td>${esc(x.studentName)}</td>
-      <td>${esc(x.studentId)}</td>
-      <td>${esc(x.event)}</td>
-      <td>${esc(x.category)}</td>
-      <td>${esc(x.house)}</td>
-      <td>${esc(x.teacher)}</td>
-      <td>${x.createdAt ? new Date(x.createdAt).toLocaleString("ms-MY") : "-"}</td>
+      <td>${esc(item.studentName)}</td>
+      <td>${esc(item.studentId)}</td>
+      <td>${esc(item.event)}</td>
+      <td>${esc(item.category)}</td>
+      <td>${esc(item.house)}</td>
+      <td>${esc(item.teacher)}</td>
+      <td>${item.createdAt ? new Date(item.createdAt).toLocaleString("ms-MY") : "-"}</td>
     </tr>
   `).join("");
 }
 
-function renderLeaderboard(data) {
-  $("leaderboard").innerHTML = data.length
-    ? data.map((x, i) => `
-      <li style="padding:9px 0;border-bottom:1px solid #f0edf4">
-        <b>${i + 1}. ${esc(x.studentName)}</b>
-        <br><small>${esc(x.house || "-")} · ${x.points || 0} mata</small>
-      </li>
-    `).join("")
-    : "<li>Belum ada keputusan.</li>";
+async function loadLeaderboard() {
+  try {
+    const data = await getJSON("/api/admin/leaderboard");
+
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data.data)
+        ? data.data
+        : [];
+
+    $("leaderboard").innerHTML = list.length
+      ? list.map((item, index) => `
+          <li style="padding:9px 0;border-bottom:1px solid #f0edf4">
+            <b>${index + 1}. ${esc(item.studentName)}</b>
+            <br>
+            <small>${esc(item.house || "-")} · ${Number(item.points || 0)} mata</small>
+          </li>
+        `).join("")
+      : "<li>Belum ada keputusan.</li>";
+
+  } catch (error) {
+    $("leaderboard").innerHTML =
+      `<li>${esc(error.message)}</li>`;
+  }
 }
 
-$("search").addEventListener("input", renderTable);
+function showError(message) {
+  $("alert").className = "notice warn";
+  $("alert").textContent = message;
+  $("alert").classList.remove("hidden");
+}
 
-$("password").addEventListener("keydown", e => {
-  if (e.key === "Enter") login();
+$("search").addEventListener("input", loadRegistrations);
+
+$("password").addEventListener("keydown", event => {
+  if (event.key === "Enter") login();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  const saved = sessionStorage.getItem("smkAdminToken");
-
-  if (saved) {
-    token = saved;
+  if (sessionStorage.getItem("smkAdminUnlocked") === "1") {
     $("login").classList.add("hidden");
     $("dashboard").classList.remove("hidden");
-    loadData();
+    loadDashboard();
   }
 });
 </script>
