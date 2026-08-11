@@ -1,1 +1,9 @@
-{"name":"smkdhab-sports","version":"4.0.0","private":true,"dependencies":{"mongoose":"^8.18.0"}}
+{
+  "name": "school-sports-management-smkdhab",
+  "version": "6.0.0",
+  "private": true,
+  "description": "Sistem Pengurusan Sukan Sekolah - SMK Datuk Haji Ahmad Badawi",
+  "dependencies": {
+    "mongoose": "^8.18.0"
+  }
+}
