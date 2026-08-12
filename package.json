@@ -1,8 +1,0 @@
-{
-  "name": "smkdhbadawi-sports",
-  "version": "12.0.0",
-  "private": true,
-  "dependencies": {
-    "mongodb": "^6.19.0"
-  }
-}
