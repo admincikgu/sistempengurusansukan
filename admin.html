@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Antaramuka Admin | SMK Datuk Haji Ahmad Badawi</title>
+<title>Admin Portal | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 <section id="login" class="login login-page">
   <div class="login-wrap">
     <div class="login-top">
-      <a href="/">← Kembali ke Portal</a>
+      <a href="/">← Back to Portal</a>
       <span class="secure">● ADMIN ACCESS</span>
     </div>
 
@@ -20,31 +20,31 @@
         <div class="login-brand-icon">🔐</div>
         <div style="text-align:left">
           <span class="eyebrow">SMKDHAB</span>
-          <strong style="display:block;color:var(--navy);font-size:13px">Sistem Pengurusan Sukan</strong>
+          <strong style="display:block;color:var(--navy);font-size:13px">Sistem Sports Management</strong>
         </div>
       </div>
 
       <div class="school-mark">🏫</div>
       <h1>Admin Access</h1>
-      <p class="sub">Pusat kawalan pentadbir sekolah</p>
+      <p class="sub">Pusat kawalan pentadbir school</p>
 
       <div class="secure-panel">
         <div class="secure-panel-icon">🛡️</div>
         <div>
-          <strong>Akses dilindungi</strong>
-          <span>Masukkan PIN pentadbir untuk meneruskan.</span>
+          <strong>Protected access</strong>
+          <span>Enter PIN pentadbir untuk meneruskan.</span>
         </div>
       </div>
 
       <div class="field" style="text-align:left">
-        <label>PIN PENTADBIR</label>
+        <label>ADMIN PIN</label>
         <div class="password-wrap">
-          <input id="pin" type="password" placeholder="Masukkan PIN" autocomplete="off">
+          <input id="pin" type="password" placeholder="Enter PIN" autocomplete="off">
           <button class="show-password" type="button" onclick="togglePin()">◉</button>
         </div>
       </div>
 
-      <button id="loginBtn" class="primary login-button" onclick="login()">Masuk ke Dashboard →</button>
+      <button id="loginBtn" class="primary login-button" onclick="login()">Enter Dashboard →</button>
       <div id="err" class="login-error"></div>
     </div>
   </div>
@@ -57,7 +57,7 @@
         <div class="app-title-icon">📊</div>
         <div>
           <h2>Admin Dashboard</h2>
-          <p>SMK Datuk Haji Ahmad Badawi · Pusat Kawalan Sukan</p>
+          <p>SMK Datuk Haji Ahmad Badawi · Control Center Sukan</p>
         </div>
       </div>
 
@@ -70,19 +70,19 @@
 
   <div class="soft-section">
     <div>
-      <h3>Ringkasan Kejohanan</h3>
-      <p>Paparan keseluruhan data semasa.</p>
+      <h3>Competition Overview</h3>
+      <p>View keseluruhan data semasa.</p>
     </div>
   </div>
 
   <section class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-icon">👥</div>
-      <div class="kpi-copy"><small>Total Pendaftaran</small><strong id="total">0</strong></div>
+      <div class="kpi-copy"><small>Total Registration</small><strong id="total">0</strong></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-icon">🏃</div>
-      <div class="kpi-copy"><small>Acara Berdaftar</small><strong id="events">0</strong></div>
+      <div class="kpi-copy"><small>Event Berdaftar</small><strong id="events">0</strong></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-icon">🏆</div>
@@ -98,26 +98,26 @@
     <section class="panel">
       <div class="panel-title">
         <div>
-          <h3>Master Data Pendaftaran</h3>
-          <p>Semua peserta yang didaftarkan melalui Antaramuka Guru.</p>
+          <h3>Master Data Registration</h3>
+          <p>Semua peserta yang didaftarkan melalui Teacher Portal.</p>
         </div>
         <button class="secondary" onclick="load()">↻ Refresh</button>
       </div>
 
       <div class="table-toolbar">
-        <input id="q" class="search" placeholder="Cari nama, ID, acara, kategori, rumah atau guru..." oninput="render()">
+        <input id="q" class="search" placeholder="Search name, ID, event, category, house or teacher..." oninput="render()">
       </div>
 
       <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>Pelajar</th>
+              <th>Student</th>
               <th>ID</th>
-              <th>Acara</th>
-              <th>Kategori</th>
-              <th>Rumah</th>
-              <th>Guru</th>
+              <th>Event</th>
+              <th>Category</th>
+              <th>House</th>
+              <th>Teacher</th>
               <th>Tarikh</th>
             </tr>
           </thead>
@@ -132,34 +132,34 @@
       <section class="panel">
         <div class="panel-title">
           <div>
-            <h3>Akses Pantas</h3>
-            <p>Fungsi pengurusan utama.</p>
+            <h3>Quick Actions</h3>
+            <p>Fungsi penteachersan utama.</p>
           </div>
         </div>
 
         <div class="quick-action-grid">
           <button class="quick-action" onclick="window.print()">
             <span class="qa-icon">🖨️</span>
-            <strong>Cetak</strong>
+            <strong>Print</strong>
             <span>Laporan / peserta</span>
           </button>
 
           <a class="quick-action" href="/teacher.html">
             <span class="qa-icon">👩‍🏫</span>
             <strong>Teacher View</strong>
-            <span>Kembali ke guru</span>
+            <span>Back ke teacher</span>
           </a>
 
           <button class="quick-action" onclick="load()">
             <span class="qa-icon">↻</span>
             <strong>Refresh Data</strong>
-            <span>Kemas kini</span>
+            <span>Update</span>
           </button>
 
           <button class="quick-action" onclick="logout()">
             <span class="qa-icon">↪</span>
-            <strong>Log Keluar</strong>
-            <span>Tamatkan akses</span>
+            <strong>Log Out</strong>
+            <span>End session</span>
           </button>
         </div>
       </section>
@@ -167,8 +167,8 @@
       <section class="panel">
         <div class="panel-title">
           <div>
-            <h3>Peserta Terbaik</h3>
-            <p>Top peserta berdasarkan mata.</p>
+            <h3>Top Participants</h3>
+            <p>Top participants by points.</p>
           </div>
         </div>
         <ol id="leaders" style="margin:0;padding-left:20px;color:var(--ink)">
@@ -178,20 +178,20 @@
     </div>
   </div>
 
-  <!-- KEPUTUSAN -->
+  <!-- RESULTS -->
   <section class="panel" style="margin-top:16px">
     <div class="panel-title">
       <div>
-        <h3>🏆 Keputusan Pertandingan</h3>
-        <p>Masukkan kedudukan, mata dan catatan masa/skor peserta.</p>
+        <h3>🏆 Competition Results</h3>
+        <p>Enter kedudukan, mata dan catatan masa/skor peserta.</p>
       </div>
-      <span class="status ok">KEPUTUSAN</span>
+      <span class="status ok">RESULTS</span>
     </div>
 
     <div class="form-section">
       <div class="form-section-title">
         <span class="mini-icon">🎯</span>
-        <strong>MAKLUMAT KEPUTUSAN</strong>
+        <strong>MAKLUMAT RESULTS</strong>
       </div>
 
       <div class="grid">
@@ -219,8 +219,8 @@
       </div>
 
       <div class="form-actions pro">
-        <span class="hint">Keputusan yang disimpan akan digunakan untuk leaderboard.</span>
-        <button class="primary" onclick="saveResult()">✓ Simpan Keputusan</button>
+        <span class="hint">Saved results will be used for the leaderboard.</span>
+        <button class="primary" onclick="saveResult()">✓ Save Result</button>
       </div>
 
       <div id="resultMsg" class="message"></div>
@@ -229,8 +229,8 @@
 
   <section class="panel" style="margin-top:16px">
   <div class="panel-title">
-    <div><h3>📢 Keputusan Yang Diterbitkan</h3><p>Keputusan yang akan dipaparkan di Dashboard Utama sekolah.</p></div>
-    <button class="secondary" type="button" onclick="clearPublished()">Kosongkan Paparan</button>
+    <div><h3>📢 Published Results</h3><p>Keputusan yang will displayed di Dashboard Utama school.</p></div>
+    <button class="secondary" type="button" onclick="clearPublished()">Kosongkan View</button>
   </div>
   <div id="publishedList" class="quick-action-grid"></div>
 </section>
@@ -238,7 +238,7 @@
 <div id="alert" class="notice warn hidden"></div>
 </main>
 
-<footer>SMK Datuk Haji Ahmad Badawi • Sistem Pengurusan Sukan Sekolah • 2026</footer>
+<footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
 let token="";
@@ -270,7 +270,7 @@ async function login(){
   const pin=$("pin").value.trim();
 
   if(!pin){
-    $("err").textContent="Sila masukkan PIN.";
+    $("err").textContent="Please enter the PIN.";
     return;
   }
 
@@ -298,7 +298,7 @@ async function login(){
     $("err").textContent="✕ "+e.message;
   }finally{
     $("loginBtn").disabled=false;
-    $("loginBtn").textContent="Masuk ke Dashboard →";
+    $("loginBtn").textContent="Enter Dashboard →";
   }
 }
 
@@ -354,7 +354,7 @@ async function load(){
           <small>${x.house||"-"} · ${x.points||0} mata</small>
         </li>`
       ).join("")
-      :"<li>Belum ada keputusan.</li>";
+      :"<li>No results yet.</li>";
 
   }catch(e){
     setStatus("dbStatus","● Database: Error",false);
@@ -382,7 +382,7 @@ function render(){
         <td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td>
       </tr>`
     ).join("")
-    :'<tr><td colspan="7" class="empty">Tiada pendaftaran.</td></tr>';
+    :'<tr><td colspan="7" class="empty">No registrations.</td></tr>';
 }
 
 async function saveResult(){
