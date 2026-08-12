@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
       if (pin !== expected) {
         return send(res, 401, {
           ok: false,
-          message: "PIN tidak sah."
+          message: "Invalid PIN."
         });
       }
 
@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
     if (!adminOK(req)) {
       return send(res, 401, {
         ok: false,
-        message: "Akses admin diperlukan."
+        message: "Administrator access is required."
       });
     }
 
@@ -89,7 +89,7 @@ module.exports = async (req, res) => {
       if (!ObjectId.isValid(id)) {
         return send(res, 400, {
           ok: false,
-          message: "ID peserta tidak sah."
+          message: "Invalid participant ID."
         });
       }
 
@@ -110,7 +110,7 @@ module.exports = async (req, res) => {
 
       return send(res, 200, {
         ok: true,
-        message: "Keputusan berjaya disimpan."
+        message: "Result saved successfully."
       });
     }
 
@@ -142,7 +142,7 @@ module.exports = async (req, res) => {
 
     return send(res, 404, {
       ok: false,
-      message: "Admin action tidak dijumpai.",
+      message: "Administrator action not found.",
       action
     });
 
@@ -151,7 +151,7 @@ module.exports = async (req, res) => {
 
     return send(res, 500, {
       ok: false,
-      message: "Admin API gagal.",
+      message: "Administrator API failed.",
       error: error.message
     });
   }

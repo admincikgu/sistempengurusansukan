@@ -2,7 +2,7 @@ const { getDb, DB_NAME } = require("../lib/db");
 
 module.exports = async (req, res) => {
   if (req.method !== "GET") {
-    return res.status(405).json({ ok: false, message: "GET sahaja." });
+    return res.status(405).json({ ok: false, message: "GET requests only." });
   }
 
   try {

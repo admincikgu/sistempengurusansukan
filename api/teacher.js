@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
       if (!doc.studentName || !doc.studentId || !doc.event || !doc.category || !doc.house) {
         return res.status(400).json({
           ok: false,
-          message: "Sila lengkapkan semua maklumat."
+          message: "Please complete all required fields."
         });
       }
 
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
       if (duplicate) {
         return res.status(409).json({
           ok: false,
-          message: "Pelajar sudah didaftarkan untuk acara dan kategori ini."
+          message: "This student is already registered for this event and category."
         });
       }
 
@@ -57,21 +57,21 @@ module.exports = async (req, res) => {
 
       return res.status(201).json({
         ok: true,
-        message: "Pendaftaran berjaya disimpan.",
+        message: "Registration saved successfully.",
         data: { ...doc, _id: String(result.insertedId) }
       });
     }
 
     return res.status(405).json({
       ok: false,
-      message: "Action tidak sah untuk Teacher API."
+      message: "Invalid action for the Teacher API."
     });
 
   } catch (error) {
     console.error("TEACHER_API", error);
     return res.status(500).json({
       ok: false,
-      message: "Teacher API gagal.",
+      message: "Teacher API failed.",
       error: error.message
     });
   }
