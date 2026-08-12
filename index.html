@@ -97,18 +97,59 @@
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
-function renderResults(){
-  let data=[];
-  try{data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]")}catch{}
+async function renderResults(){
   const box=document.getElementById("results");
-  if(!data.length){box.innerHTML='<div class="empty">No published results yet.</div>';return}
-  box.innerHTML=data.slice(0,8).map(item=>`
-    <article class="result">
-      <small>${item.event||"Event"}</small>
-      <strong>${item.studentName||"Participant"}</strong>
-      <span>${item.position?`Position ${item.position}`:""}${item.points?` · ${item.points} points`:""}${item.timing?` · ${item.timing}`:""}</span>
-    </article>`).join("");
+
+  try{
+    box.innerHTML='<div class="empty">Loading latest results...</div>';
+
+    const response=await fetch("/api/public-results",{cache:"no-store"});
+    const text=await response.text();
+
+    let data;
+    try{
+      data=JSON.parse(text);
+    }catch{
+      throw new Error("Results service returned invalid data.");
+    }
+
+    if(!response.ok){
+      throw new Error(data.message||"Unable to load results.");
+    }
+
+    if(!Array.isArray(data)||!data.length){
+      box.innerHTML='<div class="empty">No competition results published yet.</div>';
+      return;
+    }
+
+    box.innerHTML=data.slice(0,8).map(item=>{
+      const medal=
+        item.position===1?"🥇":
+        item.position===2?"🥈":
+        item.position===3?"🥉":"🏅";
+
+      return `
+        <article class="result">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <small>${item.event||"Event"}</small>
+            <span style="font-size:16px">${medal}</span>
+          </div>
+          <strong>${item.studentName||"Participant"}</strong>
+          <span>
+            ${item.position?`Position ${item.position}`:"Position not recorded"}
+            ${item.points?` · ${item.points} points`:""}
+            ${item.house?` · ${item.house}`:""}
+            ${item.timing?` · ${item.timing}`:""}
+          </span>
+        </article>
+      `;
+    }).join("");
+  }catch(error){
+    box.innerHTML='<div class="empty">Results are currently unavailable.</div>';
+    console.error(error);
+  }
 }
+
 renderResults();
 </script>
 </body>
