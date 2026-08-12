@@ -1,23 +1,39 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Antaramuka Admin | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
 <section id="login" class="login login-page">
   <div class="login-wrap">
-    <div class="login-top"><a href="/">← Kembali ke Portal</a><span class="secure">● ADMIN ACCESS</span></div>
+    <div class="login-top">
+      <a href="/">← Kembali ke Portal</a>
+      <span class="secure">● ADMIN ACCESS</span>
+    </div>
+
     <div class="login-card">
-      <div class="login-brand"><div class="login-brand-icon">🔐</div><div style="text-align:left"><span class="eyebrow">SMKDHAB</span><strong style="display:block;color:var(--navy);font-size:13px">Sistem Pengurusan Sukan</strong></div></div>
+      <div class="login-brand">
+        <div class="login-brand-icon">🔐</div>
+        <div style="text-align:left">
+          <span class="eyebrow">SMKDHAB</span>
+          <strong style="display:block;color:var(--navy);font-size:13px">Sistem Pengurusan Sukan</strong>
+        </div>
+      </div>
+
       <div class="school-mark">🏫</div>
       <h1>Admin Access</h1>
       <p class="sub">Pusat kawalan pentadbir sekolah</p>
 
       <div class="secure-panel">
         <div class="secure-panel-icon">🛡️</div>
-        <div><strong>Akses dilindungi</strong><span>Masukkan PIN pentadbir untuk meneruskan.</span></div>
+        <div>
+          <strong>Akses dilindungi</strong>
+          <span>Masukkan PIN pentadbir untuk meneruskan.</span>
+        </div>
       </div>
 
       <div class="field" style="text-align:left">
@@ -35,103 +51,376 @@
 </section>
 
 <main id="app" class="hidden">
-<header class="app-hero">
-  <div class="app-hero-row">
-    <div class="app-title"><div class="app-title-icon">📊</div><div><h2>Admin Dashboard</h2><p>SMK Datuk Haji Ahmad Badawi · Pusat Kawalan Sukan</p></div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><span id="secureStatus" class="status ok">● Secure Access</span><span id="dbStatus" class="status wait">● Database: Checking</span></div>
+  <header class="app-hero">
+    <div class="app-hero-row">
+      <div class="app-title">
+        <div class="app-title-icon">📊</div>
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p>SMK Datuk Haji Ahmad Badawi · Pusat Kawalan Sukan</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+        <span id="secureStatus" class="status ok">● Secure Access: Unlocked</span>
+        <span id="dbStatus" class="status wait">● Database: Checking</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="soft-section">
+    <div>
+      <h3>Ringkasan Kejohanan</h3>
+      <p>Paparan keseluruhan data semasa.</p>
+    </div>
   </div>
-</header>
 
-<div class="soft-section"><div><h3>Ringkasan Kejohanan</h3><p>Paparan keseluruhan data semasa.</p></div></div>
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-copy"><small>Total Pendaftaran</small><strong id="total">0</strong></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🏃</div>
+      <div class="kpi-copy"><small>Acara Berdaftar</small><strong id="events">0</strong></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🏆</div>
+      <div class="kpi-copy"><small>Keputusan Disimpan</small><strong id="results">0</strong></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">☁️</div>
+      <div class="kpi-copy"><small>Status Database</small><strong id="dbCount">Checking</strong></div>
+    </div>
+  </section>
 
-<section class="kpi-grid">
-  <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-copy"><small>Total Pendaftaran</small><strong id="total">0</strong></div></div>
-  <div class="kpi-card"><div class="kpi-icon">🏃</div><div class="kpi-copy"><small>Acara Berdaftar</small><strong id="events">0</strong></div></div>
-  <div class="kpi-card"><div class="kpi-icon">🏆</div><div class="kpi-copy"><small>Keputusan</small><strong id="results">0</strong></div></div>
-  <div class="kpi-card"><div class="kpi-icon">☁️</div><div class="kpi-copy"><small>Status Data</small><strong id="dbCount">Ready</strong></div></div>
-</section>
+  <div class="dashboard-grid">
+    <section class="panel">
+      <div class="panel-title">
+        <div>
+          <h3>Master Data Pendaftaran</h3>
+          <p>Semua peserta yang didaftarkan melalui Antaramuka Guru.</p>
+        </div>
+        <button class="secondary" onclick="load()">↻ Refresh</button>
+      </div>
 
-<div class="dashboard-grid">
-<section class="panel">
-  <div class="panel-title"><div><h3>Master Data Pendaftaran</h3><p>Semua peserta yang didaftarkan melalui Antaramuka Guru.</p></div><button class="secondary" onclick="load()">↻ Refresh</button></div>
-  <div class="table-toolbar"><input id="q" class="search" placeholder="Cari nama, ID, acara, kategori, rumah atau guru..." oninput="render()"></div>
-  <div class="table-wrap">
-    <table class="table"><thead><tr><th>Pelajar</th><th>ID</th><th>Acara</th><th>Kategori</th><th>Rumah</th><th>Guru</th><th>Tarikh</th></tr></thead>
-    <tbody id="rows"><tr><td colspan="7" class="empty">Memuatkan...</td></tr></tbody></table>
+      <div class="table-toolbar">
+        <input id="q" class="search" placeholder="Cari nama, ID, acara, kategori, rumah atau guru..." oninput="render()">
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Pelajar</th>
+              <th>ID</th>
+              <th>Acara</th>
+              <th>Kategori</th>
+              <th>Rumah</th>
+              <th>Guru</th>
+              <th>Tarikh</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="7" class="empty">Memuatkan...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="dashboard-side">
+      <section class="panel">
+        <div class="panel-title">
+          <div>
+            <h3>Akses Pantas</h3>
+            <p>Fungsi pengurusan utama.</p>
+          </div>
+        </div>
+
+        <div class="quick-action-grid">
+          <button class="quick-action" onclick="window.print()">
+            <span class="qa-icon">🖨️</span>
+            <strong>Cetak</strong>
+            <span>Laporan / peserta</span>
+          </button>
+
+          <a class="quick-action" href="/teacher.html">
+            <span class="qa-icon">👩‍🏫</span>
+            <strong>Teacher View</strong>
+            <span>Kembali ke guru</span>
+          </a>
+
+          <button class="quick-action" onclick="load()">
+            <span class="qa-icon">↻</span>
+            <strong>Refresh Data</strong>
+            <span>Kemas kini</span>
+          </button>
+
+          <button class="quick-action" onclick="logout()">
+            <span class="qa-icon">↪</span>
+            <strong>Log Keluar</strong>
+            <span>Tamatkan akses</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          <div>
+            <h3>Peserta Terbaik</h3>
+            <p>Top peserta berdasarkan mata.</p>
+          </div>
+        </div>
+        <ol id="leaders" style="margin:0;padding-left:20px;color:var(--ink)">
+          <li>Memuatkan...</li>
+        </ol>
+      </section>
+    </div>
   </div>
-</section>
 
-<div class="dashboard-side">
-<section class="panel">
-  <div class="panel-title"><div><h3>Akses Pantas</h3><p>Fungsi pengurusan utama.</p></div></div>
-  <div class="quick-action-grid">
-    <button class="quick-action" onclick="window.print()"><span class="qa-icon">🖨️</span><strong>Cetak</strong><span>Laporan / peserta</span></button>
-    <a class="quick-action" href="/teacher.html"><span class="qa-icon">👩‍🏫</span><strong>Teacher View</strong><span>Kembali ke guru</span></a>
-    <button class="quick-action" onclick="load()"><span class="qa-icon">↻</span><strong>Refresh Data</strong><span>Kemas kini</span></button>
-    <button class="quick-action" onclick="logout()"><span class="qa-icon">↪</span><strong>Log Keluar</strong><span>Tamatkan akses</span></button>
-  </div>
-</section>
+  <!-- KEPUTUSAN -->
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-title">
+      <div>
+        <h3>🏆 Keputusan Pertandingan</h3>
+        <p>Masukkan kedudukan, mata dan catatan masa/skor peserta.</p>
+      </div>
+      <span class="status ok">KEPUTUSAN</span>
+    </div>
 
-<section class="panel">
-  <div class="panel-title"><div><h3>Peserta Terbaik</h3><p>Top peserta berdasarkan mata.</p></div></div>
-  <ol id="leaders" style="margin:0;padding-left:20px;color:var(--ink)"><li>Memuatkan...</li></ol>
-</section>
-</div>
-</div>
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="mini-icon">🎯</span>
+        <strong>MAKLUMAT KEPUTUSAN</strong>
+      </div>
 
-<section class="panel" style="margin-top:16px">
-  <div class="panel-title"><div><h3>Keputusan Acara</h3><p>Pilih peserta dan masukkan keputusan pertandingan.</p></div></div>
-  <div class="grid">
-    <div class="field"><label>PESERTA</label><select id="participant"><option value="">Pilih peserta...</option></select></div>
-    <div class="field"><label>KEDUDUKAN</label><input id="position" type="number" min="1" placeholder="1"></div>
-    <div class="field"><label>MATA</label><input id="points" type="number" min="0" placeholder="10"></div>
-    <div class="field"><label>MASA / SKOR</label><input id="timing" placeholder="12.45s / 5.20m"></div>
-  </div>
-  <div class="form-actions pro"><span class="hint">Simpan keputusan untuk mengemas kini leaderboard.</span><button class="primary" onclick="saveResult()">Simpan Keputusan</button></div>
-  <div id="resultMsg" class="message"></div>
-</section>
+      <div class="grid">
+        <div class="field">
+          <label>PESERTA</label>
+          <select id="participant">
+            <option value="">Pilih peserta...</option>
+          </select>
+        </div>
 
-<div id="alert" class="notice warn hidden"></div>
+        <div class="field">
+          <label>KEDUDUKAN</label>
+          <input id="position" type="number" min="1" placeholder="Contoh: 1">
+        </div>
+
+        <div class="field">
+          <label>MATA</label>
+          <input id="points" type="number" min="0" placeholder="Contoh: 10">
+        </div>
+
+        <div class="field">
+          <label>MASA / SKOR</label>
+          <input id="timing" placeholder="Contoh: 12.45s / 5.20m">
+        </div>
+      </div>
+
+      <div class="form-actions pro">
+        <span class="hint">Keputusan yang disimpan akan digunakan untuk leaderboard.</span>
+        <button class="primary" onclick="saveResult()">✓ Simpan Keputusan</button>
+      </div>
+
+      <div id="resultMsg" class="message"></div>
+    </div>
+  </section>
+
+  <div id="alert" class="notice warn hidden"></div>
 </main>
+
 <footer>SMK Datuk Haji Ahmad Badawi • Sistem Pengurusan Sukan Sekolah • 2026</footer>
 
 <script>
-let token="",data=[];
-const $=i=>document.getElementById(i);
-async function api(u,o={}){const r=await fetch(u,{cache:"no-store",...o}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error("HTTP "+r.status+" - server bukan JSON")};if(!r.ok)throw Error(d.message||d.error);return d}
-function togglePin(){const i=$("pin");i.type=i.type==="password"?"text":"password"}
-function setStatus(id,text,ok){$(id).textContent=text;$(id).className="status "+(ok?"ok":"bad")}
+let token="";
+let data=[];
+
+const $=id=>document.getElementById(id);
+
+async function api(u,o={}){
+  const r=await fetch(u,{cache:"no-store",...o});
+  const t=await r.text();
+  let d;
+  try{d=JSON.parse(t)}
+  catch{throw Error("HTTP "+r.status+" - server bukan JSON")}
+  if(!r.ok)throw Error(d.message||d.error||("HTTP "+r.status));
+  return d;
+}
+
+function togglePin(){
+  const i=$("pin");
+  i.type=i.type==="password"?"text":"password";
+}
+
+function setStatus(id,text,ok){
+  $(id).textContent=text;
+  $(id).className="status "+(ok?"ok":"bad");
+}
+
 async function login(){
   const pin=$("pin").value.trim();
-  if(!pin){$("err").textContent="Sila masukkan PIN.";return}
-  $("loginBtn").disabled=true;$("loginBtn").textContent="Menyemak...";
+
+  if(!pin){
+    $("err").textContent="Sila masukkan PIN.";
+    return;
+  }
+
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="Menyemak...";
+
   try{
-    const d=await api("/api/admin?action=unlock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});
-    token=d.token;$("login").classList.add("hidden");$("app").classList.remove("hidden");setStatus("secureStatus","● Secure Access: Unlocked",true);await load()
-  }catch(e){$("err").textContent="✕ "+e.message}
-  finally{$("loginBtn").disabled=false;$("loginBtn").textContent="Masuk ke Dashboard →"}
+    const d=await api("/api/admin?action=unlock",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({pin})
+    });
+
+    token=d.token;
+    sessionStorage.setItem("smkAdminPin",token);
+
+    $("login").classList.add("hidden");
+    $("app").classList.remove("hidden");
+
+    setStatus("secureStatus","● Secure Access: Unlocked",true);
+
+    await load();
+
+  }catch(e){
+    $("err").textContent="✕ "+e.message;
+  }finally{
+    $("loginBtn").disabled=false;
+    $("loginBtn").textContent="Masuk ke Dashboard →";
+  }
 }
-function logout(){location.reload()}
+
+function logout(){
+  sessionStorage.removeItem("smkAdminPin");
+  location.reload();
+}
+
 async function load(){
   try{
-    const s=await api("/api/admin?action=status");setStatus("dbStatus","● Database: Connected",true);$("dbCount").textContent=s.total+" rekod";
-    const o=await api("/api/admin?action=overview",{headers:{"x-admin-pin":token}});$("total").textContent=o.total;$("events").textContent=o.eventsOngoing;$("results").textContent=o.totalResults;
-    data=await api("/api/admin?action=registrations",{headers:{"x-admin-pin":token}});
+    /*
+      FIX:
+      Status request juga menghantar admin PIN.
+      Sebelum ini database status boleh menjadi 401 walaupun login berjaya.
+    */
+    const auth={"x-admin-pin":token};
+
+    const s=await api("/api/admin?action=status",{
+      headers:auth
+    });
+
+    setStatus("dbStatus","● Database: Connected",true);
+    $("dbCount").textContent=s.total+" rekod";
+
+    const o=await api("/api/admin?action=overview",{
+      headers:auth
+    });
+
+    $("total").textContent=o.total;
+    $("events").textContent=o.eventsOngoing;
+    $("results").textContent=o.totalResults;
+
+    data=await api("/api/admin?action=registrations",{
+      headers:auth
+    });
+
     render();
-    $("participant").innerHTML='<option value="">Pilih peserta...</option>'+data.map(x=>`<option value="${x._id}">${x.studentName} — ${x.event}</option>`).join("");
-    const l=await api("/api/admin?action=leaderboard",{headers:{"x-admin-pin":token}});
-    $("leaders").innerHTML=l.length?l.map((x,i)=>`<li style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${i+1}. ${x.studentName}</b><br><small>${x.house||"-"} · ${x.points||0} mata</small></li>`).join(""):"<li>Belum ada keputusan.</li>";
-  }catch(e){setStatus("dbStatus","● Database: Error",false);$("dbCount").textContent="Check";showError(e.message)}
+
+    $("participant").innerHTML=
+      '<option value="">Pilih peserta...</option>'+
+      data.map(x=>
+        `<option value="${x._id}">${x.studentName} — ${x.event}</option>`
+      ).join("");
+
+    const l=await api("/api/admin?action=leaderboard",{
+      headers:auth
+    });
+
+    $("leaders").innerHTML=l.length
+      ?l.map((x,i)=>
+        `<li style="padding:8px 0;border-bottom:1px solid var(--line)">
+          <b>${i+1}. ${x.studentName}</b><br>
+          <small>${x.house||"-"} · ${x.points||0} mata</small>
+        </li>`
+      ).join("")
+      :"<li>Belum ada keputusan.</li>";
+
+  }catch(e){
+    setStatus("dbStatus","● Database: Error",false);
+    $("dbCount").textContent="Error";
+    showError(e.message);
+  }
 }
-function render(){const q=$("q").value.toLowerCase();const a=data.filter(x=>JSON.stringify(x).toLowerCase().includes(q));$("rows").innerHTML=a.length?a.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">Tiada pendaftaran.</td></tr>'}
+
+function render(){
+  const q=$("q").value.toLowerCase();
+
+  const a=data.filter(x=>
+    JSON.stringify(x).toLowerCase().includes(q)
+  );
+
+  $("rows").innerHTML=a.length
+    ?a.map(x=>
+      `<tr>
+        <td>${x.studentName}</td>
+        <td>${x.studentId}</td>
+        <td>${x.event}</td>
+        <td>${x.category}</td>
+        <td>${x.house}</td>
+        <td>${x.teacher}</td>
+        <td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td>
+      </tr>`
+    ).join("")
+    :'<tr><td colspan="7" class="empty">Tiada pendaftaran.</td></tr>';
+}
+
 async function saveResult(){
-  const id=$("participant").value;if(!id){$("resultMsg").className="message error";$("resultMsg").textContent="Pilih peserta dahulu.";return}
+  const id=$("participant").value;
+
+  if(!id){
+    $("resultMsg").className="message error";
+    $("resultMsg").textContent="Pilih peserta dahulu.";
+    return;
+  }
+
   try{
-    const d=await api("/api/admin?action=result",{method:"POST",headers:{"Content-Type":"application/json","x-admin-pin":token},body:JSON.stringify({registrationId:id,position:$("position").value,points:$("points").value,timing:$("timing").value,score:0})});
-    $("resultMsg").className="message ok";$("resultMsg").textContent="✓ "+d.message;await load()
-  }catch(e){$("resultMsg").className="message error";$("resultMsg").textContent="✕ "+e.message}
+    const d=await api("/api/admin?action=result",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-admin-pin":token
+      },
+      body:JSON.stringify({
+        registrationId:id,
+        position:$("position").value,
+        points:$("points").value,
+        timing:$("timing").value,
+        score:0
+      })
+    });
+
+    $("resultMsg").className="message ok";
+    $("resultMsg").textContent="✓ "+d.message;
+
+    $("position").value="";
+    $("points").value="";
+    $("timing").value="";
+
+    await load();
+
+  }catch(e){
+    $("resultMsg").className="message error";
+    $("resultMsg").textContent="✕ "+e.message;
+  }
 }
-function showError(m){$("alert").textContent="Admin: "+m;$("alert").classList.remove("hidden")}
+
+function showError(m){
+  $("alert").textContent="Admin: "+m;
+  $("alert").classList.remove("hidden");
+}
 </script>
 </body>
 </html>
