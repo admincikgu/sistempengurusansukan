@@ -1645,7 +1645,7 @@ button, .nav-link, .button-secondary, .action-card, .portal-card{
    ========================================================= */
 body{
   background:
-    linear-gradient(rgba(244,247,247,.80),rgba(244,247,247,.84)),
+    linear-gradient(rgba(244,247,247,.72),rgba(244,247,247,.76)),
     url("/assets/smkdhbadawi-sports-background.png") center top / cover fixed no-repeat;
   background-attachment:fixed;
 }
