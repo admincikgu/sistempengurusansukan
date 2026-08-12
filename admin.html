@@ -8,296 +8,552 @@
 </head>
 <body>
 
-<section id="login" class="login login-page">
-  <div class="login-wrap">
-    <div class="login-top">
-      <a href="/">← Back to Portal</a>
-      <span class="secure">● ADMIN ACCESS</span>
+<section id="login" class="login">
+  <div class="login-card">
+    <div class="school-mark">🏫</div>
+    <span class="eyebrow">SMKDHAB ADMIN</span>
+    <h1>Admin Access</h1>
+    <p class="sub">Secure administrator dashboard</p>
+
+    <div class="field" style="text-align:left;margin-top:18px">
+      <label>ADMINISTRATOR PIN</label>
+      <input id="pin" type="password" placeholder="Enter PIN" autocomplete="current-password">
     </div>
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="login-brand-icon">🔐</div>
-        <div style="text-align:left">
-          <span class="eyebrow">SMKDHAB</span>
-          <strong style="display:block;color:var(--navy);font-size:13px">School Sports Management</strong>
-        </div>
-      </div>
-      <div class="school-mark">🏫</div>
-      <h1>Admin Access</h1>
-      <p class="sub">Secure administrator dashboard</p>
-      <div class="secure-panel">
-        <div class="secure-panel-icon">🛡️</div>
-        <div><strong>Protected access</strong><span>Enter the administrator PIN to continue.</span></div>
-      </div>
-      <div class="field" style="text-align:left">
-        <label>ADMINISTRATOR PIN</label>
-        <div class="password-wrap">
-          <input id="pin" type="password" placeholder="Enter PIN" autocomplete="off">
-          <button class="show-password" type="button" onclick="togglePin()">◉</button>
-        </div>
-      </div>
-      <button id="loginBtn" class="primary login-button" onclick="login()">Enter Admin Dashboard →</button>
-      <div id="err" class="login-error"></div>
+
+    <button id="loginBtn" class="primary login-button" type="button">
+      Enter Dashboard →
+    </button>
+
+    <div id="loginError" class="login-error"></div>
+    <div style="margin-top:10px;font-size:10px;color:var(--muted)">
+      Press Enter to login
     </div>
   </div>
 </section>
 
 <main id="app" class="hidden">
-  <section class="sports-banner" style="margin:22px 20px 0">
-    <div class="sports-banner-content">
-      <div class="sports-banner-copy">
-        <span class="eyebrow">ADMIN SPORTS CENTER · 2026</span>
-        <h3>Competition Management</h3>
-        <p>Monitor registrations and record official results in one place.</p>
-      </div>
-      <div class="sports-visuals" aria-hidden="true">
-        <div class="sports-visual">🏆</div>
-        <div class="sports-visual">🏃</div>
-        <div class="sports-visual">🏟️</div>
-      </div>
-    </div>
-  </section>
-  <div class="admin-wrap">
+  <div class="container">
 
-    <section class="admin-top-card">
-      <div class="admin-top-row">
-        <div class="admin-title">
-          <div class="admin-title-icon">📊</div>
-          <div>
-            <h2>Admin Dashboard</h2>
-            <p>SMK Datuk Haji Ahmad Badawi · School Sports Management System</p>
-          </div>
-        </div>
-        <div class="admin-badges">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">ADMIN SPORTS CENTER · 2026</span>
+        <h1>Admin <span>Dashboard</span></h1>
+        <p>
+          Manage registrations, edit participant information,
+          change sports assignments, delete records, and save official results.
+        </p>
+
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:15px">
           <span id="secureStatus" class="status ok">● Secure Access: Unlocked</span>
           <span id="dbStatus" class="status wait">● Database: Checking</span>
         </div>
       </div>
+
+      <div class="hero-visual">
+        <div class="hero-core"><strong>ADMIN</strong><span>SMKDHAB</span></div>
+      </div>
     </section>
 
-    <section class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-copy"><small>Total Registrations</small><strong id="total">0</strong></div></div>
-      <div class="kpi-card"><div class="kpi-icon">🏃</div><div class="kpi-copy"><small>Registered Events</small><strong id="events">0</strong></div></div>
-      <div class="kpi-card"><div class="kpi-icon">🏆</div><div class="kpi-copy"><small>Saved Results</small><strong id="results">0</strong></div></div>
-      <div class="kpi-card"><div class="kpi-icon">☁️</div><div class="kpi-copy"><small>Database Status</small><strong id="dbCount">Checking</strong></div></div>
+    <section class="section">
+      <div class="kpi-grid">
+        <div class="kpi"><small>Total Registrations</small><strong id="total">0</strong></div>
+        <div class="kpi"><small>Registered Events</small><strong id="events">0</strong></div>
+        <div class="kpi"><small>Saved Results</small><strong id="results">0</strong></div>
+        <div class="kpi"><small>Database</small><strong id="dbCount">Checking</strong></div>
+      </div>
     </section>
 
-    <section class="admin-grid">
+    <section class="section">
+      <div class="section-title">
+        <span class="eyebrow">QUICK ACTIONS</span>
+        <h2>Management Tools</h2>
+        <p>Common administrator tasks.</p>
+      </div>
 
-      <article class="admin-card">
-        <div class="head">
-          <div><h3>Registration Overview</h3><p>All student registrations submitted through the Teacher Portal.</p></div>
-          <button class="secondary" onclick="load()">↻ Refresh</button>
+      <div class="action-row">
+        <button class="action-btn" id="printBtn">🖨️<br><span>Print</span></button>
+        <button class="action-btn" id="refreshBtn">↻<br><span>Refresh</span></button>
+        <a class="action-btn" href="/teacher.html" style="display:grid;place-items:center">👩‍🏫<br><span>Teacher Portal</span></a>
+        <button class="action-btn" id="logoutBtn">↪<br><span>Log Out</span></button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <span class="eyebrow">MASTER DATA</span>
+        <h2>Participant Registrations</h2>
+        <p>Edit or delete any registration.</p>
+      </div>
+
+      <section class="panel">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input id="search" placeholder="Search student, ID, class, event, category, house or teacher...">
         </div>
-        <div class="table-toolbar">
-          <input id="q" class="search" placeholder="Search by student, ID, event, category, house or teacher..." oninput="render()">
-        </div>
+
         <div class="table-wrap">
           <table class="table">
-            <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Date</th></tr></thead>
-            <tbody id="rows"><tr><td colspan="7" class="empty">Loading registration data...</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>ID</th>
+                <th>Class</th>
+                <th>Event</th>
+                <th>Category</th>
+                <th>Sports House</th>
+                <th>Teacher</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rows">
+              <tr><td colspan="8" class="empty">Loading...</td></tr>
+            </tbody>
           </table>
         </div>
-      </article>
-
-      <aside class="admin-card">
-        <div class="head"><div><h3>Quick Actions</h3><p>Common administrator tasks.</p></div></div>
-        <div class="admin-actions">
-          <button class="admin-action" onclick="window.print()"><span class="icon">🖨️</span><div><strong>Print Reports</strong><span>Reports / participants</span></div></button>
-          <a class="admin-action" href="/teacher.html"><span class="icon">👩‍🏫</span><div><strong>Teacher Portal</strong><span>Return to registration</span></div></a>
-          <button class="admin-action" onclick="load()"><span class="icon">↻</span><div><strong>Refresh Data</strong><span>Reload dashboard data</span></div></button>
-          <button class="admin-action" onclick="logout()"><span class="icon">↪</span><div><strong>Log Out</strong><span>End administrator session</span></div></button>
-        </div>
-        <div class="results-summary">
-          <div class="result-stat"><small>Registrations</small><strong id="sideTotal">0</strong></div>
-          <div class="result-stat"><small>Events</small><strong id="sideEvents">0</strong></div>
-          <div class="result-stat"><small>Results</small><strong id="sideResults">0</strong></div>
-        </div>
-      </aside>
-
+      </section>
     </section>
 
-    <section class="admin-card" style="margin-top:16px">
-      <div class="head">
-        <div><h3>Top Participants</h3><p>Highest scoring participants.</p></div>
-      </div>
-      <ol id="leaders" style="margin:0;padding-left:20px;color:var(--ink)"><li>No results yet.</li></ol>
-    </section>
-
-    <section class="admin-card" style="margin-top:16px">
-      <div class="head">
-        <div><h3>🏆 Competition Results</h3><p>Enter and save official competition results.</p></div>
-        <span class="section-ribbon">RESULTS</span>
-      </div>
-
-      <div class="form-section pro">
-        <div class="form-section-title">
-          <span class="mini-icon">🎯</span>
-          <strong>RESULT INFORMATION</strong>
+    <section class="section">
+      <div class="editor">
+        <div class="editor-top">
+          <div>
+            <span class="eyebrow">EDIT REGISTRATION</span>
+            <h3>Manage Participant</h3>
+            <p>Change the student, class, event, category, sports house, or teacher.</p>
+          </div>
+          <span id="editStatus" class="status wait">No selection</span>
         </div>
 
-        <div class="form-grid pro">
+        <div class="editor-grid">
+          <div class="field">
+            <label>STUDENT NAME</label>
+            <input id="editStudentName">
+          </div>
+
+          <div class="field">
+            <label>STUDENT ID</label>
+            <input id="editStudentId">
+          </div>
+
+          <div class="field">
+            <label>CLASS</label>
+            <select id="editClass"></select>
+          </div>
+
+          <div class="field">
+            <label>EVENT</label>
+            <select id="editEvent"></select>
+          </div>
+
+          <div class="field">
+            <label>CATEGORY</label>
+            <select id="editCategory"></select>
+          </div>
+
+          <div class="field">
+            <label>SPORTS HOUSE</label>
+            <select id="editHouse"></select>
+          </div>
+
+          <div class="field">
+            <label>TEACHER</label>
+            <input id="editTeacher">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <span class="hint">Select Edit from the registration table above.</span>
+          <div>
+            <button class="secondary" id="clearEditBtn">Clear</button>
+            <button class="primary" id="saveEditBtn">Save Changes</button>
+          </div>
+        </div>
+
+        <div id="editMessage" class="message"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <span class="eyebrow">COMPETITION RESULTS</span>
+        <h2>Results Management</h2>
+        <p>Save official results for participants.</p>
+      </div>
+
+      <section class="panel">
+        <div class="form-grid">
           <div class="field">
             <label>PARTICIPANT</label>
-            <select id="participant"><option value="">Select participant...</option></select>
+            <select id="participant"></select>
           </div>
+
           <div class="field">
             <label>POSITION</label>
             <input id="position" type="number" min="1" placeholder="1">
           </div>
+
           <div class="field">
             <label>POINTS</label>
             <input id="points" type="number" min="0" placeholder="10">
           </div>
+
           <div class="field">
             <label>TIME / SCORE</label>
             <input id="timing" placeholder="12.45s / 5.20m">
           </div>
         </div>
 
-        <div class="form-actions pro" style="justify-content:space-between">
-          <div class="form-note">Official results saved here will update the ranking and latest results display.</div>
-          <button class="primary" onclick="saveResult()">✓ Save Result</button>
+        <div class="form-actions">
+          <span class="hint">Saved results update the leaderboard.</span>
+          <button class="primary" id="saveResultBtn">Save Result</button>
         </div>
-        <div id="resultMsg" class="message"></div>
-      </div>
+
+        <div id="resultMessage" class="message"></div>
+      </section>
     </section>
 
-    <section class="admin-card" style="margin-top:16px">
-      <div class="head">
-        <div><h3>Published Results</h3><p>Results currently published to the main dashboard.</p></div>
-        <button class="secondary" type="button" onclick="clearPublished()">Clear Display</button>
+    <section class="section">
+      <div class="section-title">
+        <span class="eyebrow">LEADERBOARD</span>
+        <h2>Top Participants</h2>
+        <p>Highest scoring participants.</p>
       </div>
-      <div id="publishedList" class="admin-actions"></div>
+
+      <section class="panel">
+        <ol id="leaders" style="margin:0;padding-left:20px">
+          <li>No results yet.</li>
+        </ol>
+      </section>
     </section>
 
-    <div id="alert" class="notice warn hidden" style="margin-top:16px"></div>
   </div>
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
-let token="",data=[];
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
+let token = "";
+let registrations = [];
+let editingId = "";
 
-async function api(u,o={}) {
-  const r=await fetch(u,{cache:"no-store",...o});
-  const t=await r.text();
-  let d;
-  try{d=JSON.parse(t)}catch{throw Error("HTTP "+r.status+" - server returned non-JSON")}
-  if(!r.ok)throw Error(d.message||d.error||("HTTP "+r.status));
-  return d;
-}
-function togglePin(){const i=$("pin");i.type=i.type==="password"?"text":"password"}
-function setStatus(id,text,ok){$(id).textContent=text;$(id).className="status "+(ok?"ok":"bad")}
+async function api(url, options = {}) {
+  const response = await fetch(url, { cache: "no-store", ...options });
+  const text = await response.text();
+  let data;
 
-async function login(){
-  const pin=$("pin").value.trim();
-  if(!pin){$("err").textContent="Please enter the PIN.";return}
-  $("loginBtn").disabled=true;$("loginBtn").textContent="Checking...";
-  try{
-    const d=await api("/api/admin?action=unlock",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin})});
-    token=d.token;$("login").classList.add("hidden");$("app").classList.remove("hidden");
-    setStatus("secureStatus","● Secure Access: Unlocked",true);
-    await load();
-  }catch(e){$("err").textContent="✕ "+e.message}
-  finally{$("loginBtn").disabled=false;$("loginBtn").textContent="Enter Admin Dashboard →"}
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(`HTTP ${response.status} - server returned non-JSON`);
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || data.error || `HTTP ${response.status}`);
+  }
+
+  return data;
 }
 
-function logout(){location.reload()}
+function fillSelect(id, values) {
+  $(id).innerHTML =
+    '<option value="">Select...</option>' +
+    values.map(value => `<option>${value}</option>`).join("");
+}
 
-async function load(){
-  try{
-    const auth={"x-admin-pin":token};
+function setStatus(id, text, ok) {
+  $(id).textContent = text;
+  $(id).className = "status " + (ok ? "ok" : "bad");
+}
 
-    const s=await api("/api/admin?action=status",{headers:auth});
-    setStatus("dbStatus","● Database: Connected",true);
-    $("dbCount").textContent=s.total+" records";
-    $("sideTotal").textContent=s.total;
+async function login() {
+  const pin = $("pin").value.trim();
 
-    const o=await api("/api/admin?action=overview",{headers:auth});
-    $("total").textContent=o.total;
-    $("events").textContent=o.eventsOngoing;
-    $("results").textContent=o.totalResults;
-    $("sideEvents").textContent=o.eventsOngoing;
-    $("sideResults").textContent=o.totalResults;
+  if (!pin) {
+    $("loginError").textContent = "Please enter the PIN.";
+    return;
+  }
 
-    data=await api("/api/admin?action=registrations",{headers:auth});
-    render();
+  $("loginBtn").disabled = true;
+  $("loginBtn").textContent = "Checking...";
 
-    $("participant").innerHTML='<option value="">Select participant...</option>'+
-      data.map(x=>`<option value="${x._id}">${x.studentName} — ${x.event}</option>`).join("");
+  try {
+    const data = await api("/api/admin?action=unlock", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pin })
+    });
 
-    const l=await api("/api/admin?action=leaderboard",{headers:auth});
-    $("leaders").innerHTML=l.length
-      ?l.map((x,i)=>`<li style="padding:9px 0;border-bottom:1px solid var(--line)"><b>${i+1}. ${x.studentName}</b><br><small>${x.house||"-"} · ${x.points||0} points</small></li>`).join("")
-      :"<li>No results yet.</li>";
-
-    loadPublished();
-  }catch(e){
-    setStatus("dbStatus","● Database: Error",false);
-    $("dbCount").textContent="Error";
-    showError(e.message);
+    token = data.token;
+    $("login").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    await initDashboard();
+  } catch (error) {
+    $("loginError").textContent = "✕ " + error.message;
+  } finally {
+    $("loginBtn").disabled = false;
+    $("loginBtn").textContent = "Enter Dashboard →";
   }
 }
 
-function render(){
-  const q=$("q").value.toLowerCase();
-  const a=data.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
-  $("rows").innerHTML=a.length
-    ?a.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td></tr>`).join("")
-    :'<tr><td colspan="7" class="empty">No registrations found.</td></tr>';
+function logout() {
+  token = "";
+  editingId = "";
+  location.reload();
 }
 
-async function saveResult(){
-  const id=$("participant").value;
-  if(!id){$("resultMsg").className="message error";$("resultMsg").textContent="Please select a participant first.";return}
-  try{
-    const selected=$("participant").selectedOptions[0];
-    const d=await api("/api/admin?action=result",{method:"POST",headers:{"Content-Type":"application/json","x-admin-pin":token},body:JSON.stringify({
-      registrationId:id,
-      position:$("position").value,
-      points:$("points").value,
-      timing:$("timing").value,
-      score:0
-    })});
-    $("resultMsg").className="message ok";
-    $("resultMsg").textContent="✓ "+d.message;
+async function loadMaster() {
+  const master = await api("/api/master");
 
-    const current={
-      studentName:selected?selected.textContent.split(" — ")[0]:"Participant",
-      event:selected?(selected.textContent.split(" — ")[1]||""):"",
-      position:$("position").value,
-      points:$("points").value,
-      timing:$("timing").value,
-      publishedAt:new Date().toISOString()
-    };
-    const existing=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
-    const filtered=existing.filter(x=>!(x.studentName===current.studentName&&x.event===current.event));
-    filtered.unshift(current);
-    localStorage.setItem("smkPublishedResults",JSON.stringify(filtered.slice(0,20)));
+  fillSelect("editClass", master.classes);
+  fillSelect("editEvent", master.events);
+  fillSelect("editCategory", master.categories);
+  fillSelect("editHouse", master.houses);
+}
 
-    $("position").value="";$("points").value="";$("timing").value="";
-    await load();
-  }catch(e){
-    $("resultMsg").className="message error";
-    $("resultMsg").textContent="✕ "+e.message;
+async function loadDashboard() {
+  const auth = { "x-admin-pin": token };
+
+  const status = await api("/api/admin?action=status", {
+    headers: auth
+  });
+
+  setStatus("dbStatus", "● Database: Connected", true);
+  $("dbCount").textContent = status.total + " records";
+
+  const overview = await api("/api/admin?action=overview", {
+    headers: auth
+  });
+
+  $("total").textContent = overview.total;
+  $("events").textContent = overview.eventsOngoing;
+  $("results").textContent = overview.totalResults;
+
+  registrations = await api("/api/admin?action=registrations", {
+    headers: auth
+  });
+
+  renderTable();
+  fillParticipants();
+  await loadLeaderboard();
+}
+
+function renderTable() {
+  const query = $("search").value.trim().toLowerCase();
+
+  const rows = registrations.filter(item =>
+    JSON.stringify(item).toLowerCase().includes(query)
+  );
+
+  $("rows").innerHTML = rows.length
+    ? rows.map(item => `
+      <tr>
+        <td>${item.studentName}</td>
+        <td>${item.studentId}</td>
+        <td>${item.className || "-"}</td>
+        <td>${item.event}</td>
+        <td>${item.category}</td>
+        <td>${item.house}</td>
+        <td>${item.teacher}</td>
+        <td>
+          <div style="display:flex;gap:5px">
+            <button class="action-btn" style="min-height:34px;padding:6px 8px" onclick='selectEdit(${JSON.stringify(item)})'>Edit</button>
+            <button class="action-btn danger" style="min-height:34px;padding:6px 8px" onclick='deleteRegistration("${item._id}")'>Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="8" class="empty">No registrations found.</td></tr>';
+}
+
+function fillParticipants() {
+  $("participant").innerHTML =
+    '<option value="">Select participant...</option>' +
+    registrations.map(item =>
+      `<option value="${item._id}">${item.studentName} — ${item.event}</option>`
+    ).join("");
+}
+
+function selectEdit(item) {
+  editingId = item._id;
+
+  $("editStudentName").value = item.studentName || "";
+  $("editStudentId").value = item.studentId || "";
+  $("editClass").value = item.className || "";
+  $("editEvent").value = item.event || "";
+  $("editCategory").value = item.category || "";
+  $("editHouse").value = item.house || "";
+  $("editTeacher").value = item.teacher || "";
+
+  $("editStatus").textContent = "Editing";
+  $("editStatus").className = "status ok";
+  window.scrollTo({
+    top: document.querySelector(".editor").getBoundingClientRect().top + window.scrollY - 90,
+    behavior: "smooth"
+  });
+}
+
+function clearEdit() {
+  editingId = "";
+
+  $("editStudentName").value = "";
+  $("editStudentId").value = "";
+  $("editClass").value = "";
+  $("editEvent").value = "";
+  $("editCategory").value = "";
+  $("editHouse").value = "";
+  $("editTeacher").value = "";
+
+  $("editStatus").textContent = "No selection";
+  $("editStatus").className = "status wait";
+  $("editMessage").textContent = "";
+}
+
+async function saveEdit() {
+  if (!editingId) {
+    $("editMessage").className = "message error";
+    $("editMessage").textContent = "Select a registration first.";
+    return;
+  }
+
+  try {
+    const data = await api("/api/admin?action=update", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-pin": token
+      },
+      body: JSON.stringify({
+        id: editingId,
+        studentName: $("editStudentName").value,
+        studentId: $("editStudentId").value,
+        className: $("editClass").value,
+        event: $("editEvent").value,
+        category: $("editCategory").value,
+        house: $("editHouse").value,
+        teacher: $("editTeacher").value
+      })
+    });
+
+    $("editMessage").className = "message ok";
+    $("editMessage").textContent = "✓ " + data.message;
+
+    await loadDashboard();
+  } catch (error) {
+    $("editMessage").className = "message error";
+    $("editMessage").textContent = "✕ " + error.message;
   }
 }
 
-function loadPublished(){
-  const a=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
-  $("publishedList").innerHTML=a.length
-    ?a.slice(0,8).map(x=>`<div class="admin-action"><span class="icon">🏅</span><div><strong>${x.studentName||"Participant"}</strong><span>${x.event||"Event"} · ${x.position?`Position ${x.position}`:""} ${x.points?`· ${x.points} points`:""}</span></div></div>`).join("")
-    :'<div class="empty-state" style="grid-column:1/-1">No published results yet.</div>';
-}
-function clearPublished(){localStorage.removeItem("smkPublishedResults");loadPublished()}
-function showError(m){$("alert").textContent="Admin: "+m;$("alert").classList.remove("hidden")}
+async function deleteRegistration(id) {
+  const item = registrations.find(row => row._id === id);
+  const name = item ? item.studentName : "this registration";
 
-document.getElementById("pin").addEventListener("keydown",function(e){
-  if(e.key==="Enter"){e.preventDefault();login();}
+  if (!confirm(`Delete ${name}? This action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    const data = await api(
+      "/api/admin?action=delete&id=" + encodeURIComponent(id),
+      {
+        method: "DELETE",
+        headers: { "x-admin-pin": token }
+      }
+    );
+
+    if (editingId === id) {
+      clearEdit();
+    }
+
+    await loadDashboard();
+    $("editMessage").className = "message ok";
+    $("editMessage").textContent = "✓ " + data.message;
+  } catch (error) {
+    $("editMessage").className = "message error";
+    $("editMessage").textContent = "✕ " + error.message;
+  }
+}
+
+async function loadLeaderboard() {
+  const data = await api("/api/admin?action=leaderboard", {
+    headers: { "x-admin-pin": token }
+  });
+
+  $("leaders").innerHTML = data.length
+    ? data.map((item, index) => `
+      <li style="padding:9px 0;border-bottom:1px solid var(--line)">
+        <b>${index + 1}. ${item.studentName}</b>
+        <br>
+        <small>${item.house || "-"} · ${item.points || 0} points</small>
+      </li>
+    `).join("")
+    : "<li>No results yet.</li>";
+}
+
+async function saveResult() {
+  const id = $("participant").value;
+
+  if (!id) {
+    $("resultMessage").className = "message error";
+    $("resultMessage").textContent = "Please select a participant first.";
+    return;
+  }
+
+  try {
+    const data = await api("/api/admin?action=result", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-pin": token
+      },
+      body: JSON.stringify({
+        registrationId: id,
+        position: $("position").value,
+        points: $("points").value,
+        timing: $("timing").value,
+        score: 0
+      })
+    });
+
+    $("resultMessage").className = "message ok";
+    $("resultMessage").textContent = "✓ " + data.message;
+
+    $("position").value = "";
+    $("points").value = "";
+    $("timing").value = "";
+
+    await loadDashboard();
+  } catch (error) {
+    $("resultMessage").className = "message error";
+    $("resultMessage").textContent = "✕ " + error.message;
+  }
+}
+
+async function initDashboard() {
+  try {
+    await loadMaster();
+    await loadDashboard();
+  } catch (error) {
+    setStatus("dbStatus", "● Database: Error", false);
+    $("dbCount").textContent = "Error";
+    $("loginError").textContent = error.message;
+  }
+}
+
+$("loginBtn").addEventListener("click", login);
+$("pin").addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    login();
+  }
 });
+$("search").addEventListener("input", renderTable);
+$("refreshBtn").addEventListener("click", loadDashboard);
+$("printBtn").addEventListener("click", () => window.print());
+$("logoutBtn").addEventListener("click", logout);
+$("clearEditBtn").addEventListener("click", clearEdit);
+$("saveEditBtn").addEventListener("click", saveEdit);
+$("saveResultBtn").addEventListener("click", saveResult);
 </script>
 </body>
 </html>

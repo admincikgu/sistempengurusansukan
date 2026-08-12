@@ -10,7 +10,10 @@
 <header class="topbar">
   <a class="brand" href="/">
     <span class="brand-mark">🏫</span>
-    <span><strong>SMK Datuk Haji Ahmad Badawi</strong><span>School Sports Management System</span></span>
+    <span>
+      <strong>SMK Datuk Haji Ahmad Badawi</strong>
+      <span>School Sports Management System</span>
+    </span>
   </a>
   <div class="nav-actions">
     <span class="status ok">● System Online</span>
@@ -19,85 +22,126 @@
   </div>
 </header>
 
-<main class="systematic-home">
-  <section class="hero-grid">
-    <div class="hero-card">
-      <span class="hero-eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
-      <h2>School Sports<br><span>Control Center</span></h2>
-      <p>A dedicated school portal for student registration, event monitoring, competition results, and performance records.</p>
+<main class="home">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
+      <h1>School Sports<br><span>Control Center</span></h1>
+      <p>
+        A clean school portal for participant registration, event management,
+        competition results, and sports records.
+      </p>
       <div class="hero-actions">
         <a class="primary" href="/teacher.html">Open Teacher Portal</a>
         <a class="secondary" href="/admin.html">Open Admin Portal</a>
       </div>
       <div class="hero-meta">
-        <span>Centralized Records</span>
-        <span>Secure Admin Access</span>
-        <span>2026 Session</span>
+        <span class="meta">Centralized Records</span>
+        <span class="meta">Secure Admin Access</span>
+        <span class="meta">2026 Session</span>
       </div>
     </div>
+
     <div class="hero-visual">
-      <span class="track-label">SPORTS CENTER</span>
-      <div class="track-board"><strong>SMKDHAB</strong><span>SPORTS</span></div>
+      <div class="hero-core">
+        <strong>SMKDHAB</strong>
+        <span>SPORTS</span>
+      </div>
     </div>
   </section>
 
-  <section class="section-block">
-    <div class="section-heading">
-      <div><div class="section-kicker">SYSTEM ACCESS</div><h3>Choose Your Portal</h3><p>Select the portal that matches your role.</p></div>
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="eyebrow">SYSTEM ACCESS</span>
+        <h2>Choose Your Portal</h2>
+        <p>Select the portal that matches your role.</p>
+      </div>
     </div>
-    <div class="portal-grid">
+
+    <div class="grid2">
       <a class="portal" href="/teacher.html">
-        <div class="portal-top"><span class="portal-tag">FOR TEACHERS</span><span>↗</span></div>
         <div class="portal-icon">👩‍🏫</div>
-        <h4>Teacher Portal</h4>
-        <p>Register students for school sports events and manage recent registrations.</p>
-        <div class="portal-footer"><span>Register Participants</span><span>→</span></div>
+        <h3>Teacher Portal</h3>
+        <p>Register students for school sports events and review recent registrations.</p>
+        <div class="portal-footer">
+          <span>Register Participants</span><span>→</span>
+        </div>
       </a>
-      <a class="portal admin" href="/admin.html">
-        <div class="portal-top"><span class="portal-tag">RESTRICTED ACCESS</span><span>↗</span></div>
+
+      <a class="portal" href="/admin.html">
         <div class="portal-icon">🔐</div>
-        <h4>Admin Portal</h4>
-        <p>Monitor registrations, record competition results, and manage the leaderboard.</p>
-        <div class="portal-footer"><span>Open Admin Dashboard</span><span>→</span></div>
+        <h3>Admin Portal</h3>
+        <p>Manage registrations, edit or delete participant records, and save results.</p>
+        <div class="portal-footer">
+          <span>Open Admin Dashboard</span><span>→</span>
+        </div>
       </a>
     </div>
   </section>
 
-  <section class="section-block">
-    <div class="section-heading">
-      <div><div class="section-kicker">PUBLIC RESULTS</div><h3>Latest Results</h3><p>Results published by the administrator.</p></div>
+  <section class="section">
+    <div class="section-title">
+      <span class="eyebrow">PUBLIC RESULTS</span>
+      <h2>Latest Results</h2>
+      <p>Results published by the administrator.</p>
     </div>
 
-    <div class="results-layout">
-      <section class="results-card">
-        <div class="results-heading"><h3>Competition Results</h3><p>Recent published achievements.</p></div>
-        <div id="results" class="result-list"><div class="no-result">No published results yet.</div></div>
+    <div class="grid2">
+      <section class="panel">
+        <div id="results" class="results-list">
+          <div class="empty">No published results yet.</div>
+        </div>
       </section>
-      <section class="results-visual-card">
-        <div class="mini-track"></div><div class="mini-track two"></div>
-        <div class="visual-core"><strong>SMKDHAB</strong><span>SPORTS</span></div>
-        <div class="visual-copy"><div class="section-kicker">SPORTS HIGHLIGHTS</div><h4>School Competition Board</h4><p>Results, participation and achievement records in one organized view.</p></div>
+
+      <section class="panel">
+        <span class="eyebrow">SPORTS HIGHLIGHTS</span>
+        <h3 style="margin:6px 0;color:var(--navy)">School Competition Board</h3>
+        <p style="margin:0;color:var(--muted);font-size:11px;line-height:1.7">
+          A simple, organized overview of school participation and achievements.
+        </p>
+
+        <div class="grid2" style="margin-top:16px">
+          <div class="card" style="padding:14px;text-align:center">
+            <div style="font-size:24px">🏃</div>
+            <strong style="display:block;margin-top:5px;color:var(--navy);font-size:11px">Participation</strong>
+          </div>
+          <div class="card" style="padding:14px;text-align:center">
+            <div style="font-size:24px">🏅</div>
+            <strong style="display:block;margin-top:5px;color:var(--navy);font-size:11px">Achievement</strong>
+          </div>
+        </div>
       </section>
     </div>
-  </section>
-
-  <section class="info-strip">
-    <div class="info-card"><span class="icon">☁️</span><div><strong>Centralized Records</strong><span>Organized school data.</span></div></div>
-    <div class="info-card"><span class="icon">📊</span><div><strong>Easy Monitoring</strong><span>Clear dashboard overview.</span></div></div>
-    <div class="info-card"><span class="icon">🔒</span><div><strong>Role-Based Access</strong><span>Separate teacher and admin access.</span></div></div>
   </section>
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
-function renderResults(){
-  let data=[];
-  try{data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]")}catch(e){data=[]}
-  const box=document.getElementById("results");
-  if(!data.length){box.innerHTML='<div class="no-result">No published results yet.</div>';return}
-  box.innerHTML=data.slice(0,6).map(x=>`<article class="result-item"><div class="event">${x.event||"EVENT"}</div><strong>${x.studentName||"Participant"}</strong><span>${x.position?`Position ${x.position}`:""} ${x.points?` · ${x.points} points`:""} ${x.timing?` · ${x.timing}`:""}</span></article>`).join("");
+function renderResults() {
+  let data = [];
+  try { data = JSON.parse(localStorage.getItem("smkPublishedResults") || "[]"); } catch {}
+  const box = document.getElementById("results");
+
+  if (!data.length) {
+    box.innerHTML = '<div class="empty">No published results yet.</div>';
+    return;
+  }
+
+  box.innerHTML = data.slice(0, 8).map(item => `
+    <article class="result">
+      <small>${item.event || "Event"}</small>
+      <strong>${item.studentName || "Participant"}</strong>
+      <span>
+        ${item.position ? `Position ${item.position}` : ""}
+        ${item.points ? ` · ${item.points} points` : ""}
+        ${item.timing ? ` · ${item.timing}` : ""}
+      </span>
+    </article>
+  `).join("");
 }
+
 renderResults();
 </script>
 </body>
