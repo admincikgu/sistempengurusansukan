@@ -1364,3 +1364,16 @@ button, .nav-link, .button-secondary, .action-card, .portal-card{
   .overview-grid{grid-template-columns:1fr}
   .admin-sidebar{width:250px}
 }
+
+/* V27 clean admin navigation */
+.admin-sidebar-link.home-link{
+  background:#f7faf8;
+  border-color:#dfe9e3;
+  color:#4e7059;
+}
+.admin-sidebar-link.home-link .ico{
+  background:#fff;
+}
+.admin-sidebar-footer{
+  padding-top:10px;
+}

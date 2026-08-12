@@ -46,10 +46,8 @@
       <a class="admin-sidebar-link" href="/admin.html#leaderboard-section"><span class="ico">📊</span>Leaderboard</a>
       <a class="admin-sidebar-link" href="/teacher.html"><span class="ico">👩‍🏫</span>Teacher Portal</a>
     </nav>
-
-    <div class="admin-sidebar-label">SYSTEM</div>
     <div class="admin-sidebar-footer">
-      <a class="admin-sidebar-link" href="/"><span class="ico">↩</span>Main Dashboard</a>
+      <a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a>
       <button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button>
     </div>
   </aside>
@@ -61,8 +59,6 @@
       <a class="nav-link" href="/">Home</a>
     </div>
     <div id="mobileOverlay" class="mobile-overlay"></div>
-<div style="position:relative;z-index:2;display:flex;justify-content:flex-end;margin-bottom:10px"><a href="/" class="button-secondary">← Main Dashboard</a></div>
-
 <div class="page">
 
   <section class="admin-top">
@@ -113,8 +109,6 @@
     <div class="action-grid">
       <button class="action-card" id="printBtn">🖨️<strong>Print</strong></button>
       <button class="action-card" id="refreshBtn">↻<strong>Refresh</strong></button>
-      <a class="action-card" href="/teacher.html">👩‍🏫<strong>Teacher Portal</strong></a>
-      <button class="action-card danger" id="logoutBtn">↪<strong>Log Out</strong></button>
     </div>
   </section>
 
@@ -354,7 +348,7 @@ async function loadLeaderboard(){
 }
 function logout(){location.reload()}
 $("loginBtn").addEventListener("click",login);$("pin").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();login()}});
-$("search").addEventListener("input",renderTable);$("refreshBtn").addEventListener("click",loadDashboard);$("printBtn").addEventListener("click",()=>window.print());$("logoutBtn").addEventListener("click",logout);$("clearEditBtn").addEventListener("click",clearEdit);$("loadDbRecordBtn").addEventListener("click",loadDbRecord);$("editRecordSelect").addEventListener("change",loadDbRecord);$("saveEditBtn").addEventListener("click",saveEdit);$("saveResultBtn").addEventListener("click",saveResult);
+$("search").addEventListener("input",renderTable);$("refreshBtn").addEventListener("click",loadDashboard);$("printBtn").addEventListener("click",()=>window.print());$("clearEditBtn").addEventListener("click",clearEdit);$("loadDbRecordBtn").addEventListener("click",loadDbRecord);$("editRecordSelect").addEventListener("change",loadDbRecord);$("saveEditBtn").addEventListener("click",saveEdit);$("saveResultBtn").addEventListener("click",saveResult);
 
 const adminSidebar=document.getElementById("adminSidebar");
 const mobileMenuButton=document.getElementById("mobileMenuButton");
