@@ -7,100 +7,71 @@
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
 <header class="topbar">
   <a class="brand" href="/">
     <span class="brand-mark">🏫</span>
-    <span><strong>SMK Datuk Haji Ahmad Badawi</strong><span>School Sports Management System</span></span>
+    <span class="brand-copy"><strong>SMK Datuk Haji Ahmad Badawi</strong><small>School Sports Management System</small></span>
   </a>
-  <nav class="nav-actions">
+  <div class="top-actions">
+    <span id="dbBadge" class="status wait">● Database: Checking</span>
     <a class="nav-link active" href="/teacher.html">Teacher</a>
     <a class="nav-link" href="/admin.html">Admin</a>
-  </nav>
+  </div>
 </header>
 
-<main class="container">
-  <section class="hero">
-    <div class="hero-copy">
+<main class="page">
+  <section class="hero-strip">
+    <div class="surface page-hero-copy">
       <span class="eyebrow">TEACHER SPORTS PORTAL</span>
       <h1>Participant<br><span>Registration</span></h1>
-      <p>Register students and keep every entry organized in one place.</p>
+      <p>A simple, guided workflow for registering students into school sports events.</p>
     </div>
-    <div class="hero-visual">
-      <div class="hero-core"><strong>SPORTS</strong><span>SMKDHAB</span></div>
+    <div class="surface page-hero-art">
+      <div class="art-center"><strong>SPORTS</strong><span>SMKDHAB</span></div>
     </div>
   </section>
 
-  <div class="page-head">
+  <section class="page-bar">
     <div>
-      <span class="eyebrow">REGISTRATION</span>
-      <h2>New Participant</h2>
+      <span class="eyebrow">NEW REGISTRATION</span>
+      <h2>Participant Details</h2>
       <p>Complete all required information before saving.</p>
     </div>
-    <span id="dbBadge" class="status wait">● Database: Checking</span>
-  </div>
+  </section>
 
-  <section class="card form-panel">
+  <section class="surface form-panel">
     <form id="registrationForm">
       <div class="form-section">
-        <div class="form-section-title">
-          <span class="mini-icon">👩‍🏫</span>
-          <strong>TEACHER INFORMATION</strong>
-        </div>
+        <div class="section-marker"><span class="section-marker-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div>
         <div class="form-grid">
-          <div class="field">
-            <label>TEACHER NAME</label>
-            <input id="teacher" placeholder="Teacher name" required>
-          </div>
+          <div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Teacher name" required></div>
         </div>
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">
-          <span class="mini-icon">🎓</span>
-          <strong>PARTICIPANT INFORMATION</strong>
-        </div>
+        <div class="section-marker"><span class="section-marker-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div>
         <div class="form-grid">
-          <div class="field">
-            <label>STUDENT NAME</label>
-            <input id="studentName" placeholder="Full student name" required>
-          </div>
-          <div class="field">
-            <label>STUDENT ID</label>
-            <input id="studentId" placeholder="Student ID" required>
-          </div>
-          <div class="field">
-            <label>CLASS</label>
-            <select id="className" required></select>
-          </div>
+          <div class="field"><label>STUDENT NAME</label><input id="studentName" placeholder="Full student name" required></div>
+          <div class="field"><label>STUDENT ID</label><input id="studentId" placeholder="Student ID" required></div>
+          <div class="field"><label>CLASS</label><select id="className" required></select></div>
         </div>
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">
-          <span class="mini-icon">🏃</span>
-          <strong>SPORTS EVENT & HOUSE</strong>
-        </div>
+        <div class="section-marker"><span class="section-marker-icon">🏃</span><strong>SPORTS EVENT & HOUSE</strong></div>
         <div class="form-grid">
-          <div class="field">
-            <label>EVENT</label>
-            <select id="event" required></select>
-          </div>
-          <div class="field">
-            <label>CATEGORY</label>
-            <select id="category" required></select>
-          </div>
-          <div class="field">
-            <label>SPORTS HOUSE</label>
-            <select id="house" required></select>
-          </div>
+          <div class="field"><label>EVENT</label><select id="event" required></select></div>
+          <div class="field"><label>CATEGORY</label><select id="category" required></select></div>
+          <div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div>
         </div>
       </div>
 
       <div class="form-actions">
-        <span class="hint">Sports event names stay in the school's Malay terminology.</span>
-        <div>
-          <button class="secondary" type="reset">Clear</button>
-          <button class="primary" type="submit">Save Registration</button>
+        <span class="left-note">Sports event names remain in the school's Malay terminology.</span>
+        <div class="actions">
+          <button class="button-secondary" type="reset">Clear</button>
+          <button class="button-primary" type="submit">Save Registration</button>
         </div>
       </div>
 
@@ -109,35 +80,29 @@
   </section>
 
   <section class="section">
-    <div class="section-title">
-      <span class="eyebrow">REGISTRATION RECORDS</span>
-      <h2>Recent Registrations</h2>
-      <p>Latest records created through this portal.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="eyebrow">REGISTRATION RECORDS</span>
+        <h2>Recent Registrations</h2>
+        <p>Latest entries created through this portal.</p>
+      </div>
     </div>
 
-    <section class="card">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
+    <section class="surface panel">
+      <div class="table-toolbar">
         <input id="teacherFilter" placeholder="Search by teacher name...">
-        <button class="secondary" type="button" id="refreshBtn">Refresh</button>
+        <button class="button-secondary" type="button" id="refreshBtn">Refresh</button>
       </div>
 
       <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>Student</th>
-              <th>ID</th>
-              <th>Class</th>
-              <th>Event</th>
-              <th>Category</th>
-              <th>Sports House</th>
-              <th>Teacher</th>
-              <th>Date</th>
+              <th>Student</th><th>ID</th><th>Class</th><th>Event</th>
+              <th>Category</th><th>Sports House</th><th>Teacher</th><th>Date</th>
             </tr>
           </thead>
-          <tbody id="rows">
-            <tr><td colspan="8" class="empty">Loading...</td></tr>
-          </tbody>
+          <tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -147,111 +112,94 @@
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-async function api(url, options = {}) {
-  const response = await fetch(url, { cache: "no-store", ...options });
-  const text = await response.text();
+async function api(url,options={}){
+  const r=await fetch(url,{cache:"no-store",...options});
+  const text=await r.text();
   let data;
-  try { data = JSON.parse(text); }
-  catch { throw new Error(`HTTP ${response.status} - server returned non-JSON`); }
-  if (!response.ok) throw new Error(data.message || data.error || `HTTP ${response.status}`);
+  try{data=JSON.parse(text)}
+  catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}
+  if(!r.ok)throw new Error(data.message||data.error||`HTTP ${r.status}`);
   return data;
 }
 
-function fillSelect(id, items) {
-  $(id).innerHTML =
-    '<option value="">Select...</option>' +
-    items.map(item => `<option>${item}</option>`).join("");
+function fill(id,items){
+  $(id).innerHTML='<option value="">Select...</option>'+items.map(item=>`<option>${item}</option>`).join("");
 }
 
-async function loadMaster() {
-  const master = await api("/api/master");
-  fillSelect("event", master.events);
-  fillSelect("category", master.categories);
-  fillSelect("house", master.houses);
-  fillSelect("className", master.classes);
+async function loadMaster(){
+  const data=await api("/api/master");
+  fill("event",data.events);
+  fill("category",data.categories);
+  fill("house",data.houses);
+  fill("className",data.classes);
 }
 
-async function loadRows() {
-  try {
-    const teacher = $("teacherFilter").value.trim();
-    const data = await api(
-      "/api/teacher?action=list&teacher=" + encodeURIComponent(teacher)
-    );
-
-    $("rows").innerHTML = data.length
-      ? data.map(item => `
+async function loadRows(){
+  try{
+    const teacher=$("teacherFilter").value.trim();
+    const data=await api("/api/teacher?action=list&teacher="+encodeURIComponent(teacher));
+    $("rows").innerHTML=data.length
+      ?data.map(item=>`
         <tr>
-          <td>${item.studentName}</td>
-          <td>${item.studentId}</td>
-          <td>${item.className || "-"}</td>
-          <td>${item.event}</td>
-          <td>${item.category}</td>
-          <td>${item.house}</td>
-          <td>${item.teacher}</td>
-          <td>${item.createdAt ? new Date(item.createdAt).toLocaleString("en-MY") : "-"}</td>
-        </tr>
-      `).join("")
-      : '<tr><td colspan="8" class="empty">No registrations yet.</td></tr>';
-  } catch (error) {
-    $("rows").innerHTML =
-      `<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
+          <td>${item.studentName}</td><td>${item.studentId}</td><td>${item.className||"-"}</td>
+          <td>${item.event}</td><td>${item.category}</td><td>${item.house}</td>
+          <td>${item.teacher}</td><td>${item.createdAt?new Date(item.createdAt).toLocaleString("en-MY"):"-"}</td>
+        </tr>`).join("")
+      :'<tr><td colspan="8" class="empty">No registrations yet.</td></tr>';
+  }catch(error){
+    $("rows").innerHTML=`<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
   }
 }
 
-async function init() {
-  try {
-    await loadMaster();
-    await api("/api/teacher?action=list");
-    $("dbBadge").textContent = "● Database: Connected";
-    $("dbBadge").className = "status ok";
-  } catch {
-    $("dbBadge").textContent = "● Database: Offline";
-    $("dbBadge").className = "status bad";
-  }
+$("teacherFilter").addEventListener("input",loadRows);
+$("refreshBtn").addEventListener("click",loadRows);
 
-  await loadRows();
-}
-
-$("teacherFilter").addEventListener("input", loadRows);
-$("refreshBtn").addEventListener("click", loadRows);
-
-$("registrationForm").addEventListener("submit", async event => {
+$("registrationForm").addEventListener("submit",async event=>{
   event.preventDefault();
+  $("message").className="message";
+  $("message").textContent="Saving...";
 
-  $("message").className = "message";
-  $("message").textContent = "Saving...";
-
-  try {
-    const data = await api("/api/teacher?action=register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        teacher: $("teacher").value,
-        studentName: $("studentName").value,
-        studentId: $("studentId").value,
-        className: $("className").value,
-        event: $("event").value,
-        category: $("category").value,
-        house: $("house").value
+  try{
+    const data=await api("/api/teacher?action=register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        teacher:$("teacher").value,
+        studentName:$("studentName").value,
+        studentId:$("studentId").value,
+        className:$("className").value,
+        event:$("event").value,
+        category:$("category").value,
+        house:$("house").value
       })
     });
 
-    $("message").className = "message ok";
-    $("message").textContent = "✓ " + data.message;
-
-    $("studentName").value = "";
-    $("studentId").value = "";
-    $("className").value = "";
-
+    $("message").className="message ok";
+    $("message").textContent="✓ "+data.message;
+    $("studentName").value="";
+    $("studentId").value="";
+    $("className").value="";
     await loadRows();
-  } catch (error) {
-    $("message").className = "message error";
-    $("message").textContent = "✕ " + error.message;
+  }catch(error){
+    $("message").className="message error";
+    $("message").textContent="✕ "+error.message;
   }
 });
 
+async function init(){
+  try{
+    await loadMaster();
+    await api("/api/teacher?action=list");
+    $("dbBadge").textContent="● Database: Connected";
+    $("dbBadge").className="status ok";
+  }catch{
+    $("dbBadge").textContent="● Database: Offline";
+    $("dbBadge").className="status bad";
+  }
+  await loadRows();
+}
 init();
 </script>
 </body>
