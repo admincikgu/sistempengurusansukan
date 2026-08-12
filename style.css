@@ -1005,7 +1005,7 @@ footer{
   border-radius:20px;
   background:
     linear-gradient(90deg,rgba(31,51,74,.93),rgba(66,95,119,.88)),
-    url("/assets/sports-bg.svg") center 42% / cover;
+    url("/assets/smkdhbadawi-sports-background.png") center 42% / cover;
   box-shadow:0 15px 40px rgba(31,51,74,.10);
 }
 .page-sport-header:after{
@@ -1079,7 +1079,7 @@ footer{
   z-index:-2;
   opacity:.08;
   background:
-    url("/assets/sports-bg.svg") center / cover no-repeat;
+    url("/assets/smkdhbadawi-sports-background.png") center / cover no-repeat;
   filter:saturate(.7);
 }
 @media(max-width:720px){
@@ -1645,8 +1645,8 @@ button, .nav-link, .button-secondary, .action-card, .portal-card{
    ========================================================= */
 body{
   background:
-    linear-gradient(rgba(245,247,247,.92),rgba(245,247,247,.94)),
-    url("/assets/sports-motion.svg") center/cover fixed no-repeat;
+    linear-gradient(rgba(244,247,247,.80),rgba(244,247,247,.84)),
+    url("/assets/smkdhbadawi-sports-background.png") center top / cover fixed no-repeat;
   background-attachment:fixed;
 }
 body:after{
@@ -1655,7 +1655,7 @@ body:after{
   inset:-10%;
   z-index:-1;
   pointer-events:none;
-  opacity:.28;
+  opacity:.16;
   background:
     radial-gradient(circle at 15% 20%,rgba(127,155,135,.11),transparent 23%),
     radial-gradient(circle at 85% 78%,rgba(48,76,104,.10),transparent 25%),
