@@ -26,6 +26,17 @@
 <a class="dashboard-shortcut" href="/admin-participants.html"><div class="shortcut-icon">🖨️</div><div><strong>Official Print</strong><span>Print the current participant list as an official document.</span></div></a>
 </div></section>
 <section class="section grid2">
+<section class="surface dashboard-section-card" id="systemHealth">
+  <div class="dashboard-section-title">
+    <div><span class="eyebrow">SYSTEM HEALTH</span><h2>Connection Status</h2><p>Live service check.</p></div>
+  </div>
+  <div class="quick-stat-line">
+    <div class="quick-stat"><small>Database</small><strong id="healthDb" style="color:var(--success)">Checking</strong></div>
+    <div class="quick-stat"><small>Registrations</small><strong id="healthRegistrations">—</strong></div>
+    <div class="quick-stat"><small>API</small><strong id="healthApi" style="color:var(--success)">Online</strong></div>
+  </div>
+</section>
+
 <section class="surface dashboard-section-card"><div class="dashboard-section-title"><div><span class="eyebrow">SYSTEM SNAPSHOT</span><h2>Current Overview</h2><p>Key information at a glance.</p></div></div><div class="quick-stat-line"><div class="quick-stat"><small>Session</small><strong>2026</strong></div><div class="quick-stat"><small>Access</small><strong>Admin</strong></div><div class="quick-stat"><small>Status</small><strong style="color:var(--success)">Online</strong></div></div></section>
 <section class="surface dashboard-section-card"><div class="dashboard-section-title"><div><span class="eyebrow">RECENT RECORDS</span><h2>Latest Participants</h2><p>Most recent registrations.</p></div><a class="page-nav-back" href="/admin-participants.html">View all →</a></div><div id="recentList" class="recent-list"><div class="empty">Loading...</div></div></section>
 </section>
@@ -45,39 +56,18 @@ async function load(){
       api("/api/admin?action=status",{headers:a}),
       api("/api/admin?action=overview",{headers:a}),
       api("/api/admin?action=registrations",{headers:a}),
-      api("/api/admin?action=results",{headers:a})
+      Promise.resolve([])
     ]);
 
     document.getElementById("dbStatus").textContent="● Database: Connected";
     document.getElementById("dbStatus").className="status ok";
     document.getElementById("dbCount").textContent=status.total+" records";
+    document.getElementById("healthDb").textContent="Connected";
+    document.getElementById("healthRegistrations").textContent=String(status.total);
 
     document.getElementById("total").textContent=overview.total;
     document.getElementById("events").textContent=overview.eventsOngoing;
     document.getElementById("results").textContent=overview.totalResults;
-
-    const publicBox=document.getElementById("publicResults");
-
-    if(!savedResults.length){
-      publicBox.innerHTML='<div class="public-results-empty">No competition results have been published yet.</div>';
-    }else{
-      const latest=savedResults.slice(0,6);
-      publicBox.innerHTML=latest.map(result=>{
-        const medal=result.position==1?"🥇":result.position==2?"🥈":result.position==3?"🥉":"🏅";
-        return `
-          <article class="public-result-card">
-            <span class="medal">${medal}</span>
-            <span class="position">#${result.position||"-"}</span>
-            <h4>${result.studentName}</h4>
-            <div class="event">${result.event} · ${result.category}</div>
-            <div class="meta">
-              ${result.house||"-"} · ${result.points||0} points
-              ${result.timing ? " · "+result.timing : ""}
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
 
     const recent=registrations.slice(0,5);
     document.getElementById("recentList").innerHTML=recent.length
@@ -97,6 +87,8 @@ async function load(){
     document.getElementById("dbStatus").textContent="● Database: Error";
     document.getElementById("dbStatus").className="status bad";
     document.getElementById("dbCount").textContent="Error";
+    const hdb=document.getElementById("healthDb");
+    if(hdb){hdb.textContent="Error";hdb.style.color="var(--danger)";}
 
     const box=document.getElementById("publicResults");
     if(box)box.innerHTML='<div class="public-results-empty">Unable to load latest results.</div>';
