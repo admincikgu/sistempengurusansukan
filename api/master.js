@@ -22,11 +22,11 @@ module.exports = (req, res) => {
       "Dato' Maharajalela"
     ],
     classes: [
-      "1A","1B","1C",
-      "2A","2B","2C",
-      "3A","3B","3C",
-      "4A","4B","4C",
-      "5A","5B","5C"
+      "1UM","1USM","1UKM","1UTM","1UUM",
+      "2UM","2USM","2UKM","2UTM","2UUM",
+      "3UM","3USM","3UKM","3UTM","3UUM",
+      "4UM","4UPM","4UUM","4UKM","4UTM","4USM",
+      "5UM","5UPM","5UUM","5UKM","5UTM","5USM"
     ]
   });
 };
