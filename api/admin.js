@@ -215,29 +215,114 @@ module.exports = async (req, res) => {
     }
 
     if (action === "leaderboard" && req.method === "GET") {
-      const rows = await results.aggregate([
-        {
-          $lookup: {
-            from: "registrations",
-            localField: "registrationId",
-            foreignField: "_id",
-            as: "registration"
-          }
-        },
-        { $unwind: "$registration" },
-        {
-          $group: {
-            _id: "$registration.studentId",
-            studentName: { $first: "$registration.studentName" },
-            house: { $first: "$registration.house" },
-            points: { $sum: "$points" }
-          }
-        },
-        { $sort: { points: -1, studentName: 1 } },
-        { $limit: 10 }
-      ]).toArray();
+      const resultRows = await results
+        .find({})
+        .sort({ updatedAt: -1, createdAt: -1 })
+        .limit(5000)
+        .toArray();
 
-      return res.status(200).json(rows);
+      if (!resultRows.length) {
+        return res.status(200).json([]);
+      }
+
+      const ids = [...new Set(
+        resultRows
+          .map(row => row.registrationId)
+          .filter(Boolean)
+          .map(String)
+      )];
+
+      const objectIds = ids
+        .filter(id => ObjectId.isValid(id))
+        .map(id => new ObjectId(id));
+
+      const registrationRows = objectIds.length
+        ? await registrations.find({ _id: { $in: objectIds } }).toArray()
+        : [];
+
+      const registrationMap = new Map(
+        registrationRows.map(row => [String(row._id), row])
+      );
+
+      const totals = new Map();
+
+      for (const row of resultRows) {
+        const reg = registrationMap.get(row.registrationId ? String(row.registrationId) : "");
+        if (!reg) continue;
+
+        const key = String(reg.studentId || reg._id);
+        const current = totals.get(key) || {
+          studentId: reg.studentId || "-",
+          studentName: reg.studentName || "Unknown",
+          house: reg.house || "-",
+          points: 0,
+          results: 0
+        };
+
+        current.points += Number(row.points || 0);
+        current.results += 1;
+        totals.set(key, current);
+      }
+
+      return res.status(200).json(
+        [...totals.values()]
+          .sort((a, b) => b.points - a.points || a.studentName.localeCompare(b.studentName))
+          .slice(0, 10)
+      );
+    }
+
+    if (action === "results" && req.method === "GET") {
+      const resultRows = await results
+        .find({})
+        .sort({ updatedAt: -1, createdAt: -1 })
+        .limit(5000)
+        .toArray();
+
+      if (!resultRows.length) {
+        return res.status(200).json([]);
+      }
+
+      const ids = [...new Set(
+        resultRows
+          .map(row => row.registrationId)
+          .filter(Boolean)
+          .map(String)
+      )];
+
+      const objectIds = ids
+        .filter(id => ObjectId.isValid(id))
+        .map(id => new ObjectId(id));
+
+      const registrationRows = objectIds.length
+        ? await registrations.find({ _id: { $in: objectIds } }).toArray()
+        : [];
+
+      const registrationMap = new Map(
+        registrationRows.map(row => [String(row._id), row])
+      );
+
+      return res.status(200).json(
+        resultRows.map(row => {
+          const reg = registrationMap.get(row.registrationId ? String(row.registrationId) : "");
+          if (!reg) return null;
+
+          return {
+            _id: row._id ? String(row._id) : null,
+            registrationId: String(reg._id),
+            studentName: reg.studentName || "Unknown",
+            studentId: reg.studentId || "-",
+            className: reg.className || "-",
+            event: reg.event || "-",
+            category: reg.category || "-",
+            house: reg.house || "-",
+            teacher: reg.teacher || "-",
+            position: Number(row.position || 0),
+            points: Number(row.points || 0),
+            timing: String(row.timing || ""),
+            updatedAt: row.updatedAt || row.createdAt || null
+          };
+        }).filter(Boolean)
+      );
     }
 
     return res.status(404).json({
