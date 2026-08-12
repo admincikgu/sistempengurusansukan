@@ -8,10 +8,12 @@ module.exports = (req, res) => {
       "Lempar Cakera","Lontar Peluru","Merejam Lembing","Tarik Tali"
     ],
     categories: [
-      "L3 (Ting. 1)",
-      "L2 (T2 & 3)",
-      "L1 (T4 & 5)",
-      "P3","P2","P1"
+      "L3 (Tingkatan 1)",
+      "L2 (Tingkatan 2&3)",
+      "L1 (Tingkatan 4&5)",
+      "P3 (Tingkatan 1)",
+      "P2 (Tingkatan 2&3)",
+      "P1 (Tingkatan 4&5)"
     ],
     houses: [
       "Bahaman",
