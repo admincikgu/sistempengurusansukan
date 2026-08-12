@@ -1,141 +1,129 @@
 <!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Pengurusan Sukan | SMK Datuk Haji Ahmad Badawi</title>
-  <meta name="description" content="Sistem Pengurusan Sukan Sekolah SMK Datuk Haji Ahmad Badawi">
-  <link rel="stylesheet" href="/style.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portal Sukan | SMK Datuk Haji Ahmad Badawi</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.home-shell{width:min(1260px,calc(100% - 40px));margin:20px auto 48px}
+.home-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch}
+.hero-panel,.decision-panel,.portal-card2,.mini-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-sm)}
+.hero-panel{position:relative;overflow:hidden;padding:42px}
+.hero-panel:before{content:"";position:absolute;right:-50px;top:-70px;width:220px;height:220px;border-radius:50%;background:rgba(125,159,137,.10)}
+.hero-panel .eyebrow{position:relative;z-index:2}
+.hero-panel h2{position:relative;z-index:2;font-size:46px;line-height:1.03;letter-spacing:-1.3px;color:var(--navy);margin:10px 0 16px}
+.hero-panel h2 span{color:#6b8f77}
+.hero-panel p{position:relative;z-index:2;color:var(--muted);font-size:13px;line-height:1.75;max-width:640px}
+.hero-actions{position:relative;z-index:2;display:flex;gap:9px;margin-top:22px;flex-wrap:wrap}
+.hero-art{position:relative;display:grid;place-items:center;min-height:360px;background:linear-gradient(145deg,#f4f7f5,#f8f7fb)}
+.hero-art .circle{position:absolute;border-radius:50%;border:1px dashed rgba(83,105,130,.18)}
+.hero-art .c1{width:210px;height:210px}.hero-art .c2{width:300px;height:300px;border-color:rgba(125,159,137,.18)}
+.core{width:140px;height:140px;border-radius:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--navy),var(--sage));box-shadow:0 24px 42px rgba(31,48,73,.18);z-index:3}
+.core strong{font-size:22px;letter-spacing:1.8px}.core span{font-size:10px;letter-spacing:2.5px;opacity:.78;margin-top:4px}
+.float{position:absolute;z-index:4;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:21px}
+.f1{top:34px;right:46px}.f2{bottom:48px;left:44px}.f3{bottom:24px;right:90px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:28px 2px 14px}
+.section-head h3{margin:0;color:var(--navy);font-size:22px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.portal-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.portal-card2{padding:25px;position:relative;overflow:hidden;transition:.2s ease}
+.portal-card2:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.portal-card2:after{content:"";position:absolute;right:-40px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:rgba(125,159,137,.07)}
+.portal-top2{display:flex;justify-content:space-between;align-items:center}.tag2{padding:7px 10px;border-radius:999px;background:#f7f6f2;border:1px solid var(--line);font-size:9px;font-weight:900;letter-spacing:1.1px;color:#6e798c}
+.portal-icon2{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:25px;background:var(--lav);margin:22px 0 16px}.portal-card2.admin .portal-icon2{background:var(--sky)}
+.portal-card2 h4{margin:0 0 7px;font-size:22px;color:var(--navy)}.portal-card2 p{margin:0;max-width:540px;color:var(--muted);font-size:12px;line-height:1.7}
+.portal-link{display:flex;justify-content:space-between;align-items:center;margin-top:20px;font-size:11px;font-weight:900;color:#5d6e87}
+.decision-panel{padding:25px}
+.decision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.decision-card{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fbfbfa)}
+.decision-card .event{font-size:10px;color:#738099;font-weight:900;letter-spacing:.8px}
+.decision-card h5{margin:7px 0 3px;font-size:15px;color:var(--navy)}
+.decision-card p{margin:0;font-size:11px;color:var(--muted)}
+.medal{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--sage-soft);margin-right:7px}
+.empty-decisions{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.mini-card{padding:16px;display:flex;gap:12px;align-items:center}.mini-card .ico{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#f2f0f7}.mini-card strong{display:block;font-size:11px;color:var(--navy)}.mini-card span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+@media(max-width:900px){.home-hero,.portal-grid2{grid-template-columns:1fr}.decision-grid,.mini-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.home-shell{width:min(100% - 24px,1260px)}.hero-panel{padding:28px}.hero-panel h2{font-size:35px}.hero-art{min-height:270px}}
+</style>
 </head>
-<body class="landing-page">
-
-<header class="site-header">
-  <div class="brand-block">
-    <div class="brand-emblem">🏫</div>
-    <div>
-      <span class="eyebrow">SISTEM DIGITAL SEKOLAH</span>
-      <h1>SMK Datuk Haji Ahmad Badawi</h1>
-      <p>Sistem Pengurusan Sukan Sekolah</p>
-    </div>
-  </div>
-
-  <div class="header-status">
-    <span class="status-dot"></span>
-    Sistem Sedia Digunakan
-  </div>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><span class="brand-mark">🏫</span><span><strong>SMK Datuk Haji Ahmad Badawi</strong><span>Sistem Pengurusan Sukan Sekolah</span></span></a>
+  <div class="nav-actions"><span class="status ok">● Sistem Online</span><a class="nav-link" href="/teacher.html">Guru</a><a class="nav-link" href="/admin.html">Admin</a></div>
 </header>
 
-<main class="dashboard-shell">
-  <section class="welcome-card">
-    <div class="welcome-copy">
-      <span class="eyebrow">SPORTS MANAGEMENT PORTAL</span>
+<main class="home-shell">
+  <section class="home-hero">
+    <div class="hero-panel">
+      <span class="eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
       <h2>Pusat Kawalan<br><span>Pengurusan Sukan</span></h2>
-      <p>
-        Urus pendaftaran peserta, pantau keseluruhan data kejohanan,
-        masukkan keputusan, dan semak pencapaian peserta dalam satu sistem.
-      </p>
-      <div class="quick-info">
-        <span>2026</span>
-        <span>SMKDHAB</span>
-        <span>Cloud Database</span>
+      <p>Platform rasmi sekolah untuk pendaftaran peserta, pemantauan kejohanan dan rekod keputusan secara tersusun.</p>
+      <div class="hero-actions">
+        <a class="primary" href="/teacher.html">👩‍🏫 Buka Antaramuka Guru</a>
+        <a class="secondary" href="/admin.html">🔐 Buka Antaramuka Admin</a>
+      </div>
+      <div class="mini-grid">
+        <div class="mini-card"><span class="ico">☁️</span><div><strong>Data Berpusat</strong><span>Rekod tersusun</span></div></div>
+        <div class="mini-card"><span class="ico">📊</span><div><strong>Pemantauan</strong><span>Dashboard ringkas</span></div></div>
+        <div class="mini-card"><span class="ico">🔒</span><div><strong>Akses Peranan</strong><span>Guru & Admin</span></div></div>
       </div>
     </div>
-
-    <div class="welcome-art" aria-hidden="true">
-      <div class="orbit orbit-1"></div>
-      <div class="orbit orbit-2"></div>
-      <div class="sport-icon sport-run">🏃</div>
-      <div class="sport-icon sport-medal">🏅</div>
-      <div class="sport-icon sport-track">🏟️</div>
-      <div class="art-core">
-        <strong>SMKDHAB</strong>
-        <span>SPORTS</span>
-      </div>
+    <div class="hero-art">
+      <div class="circle c1"></div><div class="circle c2"></div>
+      <div class="float f1">🏅</div><div class="float f2">🏃</div><div class="float f3">🏟️</div>
+      <div class="core"><strong>SMKDHAB</strong><span>SPORTS</span></div>
     </div>
   </section>
 
-  <section class="portal-heading">
-    <div>
-      <span class="eyebrow">AKSES SISTEM</span>
-      <h3>Pilih Antaramuka</h3>
-      <p>Pilih akses berdasarkan peranan anda.</p>
-    </div>
-    <div class="portal-line"></div>
+  <section class="section-head">
+    <div><span class="eyebrow">AKSES SISTEM</span><h3>Pilih Antaramuka</h3><p>Pilih portal berdasarkan peranan anda.</p></div>
   </section>
 
-  <section class="portal-grid">
-    <a class="portal-card teacher-card" href="/teacher.html">
-      <div class="portal-top">
-        <span class="portal-tag">UNTUK GURU</span>
-        <span class="portal-arrow">↗</span>
-      </div>
-
-      <div class="portal-icon">👩‍🏫</div>
-
+  <section class="portal-grid2">
+    <a class="portal-card2" href="/teacher.html">
+      <div class="portal-top2"><span class="tag2">UNTUK GURU</span><span>↗</span></div>
+      <div class="portal-icon2">👩‍🏫</div>
       <h4>Antaramuka Guru</h4>
-      <p>
-        Daftarkan peserta, pilih acara, kategori dan rumah sukan,
-        serta semak pendaftaran yang telah dibuat.
-      </p>
-
-      <div class="portal-footer">
-        <span>Daftar Peserta</span>
-        <span>→</span>
-      </div>
+      <p>Daftarkan peserta ke acara, kategori dan rumah sukan. Semak pendaftaran yang telah dihantar.</p>
+      <div class="portal-link"><span>Daftar Peserta</span><span>→</span></div>
     </a>
 
-    <a class="portal-card admin-card" href="/admin.html">
-      <div class="portal-top">
-        <span class="portal-tag">AKSES TERHAD</span>
-        <span class="portal-arrow">↗</span>
-      </div>
-
-      <div class="portal-icon">🔐</div>
-
+    <a class="portal-card2 admin" href="/admin.html">
+      <div class="portal-top2"><span class="tag2">AKSES TERHAD</span><span>↗</span></div>
+      <div class="portal-icon2">🔐</div>
       <h4>Antaramuka Admin</h4>
-      <p>
-        Pantau keseluruhan pendaftaran, semak statistik,
-        masukkan keputusan dan lihat peserta terbaik.
-      </p>
-
-      <div class="portal-footer">
-        <span>Admin Dashboard</span>
-        <span>→</span>
-      </div>
+      <p>Pantau semua pendaftaran, masukkan keputusan pertandingan dan lihat peserta terbaik.</p>
+      <div class="portal-link"><span>Admin Dashboard</span><span>→</span></div>
     </a>
   </section>
 
-  <section class="feature-strip">
-    <div class="feature-item">
-      <span class="feature-icon">☁️</span>
-      <div>
-        <strong>Data Berpusat</strong>
-        <span>Semua rekod disimpan secara teratur.</span>
-      </div>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">📊</span>
-      <div>
-        <strong>Pemantauan Mudah</strong>
-        <span>Maklumat tersedia dalam satu dashboard.</span>
-      </div>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">🔒</span>
-      <div>
-        <strong>Akses Mengikut Peranan</strong>
-        <span>Admin dilindungi dengan akses khas.</span>
-      </div>
-    </div>
+  <section class="section-head">
+    <div><span class="eyebrow">PAPARAN UTAMA</span><h3>Keputusan Terkini</h3><p>Keputusan yang telah diterbitkan oleh pentadbir.</p></div>
+  </section>
+
+  <section class="decision-panel">
+    <div id="decisions" class="decision-grid"></div>
   </section>
 </main>
 
-<footer class="site-footer">
-  <span>SMK Datuk Haji Ahmad Badawi</span>
-  <span>•</span>
-  <span>Sistem Pengurusan Sukan Sekolah</span>
-  <span>•</span>
-  <span>2026</span>
-</footer>
+<footer>SMK Datuk Haji Ahmad Badawi • Sistem Pengurusan Sukan Sekolah • 2026</footer>
+
+<script>
+function renderDecisions(){
+  const data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
+  const box=document.getElementById("decisions");
+  if(!data.length){
+    box.innerHTML='<div class="empty-decisions" style="grid-column:1/-1">Belum ada keputusan diterbitkan. Keputusan akan muncul di sini selepas pentadbir menyimpannya.</div>';
+    return;
+  }
+  box.innerHTML=data.slice(0,9).map(x=>`
+    <article class="decision-card">
+      <div class="event">${x.event||"ACARA"}</div>
+      <h5><span class="medal">🏅</span>${x.studentName||"Peserta"}</h5>
+      <p>${x.position?`Kedudukan ${x.position}`:""} ${x.points!=null?`· ${x.points} mata`:""} ${x.timing?`· ${x.timing}`:""}</p>
+    </article>`).join("");
+}
+renderDecisions();
+</script>
 </body>
 </html>

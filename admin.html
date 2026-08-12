@@ -227,7 +227,15 @@
     </div>
   </section>
 
-  <div id="alert" class="notice warn hidden"></div>
+  <section class="panel" style="margin-top:16px">
+  <div class="panel-title">
+    <div><h3>📢 Keputusan Yang Diterbitkan</h3><p>Keputusan yang akan dipaparkan di Dashboard Utama sekolah.</p></div>
+    <button class="secondary" type="button" onclick="clearPublished()">Kosongkan Paparan</button>
+  </div>
+  <div id="publishedList" class="quick-action-grid"></div>
+</section>
+
+<div id="alert" class="notice warn hidden"></div>
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • Sistem Pengurusan Sukan Sekolah • 2026</footer>
@@ -404,6 +412,20 @@ async function saveResult(){
 
     $("resultMsg").className="message ok";
     $("resultMsg").textContent="✓ "+d.message;
+
+    const selected=$("participant").selectedOptions[0];
+    const current={
+      studentName:selected ? selected.textContent.split(" — ")[0] : "Peserta",
+      event:selected ? (selected.textContent.split(" — ")[1]||"") : "",
+      position:$("position").value,
+      points:$("points").value,
+      timing:$("timing").value,
+      publishedAt:new Date().toISOString()
+    };
+    const existing=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
+    const filtered=existing.filter(x=>!(x.studentName===current.studentName && x.event===current.event));
+    filtered.unshift(current);
+    localStorage.setItem("smkPublishedResults",JSON.stringify(filtered.slice(0,20)));
 
     $("position").value="";
     $("points").value="";
