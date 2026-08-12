@@ -1,20 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SMK Datuk Haji Ahmad Badawi | School Sports Management</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SMK Datuk Haji Ahmad Badawi | School Sports Management System</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
 <header class="topbar">
   <a class="brand" href="/">
     <span class="brand-mark">🏫</span>
-    <span class="brand-copy">
-      <strong>SMK Datuk Haji Ahmad Badawi</strong>
-      <small>School Sports Management System</small>
-    </span>
+    <span class="brand-copy"><strong>SMK Datuk Haji Ahmad Badawi</strong><small>School Sports Management System</small></span>
   </a>
   <div class="top-actions">
     <span class="status ok">● System Online</span>
@@ -24,99 +19,61 @@
 </header>
 
 <main class="page">
-
   <section class="home-hero">
     <div class="home-copy">
       <span class="eyebrow">SCHOOL SPORTS MANAGEMENT · 2026</span>
       <h1>School Sports<br><span>Management Portal</span></h1>
-      <p>
-        A centralized platform for participant registration, sports event management,
-        competition results, and performance records.
-      </p>
+      <p>A centralized school platform for student registration, sports event management, competition results, and performance records.</p>
       <div class="home-actions">
         <a class="button-primary" href="/teacher.html">Open Teacher Portal</a>
         <a class="button-secondary" href="/admin.html">Open Admin Portal</a>
       </div>
       <div class="meta-row">
-        <span class="meta">Centralized Records</span>
-        <span class="meta">Secure Admin Access</span>
-        <span class="meta">2026 Session</span>
+        <span class="meta">Centralized Records</span><span class="meta">Secure Admin Access</span><span class="meta">2026 Session</span>
       </div>
     </div>
-
-    <div class="home-visual" aria-hidden="true">
-      <span class="orbit orbit-a"></span>
-      <span class="orbit orbit-b"></span>
-      <div class="logo-plate">
-        <strong>SMKDHAB</strong>
-        <span>SPORTS</span>
-      </div>
+    <div class="home-visual">
+      <span class="orbit orbit-a"></span><span class="orbit orbit-b"></span>
+      <div class="logo-plate"><strong>SMKDHAB</strong><span>SPORTS</span></div>
     </div>
   </section>
 
-  <div class="feature-row">
+  <section class="feature-row">
     <div class="feature"><span class="feature-icon">01</span><div><strong>Registration</strong><span>Teacher participant entry</span></div></div>
     <div class="feature"><span class="feature-icon">02</span><div><strong>Management</strong><span>Admin record control</span></div></div>
     <div class="feature"><span class="feature-icon">03</span><div><strong>Results</strong><span>Competition performance</span></div></div>
-  </div>
+  </section>
 
   <section class="section">
-    <div class="section-head">
-      <div class="section-title">
-        <span class="eyebrow">SYSTEM ACCESS</span>
-        <h2>Choose Your Portal</h2>
-        <p>Select the portal that matches your role.</p>
-      </div>
-    </div>
-
-    <div class="grid-2">
+    <div class="section-head"><div class="section-title"><span class="eyebrow">SYSTEM ACCESS</span><h2>Choose Your Portal</h2><p>Select the portal that matches your role.</p></div></div>
+    <div class="grid2">
       <a class="portal-card surface" href="/teacher.html">
-        <div class="portal-icon">👩‍🏫</div>
-        <h3>Teacher Portal</h3>
-        <p>Register students, select sports events, and review recent registration records.</p>
+        <div class="portal-icon">👩‍🏫</div><h3>Teacher Portal</h3>
+        <p>Register students, select sports events, and review registration records.</p>
         <div class="portal-footer"><span>Register Participants</span><span>→</span></div>
       </a>
-
       <a class="portal-card surface" href="/admin.html">
-        <div class="portal-icon">🔐</div>
-        <h3>Admin Portal</h3>
-        <p>Manage participant records, update sports assignments, publish results, and maintain the leaderboard.</p>
+        <div class="portal-icon">🔐</div><h3>Admin Portal</h3>
+        <p>Manage records, update sports assignments, publish results, and maintain rankings.</p>
         <div class="portal-footer"><span>Open Admin Dashboard</span><span>→</span></div>
       </a>
     </div>
   </section>
 
   <section class="section">
-    <div class="section-head">
-      <div class="section-title">
-        <span class="eyebrow">PUBLIC RESULTS</span>
-        <h2>Latest Results</h2>
-        <p>Results published by the administrator.</p>
-      </div>
-    </div>
-
-    <div class="grid-2">
+    <div class="section-head"><div class="section-title"><span class="eyebrow">PUBLIC RESULTS</span><h2>Latest Results</h2><p>Results published by the administrator.</p></div></div>
+    <div class="grid2">
       <section class="surface panel">
-        <div class="panel-head">
-          <div>
-            <h3>Competition Results</h3>
-            <p>Recently published achievements.</p>
-          </div>
-        </div>
-        <div id="results" class="result-list">
-          <div class="empty">No published results yet.</div>
-        </div>
+        <div class="panel-head"><div><h3>Competition Results</h3><p>Recently published achievements.</p></div></div>
+        <div id="results" class="result-list"><div class="empty">No published results yet.</div></div>
       </section>
-
       <section class="surface panel">
         <span class="eyebrow">SPORTS HIGHLIGHTS</span>
-        <h3 style="margin:5px 0;color:var(--navy)">School Competition Board</h3>
-        <p style="margin:0;color:var(--muted);font-size:10px;line-height:1.7">
-          A clean view of participation and achievements across school sports activities.
-        </p>
-        <div class="grid-2" style="margin-top:15px">
-          <div class="surface" style="padding:14px;text-align:center;box-shadow:none"><div style="font-size:21px">🏃</div><strong style="display:block;margin-top:5px;font-size:9px;color:var(--navy)">Participation</strong></div>
-          <div class="surface" style="padding:14px;text-align:center;box-shadow:none"><div style="font-size:21px">🏅</div><strong style="display:block;margin-top:5px;font-size:9px;color:var(--navy)">Achievement</strong></div>
+        <h3 style="margin:5px 0;color:var(--navy);font-size:18px">School Competition Board</h3>
+        <p style="margin:0;color:var(--muted);font-size:10px;line-height:1.7">A clean overview of participation and achievement across school sports activities.</p>
+        <div class="grid2" style="margin-top:14px">
+          <div class="surface" style="padding:14px;text-align:center;box-shadow:none"><div style="font-size:21px">🏃</div><strong style="display:block;font-size:9px;color:var(--navy);margin-top:4px">Participation</strong></div>
+          <div class="surface" style="padding:14px;text-align:center;box-shadow:none"><div style="font-size:21px">🏅</div><strong style="display:block;font-size:9px;color:var(--navy);margin-top:4px">Achievement</strong></div>
         </div>
       </section>
     </div>
@@ -130,17 +87,13 @@ function renderResults(){
   let data=[];
   try{data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]")}catch{}
   const box=document.getElementById("results");
-  if(!data.length){
-    box.innerHTML='<div class="empty">No published results yet.</div>';
-    return;
-  }
+  if(!data.length){box.innerHTML='<div class="empty">No published results yet.</div>';return}
   box.innerHTML=data.slice(0,8).map(item=>`
     <article class="result">
       <small>${item.event||"Event"}</small>
       <strong>${item.studentName||"Participant"}</strong>
-      <span>${item.position?`Position ${item.position}`:""} ${item.points?` · ${item.points} points`:""} ${item.timing?` · ${item.timing}`:""}</span>
-    </article>
-  `).join("");
+      <span>${item.position?`Position ${item.position}`:""}${item.points?` · ${item.points} points`:""}${item.timing?` · ${item.timing}`:""}</span>
+    </article>`).join("");
 }
 renderResults();
 </script>
