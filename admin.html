@@ -7,8 +7,25 @@
 </head>
 <body>
 
+<nav class="admin-rail" aria-label="Admin navigation">
+  <div class="admin-rail-link-wrap">
+    <a class="admin-rail-link home" href="/" aria-label="Back to main dashboard">⌂</a>
+    <span class="admin-rail-label">Main Dashboard</span>
+  </div>
+  <div class="admin-rail-link-wrap">
+    <a class="admin-rail-link" href="/teacher.html" aria-label="Teacher Portal">👩‍🏫</a>
+    <span class="admin-rail-label">Teacher Portal</span>
+  </div>
+  <div class="admin-rail-link-wrap">
+    <a class="admin-rail-link" href="/admin.html" aria-label="Admin Login">🔐</a>
+    <span class="admin-rail-label">Admin</span>
+  </div>
+</nav>
+
+
 <section id="login" class="login">
   <div class="login-card">
+    <a class="button-secondary" href="/" style="margin-bottom:13px;width:100%">← Back to Main Dashboard</a>
     <div class="school-mark">🏫</div>
     <span class="eyebrow">SMKDHAB ADMINISTRATION</span>
     <h1>Admin Access</h1>
@@ -26,6 +43,8 @@
 </section>
 
 <main id="app" class="hidden">
+<div style="position:relative;z-index:2;display:flex;justify-content:flex-end;margin-bottom:10px"><a href="/" class="button-secondary">← Main Dashboard</a></div>
+
 <div class="page">
 
   <section class="admin-top">
