@@ -1896,3 +1896,65 @@ body:before{
 @media(max-width:560px){
   .public-result-grid{grid-template-columns:1fr}
 }
+
+/* V33 official school crest */
+.school-logo{
+  width:42px;
+  height:42px;
+  flex:0 0 auto;
+  object-fit:contain;
+  border-radius:11px;
+  background:#fff;
+  border:1px solid #e1e6e9;
+  box-shadow:0 6px 14px rgba(31,51,74,.08);
+  padding:3px;
+}
+.brand-mark.school-logo-box{
+  width:42px;
+  height:42px;
+  padding:0;
+  border-radius:11px;
+  background:#fff;
+  overflow:hidden;
+}
+.sidebar-school-logo{
+  width:40px;
+  height:40px;
+  object-fit:contain;
+  flex:0 0 auto;
+  border-radius:11px;
+  background:#fff;
+  border:1px solid #e1e6e9;
+  padding:3px;
+}
+.login-logo{
+  width:82px;
+  height:82px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 13px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid var(--line);
+  padding:4px;
+  box-shadow:0 10px 25px rgba(31,51,74,.08);
+}
+.hero-school-logo{
+  width:54px;
+  height:54px;
+  object-fit:contain;
+  border-radius:15px;
+  background:#fff;
+  border:1px solid rgba(255,255,255,.45);
+  padding:3px;
+  box-shadow:0 10px 20px rgba(31,51,74,.12);
+}
+.print-logo-img{
+  width:68px;
+  height:68px;
+  object-fit:contain;
+  border:1px solid #1f334a;
+  padding:2px;
+  border-radius:5px;
+  background:#fff;
+}
