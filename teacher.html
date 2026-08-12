@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Teacher Portal | SMK Datuk Haji Ahmad Badawi</title>
+<title>Portal Teacher | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -17,9 +17,9 @@
 <main class="app-shell">
 <section class="page-header">
   <div class="page-header-copy">
-    <span class="eyebrow">ANTARAMUKA GURU</span>
+    <span class="eyebrow">PORTAL GURU</span>
     <h1>Participant Registration</h1>
-    <p>Daftarkan murid ke acara sukan with maklumat yang lengkap dan teratur.</p>
+    <p>Daftarkan murid ke event sukan dengan information that lengkap and teratur.</p>
   </div>
   <div class="header-actions"><span id="dbBadge" class="status wait">● Database: Checking</span></div>
 </section>
@@ -28,7 +28,7 @@
   <div class="app-hero-row">
     <div class="app-title">
       <div class="app-title-icon">👩‍🏫</div>
-      <div><h2>Teacher Registration Portal</h2><p>SMK Datuk Haji Ahmad Badawi · Sesi 2026</p></div>
+      <div><h2>Portal Registration Teacher</h2><p>SMK Datuk Haji Ahmad Badawi · Sesi 2026</p></div>
     </div>
     <span class="app-badge">TEACHER PORTAL</span>
   </div>
@@ -38,12 +38,12 @@
 <section class="panel" style="margin-top:16px">
   <div class="form-header">
     <div class="form-icon">📝</div>
-    <div><h2>Register Participant New</h2><p>Isi maklumat teacher dan peserta. Rekod will terus dihantar ke pangkalan data school.</p></div>
+    <div><h2>Daftar Participant New</h2><p>Isi information teacher and participant. Records will terus dihantar ke pangkalan data school.</p></div>
   </div>
 
   <div class="form-step">
-    <div class="step"><div class="step-num">01</div><div><strong>Teacher</strong><span>Maklumat pendaftar</span></div></div>
-    <div class="step"><div class="step-num">02</div><div><strong>Peserta</strong><span>Maklumat murid</span></div></div>
+    <div class="step"><div class="step-num">01</div><div><strong>Teacher</strong><span>Information pendaftar</span></div></div>
+    <div class="step"><div class="step-num">02</div><div><strong>Participant</strong><span>Information murid</span></div></div>
     <div class="step"><div class="step-num">03</div><div><strong>Event</strong><span>Category & house</span></div></div>
   </div>
 
@@ -73,7 +73,7 @@
     </div>
 
     <div class="form-actions pro">
-      <span class="hint">Pastikan all maklumat betul sebelum menghantar.</span>
+      <span class="hint">Make sure all information is correct before submitting.</span>
       <div style="display:flex;gap:8px">
         <button class="secondary" type="reset">Kosongkan</button>
         <button class="primary" type="submit">✓ Save Registration</button>
@@ -85,7 +85,7 @@
 
 <section class="panel">
   <div class="panel-title">
-    <div><h3>Recent Registrations</h3><p>Rekod yang has been didaftarkan oleh teacher.</p></div>
+    <div><h3>Recent Registrations</h3><p>Records that has didaftarkan oleh teacher.</p></div>
     <button class="secondary" type="button" onclick="loadRows()">↻ Refresh</button>
   </div>
   <div class="table-toolbar">
@@ -94,7 +94,7 @@
   <div class="table-wrap">
     <table class="table">
       <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th><th>Tarikh</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="7" class="empty">Memuatkan rekod...</td></tr></tbody>
+      <tbody id="rows"><tr><td colspan="7" class="empty">Memuatkan records...</td></tr></tbody>
     </table>
   </div>
 </section>
@@ -104,7 +104,7 @@
 
 <script>
 const $=i=>document.getElementById(i);
-async function api(u,o={}){const r=await fetch(u,{cache:"no-store",...o}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error("HTTP "+r.status+" - server bukan JSON")};if(!r.ok)throw Error(d.message||d.error);return d}
+async function api(u,o={}){const r=await fetch(u,{cache:"no-store",...o}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error("HTTP "+r.status+" - server returned non-JSON")};if(!r.ok)throw Error(d.message||d.error);return d}
 function fill(id,a){$(id).innerHTML='<option value="">Select...</option>'+a.map(x=>`<option>${x}</option>`).join("")}
 async function init(){
   try{
@@ -118,7 +118,7 @@ async function loadRows(){
   try{
     const t=$("filterTeacher").value.trim();
     const d=await api("/api/teacher?action=list&teacher="+encodeURIComponent(t));
-    $("rows").innerHTML=d.length?d.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">No registrations lagi.</td></tr>';
+    $("rows").innerHTML=d.length?d.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">No registrations yet.</td></tr>';
   }catch(e){$("rows").innerHTML=`<tr><td colspan="7" class="empty">${e.message}</td></tr>`}
 }
 $("f").onsubmit=async e=>{

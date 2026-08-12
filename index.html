@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sports Portal | SMK Datuk Haji Ahmad Badawi</title>
+<title>Portal Sukan | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 <style>
 .home-shell{width:min(1260px,calc(100% - 40px));margin:20px auto 48px}
@@ -56,16 +56,16 @@
   <section class="home-hero">
     <div class="hero-panel">
       <span class="eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
-      <h2>Control Center<br><span>Sports Management</span></h2>
-      <p>Platform rasmi school untuk registration peserta, pemantauan competition dan rekod keputusan secara tersusun.</p>
+      <h2>Control Center<br><span>Penteachersan Sukan</span></h2>
+      <p>Platform rasmi school for registration participant, pemantauan kejohanan and records results secara tersusun.</p>
       <div class="hero-actions">
-        <a class="primary" href="/teacher.html">👩‍🏫 Buka Teacher Portal</a>
-        <a class="secondary" href="/admin.html">🔐 Buka Admin Portal</a>
+        <a class="primary" href="/teacher.html">👩‍🏫 Buka Portal Teacher</a>
+        <a class="secondary" href="/admin.html">🔐 Buka Portal Admin</a>
       </div>
       <div class="mini-grid">
-        <div class="mini-card"><span class="ico">☁️</span><div><strong>Data Berpusat</strong><span>Rekod tersusun</span></div></div>
+        <div class="mini-card"><span class="ico">☁️</span><div><strong>Centralized Data</strong><span>Records tersusun</span></div></div>
         <div class="mini-card"><span class="ico">📊</span><div><strong>Pemantauan</strong><span>Dashboard ringkas</span></div></div>
-        <div class="mini-card"><span class="ico">🔒</span><div><strong>Role-Based Access</strong><span>Teacher & Admin</span></div></div>
+        <div class="mini-card"><span class="ico">🔒</span><div><strong>Akses Peranan</strong><span>Teacher & Admin</span></div></div>
       </div>
     </div>
     <div class="hero-art">
@@ -76,29 +76,29 @@
   </section>
 
   <section class="section-head">
-    <div><span class="eyebrow">SYSTEM ACCESS</span><h3>Choose Portal</h3><p>Pilih portal berdasarkan role anda.</p></div>
+    <div><span class="eyebrow">SYSTEM ACCESS</span><h3>Choose Portal</h3><p>Pilih portal berdasarkan peranan anda.</p></div>
   </section>
 
   <section class="portal-grid2">
     <a class="portal-card2" href="/teacher.html">
       <div class="portal-top2"><span class="tag2">FOR TEACHERS</span><span>↗</span></div>
       <div class="portal-icon2">👩‍🏫</div>
-      <h4>Teacher Portal</h4>
-      <p>Daftarkan peserta ke acara, kategori dan house sukan. Semak registration yang has been dihantar.</p>
-      <div class="portal-link"><span>Register Participant</span><span>→</span></div>
+      <h4>Portal Teacher</h4>
+      <p>Daftarkan participant ke event, category and house sukan. Check registration that has dihantar.</p>
+      <div class="portal-link"><span>Daftar Participant</span><span>→</span></div>
     </a>
 
     <a class="portal-card2 admin" href="/admin.html">
       <div class="portal-top2"><span class="tag2">RESTRICTED ACCESS</span><span>↗</span></div>
       <div class="portal-icon2">🔐</div>
-      <h4>Admin Portal</h4>
-      <p>Pantau all registration, masukkan keputusan pertandingan dan lihat peserta terbaik.</p>
+      <h4>Portal Admin</h4>
+      <p>Pantau all registration, enter results pertandingan and lihat participant terbaik.</p>
       <div class="portal-link"><span>Admin Dashboard</span><span>→</span></div>
     </a>
   </section>
 
   <section class="section-head">
-    <div><span class="eyebrow">MAIN DASHBOARD</span><h3>Latest Results</h3><p>Keputusan yang has been diterbitkan oleh pentadbir.</p></div>
+    <div><span class="eyebrow">PAPARAN UTAMA</span><h3>Latest Results</h3><p>Results that has diterbitkan oleh administrator.</p></div>
   </section>
 
   <section class="decision-panel">
@@ -113,13 +113,13 @@ function renderDecisions(){
   const data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
   const box=document.getElementById("decisions");
   if(!data.length){
-    box.innerHTML='<div class="empty-decisions" style="grid-column:1/-1">No results yet diterbitkan. Keputusan will muncul di sini after pentadbir menyimpannya.</div>';
+    box.innerHTML='<div class="empty-decisions" style="grid-column:1/-1">No published results yet. Results will muncul di sini selepas administrator menyimpannya.</div>';
     return;
   }
   box.innerHTML=data.slice(0,9).map(x=>`
     <article class="decision-card">
       <div class="event">${x.event||"ACARA"}</div>
-      <h5><span class="medal">🏅</span>${x.studentName||"Peserta"}</h5>
+      <h5><span class="medal">🏅</span>${x.studentName||"Participant"}</h5>
       <p>${x.position?`Position ${x.position}`:""} ${x.points!=null?`· ${x.points} mata`:""} ${x.timing?`· ${x.timing}`:""}</p>
     </article>`).join("");
 }
