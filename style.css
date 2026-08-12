@@ -1100,3 +1100,114 @@ footer{
   }
   .admin-rail-link{width:38px;height:38px;font-size:14px}
 }
+
+/* =========================================================
+   V24 — Sports visual identity
+   Reusable background treatment for every page.
+   ========================================================= */
+body{
+  background:
+    linear-gradient(rgba(244,247,247,.93),rgba(244,247,247,.96)),
+    url("/assets/sports-bg.svg") center top / cover fixed no-repeat;
+  background-attachment:fixed;
+}
+.topbar{
+  background:rgba(255,255,255,.88);
+}
+.page-sport-header{
+  position:relative;
+  overflow:hidden;
+  min-height:72px;
+  margin-bottom:18px;
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:20px;
+  background:
+    linear-gradient(90deg,rgba(31,51,74,.93),rgba(66,95,119,.88)),
+    url("/assets/sports-bg.svg") center 42% / cover;
+  box-shadow:0 15px 40px rgba(31,51,74,.10);
+}
+.page-sport-header:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.02),transparent 60%),
+    repeating-linear-gradient(112deg,transparent 0 46px,rgba(255,255,255,.05) 47px,transparent 48px);
+  pointer-events:none;
+}
+.page-sport-header-inner{
+  position:relative;
+  z-index:2;
+  min-height:72px;
+  padding:0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.page-sport-header h1{
+  margin:0;
+  color:#fff;
+  font-size:18px;
+  letter-spacing:-.2px;
+}
+.page-sport-header p{
+  margin:3px 0 0;
+  color:rgba(255,255,255,.72);
+  font-size:9px;
+}
+.sport-chip-row{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.sport-chip{
+  min-height:26px;
+  padding:0 8px;
+  display:inline-flex;
+  align-items:center;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.88);
+  font-size:8px;
+  font-weight:850;
+  backdrop-filter:blur(8px);
+}
+.sports-panel{
+  position:relative;
+  overflow:hidden;
+}
+.sports-panel:before{
+  content:"";
+  position:absolute;
+  right:-70px;
+  top:-70px;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  border:1px dashed rgba(86,108,132,.12);
+  pointer-events:none;
+}
+.sports-panel>*{position:relative;z-index:1}
+.admin-shell-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+  opacity:.08;
+  background:
+    url("/assets/sports-bg.svg") center / cover no-repeat;
+  filter:saturate(.7);
+}
+@media(max-width:720px){
+  .page-sport-header-inner{
+    min-height:86px;
+    padding:13px 16px;
+    align-items:flex-start;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .page-sport-header h1{font-size:16px}
+  .page-sport-header p{font-size:8px}
+}
