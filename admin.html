@@ -74,37 +74,58 @@
   </section>
 
   <section class="section">
-    <div class="editor">
-      <div class="editor-head">
-        <div><span class="eyebrow">EDIT REGISTRATION</span><h3>Manage Participant</h3><p>Student Name and Student ID are read from the database. You can change the class, event, category, sports house, or teacher.</p></div>
-        <span id="editStatus" class="status wait">No selection</span>
-      </div>
-
-      <div class="db-record-picker">
-        <div class="field">
-          <label>DATABASE REGISTRATION</label>
-          <select id="editRecordSelect"><option value="">Select a registration...</option></select>
-          <div class="db-source-note">Student Name and Student ID are loaded directly from the database.</div>
-        </div>
-        <button class="button-secondary" id="loadDbRecordBtn" type="button">Load Record</button>
-      </div>
-
-      <div class="editor-grid">
-        <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
-        <div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div>
-        <div class="field"><label>CLASS</label><select id="editClass"></select></div>
-        <div class="field"><label>EVENT</label><select id="editEvent"></select></div>
-        <div class="field"><label>CATEGORY</label><select id="editCategory"></select></div>
-        <div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div>
-        <div class="field"><label>TEACHER</label><input id="editTeacher"></div>
-      </div>
-
-      <div class="form-actions">
-        <span class="left-note">Select a database record above or click Edit in the table.</span>
-        <div class="actions"><button class="button-secondary" id="clearEditBtn">Clear</button><button class="button-primary" id="saveEditBtn">Save Changes</button></div>
-      </div>
-      <div id="editMessage" class="message"></div>
+    <div class="participant-manager">
+  <div class="manager-head">
+    <div>
+      <span class="eyebrow">PARTICIPANT MANAGEMENT</span>
+      <h2>Manage Participant</h2>
+      <p>Select a registration from the database, review it, then update the editable fields.</p>
     </div>
+    <span id="managerStatus" class="status wait">No participant selected</span>
+  </div>
+
+  <div class="manager-picker">
+    <div class="field">
+      <label>DATABASE REGISTRATION</label>
+      <select id="editRecordSelect"><option value="">Select a participant...</option></select>
+      <span class="field-help">Records are loaded from MongoDB.</span>
+    </div>
+    <button class="button-primary" id="loadDbRecordBtn" type="button">Load Participant</button>
+  </div>
+
+  <div class="selected-participant">
+    <div class="selected-avatar">👤</div>
+    <div class="selected-copy">
+      <span class="eyebrow">CURRENT RECORD</span>
+      <strong id="selectedName">No participant selected</strong>
+      <span id="selectedMeta">Choose a database registration above.</span>
+    </div>
+    <span id="selectedState" class="status wait">Waiting</span>
+  </div>
+
+  <div class="manager-form">
+    <div class="form-grid">
+      <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
+      <div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div>
+      <div class="field"><label>CLASS</label><select id="editClass"></select></div>
+      <div class="field"><label>EVENT</label><select id="editEvent"></select></div>
+      <div class="field"><label>CATEGORY</label><select id="editCategory"></select></div>
+      <div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div>
+      <div class="field"><label>TEACHER</label><input id="editTeacher" placeholder="Teacher name"></div>
+    </div>
+
+    <div class="manager-footer">
+      <div>
+        <span class="field-help">Student Name and Student ID are protected database values.</span>
+        <div id="editMessage" class="message"></div>
+      </div>
+      <div class="manager-actions">
+        <button class="button-secondary" id="clearEditBtn" type="button">Clear</button>
+        <button class="button-primary" id="saveEditBtn" type="button">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
   </section>
 
   <section class="section">
@@ -189,12 +210,16 @@ function renderTable(){
     </tr>`).join(""):'<tr><td colspan="8" class="empty">No registrations found.</td></tr>';
 }
 function fillParticipants(){
-  $("participant").innerHTML='<option value="">Select participant...</option>'+registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.event}</option>`).join("");
-  $("editRecordSelect").innerHTML='<option value="">Select a registration...</option>'+registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.studentId} — ${item.event}</option>`).join("");
+  $("participant").innerHTML='<option value="">Select participant...</option>'+
+    registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.event}</option>`).join("");
+
+  $("editRecordSelect").innerHTML='<option value="">Select a participant...</option>'+
+    registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.studentId} — ${item.event}</option>`).join("");
 }
 function selectEdit(item){
-  editingId=item._id;
-  $("editRecordSelect").value=item._id;
+  if(!item)return;
+  editingId=String(item._id);
+  $("editRecordSelect").value=editingId;
   $("editStudentName").value=item.studentName||"";
   $("editStudentId").value=item.studentId||"";
   $("editClass").value=item.className||"";
@@ -202,10 +227,14 @@ function selectEdit(item){
   $("editCategory").value=item.category||"";
   $("editHouse").value=item.house||"";
   $("editTeacher").value=item.teacher||"";
-  $("editStatus").textContent="Loaded from database";
-  $("editStatus").className="status ok";
+  $("selectedName").textContent=item.studentName||"Unnamed participant";
+  $("selectedMeta").textContent=`${item.studentId||"No ID"} · ${item.className||"No class"} · ${item.event||"No event"}`;
+  $("selectedState").textContent="Loaded";
+  $("selectedState").className="status ok";
+  $("managerStatus").textContent="Database record loaded";
+  $("managerStatus").className="status ok";
   $("editMessage").textContent="";
-  document.querySelector(".editor").scrollIntoView({behavior:"smooth",block:"start"});
+  document.querySelector(".participant-manager").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function loadDbRecord(){
   const id=$("editRecordSelect").value;
@@ -223,8 +252,12 @@ function clearEdit(){
   $("editRecordSelect").value="";
   ["editStudentName","editStudentId","editTeacher"].forEach(id=>$(id).value="");
   ["editClass","editEvent","editCategory","editHouse"].forEach(id=>$(id).value="");
-  $("editStatus").textContent="No selection";
-  $("editStatus").className="status wait";
+  $("selectedName").textContent="No participant selected";
+  $("selectedMeta").textContent="Choose a database registration above.";
+  $("selectedState").textContent="Waiting";
+  $("selectedState").className="status wait";
+  $("managerStatus").textContent="No participant selected";
+  $("managerStatus").className="status wait";
   $("editMessage").textContent="";
 }
 async function saveEdit(){
@@ -261,7 +294,7 @@ async function loadLeaderboard(){
 }
 function logout(){location.reload()}
 $("loginBtn").addEventListener("click",login);$("pin").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();login()}});
-$("search").addEventListener("input",renderTable);$("refreshBtn").addEventListener("click",loadDashboard);$("printBtn").addEventListener("click",()=>window.print());$("logoutBtn").addEventListener("click",logout);$("clearEditBtn").addEventListener("click",clearEdit);$("saveEditBtn").addEventListener("click",saveEdit);$("saveResultBtn").addEventListener("click",saveResult);
+$("search").addEventListener("input",renderTable);$("refreshBtn").addEventListener("click",loadDashboard);$("printBtn").addEventListener("click",()=>window.print());$("logoutBtn").addEventListener("click",logout);$("clearEditBtn").addEventListener("click",clearEdit);$("loadDbRecordBtn").addEventListener("click",loadDbRecord);$("editRecordSelect").addEventListener("change",loadDbRecord);$("saveEditBtn").addEventListener("click",saveEdit);$("saveResultBtn").addEventListener("click",saveResult);
 </script>
 </body>
 </html>
