@@ -1,54 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Management System | SMK Datuk Haji Ahmad Badawi</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Sports Management System | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
-<style>
-.home-wrap{width:min(1240px,calc(100% - 40px));margin:28px auto 52px}
-.home-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
-.hero-main,.hero-visual,.portal-card,.results-panel,.feature-card{border:1px solid var(--line);background:#fff;border-radius:26px;box-shadow:var(--shadow-sm)}
-.hero-main{padding:42px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fdfcf9,#f2f7f4)}
-.hero-main:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;right:-90px;top:-95px;background:rgba(125,159,137,.10)}
-.hero-main>*{position:relative;z-index:2}
-.hero-title{font-size:47px;line-height:1.03;letter-spacing:-1.5px;color:var(--navy);margin:10px 0 16px}
-.hero-title span{color:#70917a}
-.hero-copy{max-width:650px;color:var(--muted);font-size:14px;line-height:1.75;margin:0}
-.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
-.meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-.meta-pill{padding:8px 11px;border:1px solid #e5e3de;background:rgba(255,255,255,.75);border-radius:999px;color:#67738a;font-size:10px;font-weight:850}
-.hero-visual{min-height:390px;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(145deg,#f3f6f5,#f8f7fb)}
-.ring{position:absolute;border:1px dashed rgba(87,106,131,.18);border-radius:50%}
-.ring.one{width:200px;height:200px}.ring.two{width:300px;height:300px;border-color:rgba(125,159,137,.19)}
-.hero-core{width:150px;height:150px;border-radius:42px;background:linear-gradient(135deg,var(--navy),var(--sage));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 26px 52px rgba(31,48,73,.18);z-index:3}
-.hero-core strong{font-size:23px;letter-spacing:1.6px}.hero-core span{font-size:10px;letter-spacing:2.7px;opacity:.8;margin-top:5px}
-.float-icon{position:absolute;z-index:4;width:50px;height:50px;border-radius:15px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow-sm);font-size:21px}
-.fi1{top:34px;right:40px}.fi2{bottom:48px;left:38px}.fi3{bottom:26px;right:88px}
-.section-title{margin:32px 2px 14px}.section-title .eyebrow{margin-bottom:4px}.section-title h3{margin:0;color:var(--navy);font-size:22px}.section-title p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.portal-card{padding:27px;position:relative;overflow:hidden;transition:.2s ease}
-.portal-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.portal-card:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-45px;bottom:-60px;background:rgba(125,159,137,.07)}
-.portal-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
-.portal-tag{padding:7px 10px;border-radius:999px;background:#f7f6f2;border:1px solid var(--line);font-size:9px;font-weight:900;letter-spacing:1.2px;color:#707b8d}
-.portal-icon{width:56px;height:56px;border-radius:17px;background:var(--lav);display:grid;place-items:center;font-size:26px;margin:22px 0 16px;position:relative;z-index:2}
-.portal-card.admin .portal-icon{background:var(--sky)}
-.portal-card h4{font-size:24px;color:var(--navy);margin:0 0 8px;position:relative;z-index:2}
-.portal-card p{font-size:12px;line-height:1.7;color:var(--muted);max-width:540px;position:relative;z-index:2}
-.portal-link{display:flex;justify-content:space-between;margin-top:20px;color:#5e6e87;font-size:11px;font-weight:900;position:relative;z-index:2}
-.results-panel{padding:24px}
-.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.result-card{border:1px solid var(--line);border-radius:16px;padding:17px;background:linear-gradient(180deg,#fff,#fbfbfa)}
-.result-card .event{font-size:9px;letter-spacing:1px;font-weight:900;color:#76829a}.result-card h5{margin:7px 0 4px;font-size:15px;color:var(--navy)}.result-card p{margin:0;color:var(--muted);font-size:10px}
-.no-results{grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:12px}
-.feature-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}
-.feature-card{padding:16px;display:flex;gap:11px;align-items:center}
-.feature-icon{width:36px;height:36px;border-radius:11px;background:var(--lav);display:grid;place-items:center}
-.feature-card strong{display:block;font-size:11px;color:var(--navy)}.feature-card span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
-@media(max-width:900px){.home-hero,.portal-grid,.results-grid,.feature-strip{grid-template-columns:1fr}.hero-visual{min-height:300px}}
-@media(max-width:620px){.home-wrap{width:min(100% - 24px,1240px)}.hero-main{padding:28px}.hero-title{font-size:36px}}
-</style>
 </head>
 <body>
 <header class="topbar">
@@ -63,122 +19,125 @@
   </div>
 </header>
 
-<main class="home-wrap">
-<section class="home-hero">
-  <div class="hero-main">
-    <span class="eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
-    <h1 class="hero-title">Sports Management<br><span>Control Center</span></h1>
-    <p class="hero-copy">
-      A dedicated school portal for participant registration, competition monitoring,
-      result management, and performance tracking — all in one place.
-    </p>
-    <div class="hero-actions">
-      <a class="primary" href="/teacher.html">👩‍🏫 Open Teacher Portal</a>
-      <a class="secondary" href="/admin.html">🔐 Open Admin Portal</a>
-    </div>
-    <div class="meta-row">
-      <span class="meta-pill">2026 Session</span>
-      <span class="meta-pill">Centralized Records</span>
-      <span class="meta-pill">Secure Admin Access</span>
-    </div>
-  </div>
+<main class="systematic-home">
 
-  <div class="hero-visual">
-    <div class="ring one"></div><div class="ring two"></div>
-    <div class="float-icon fi1">🏅</div>
-    <div class="float-icon fi2">🏃</div>
-    <div class="float-icon fi3">🏟️</div>
-    <div class="hero-core"><strong>SMKDHAB</strong><span>SPORTS</span></div>
-  </div>
-</section>
-
-<section class="section-title">
-  <span class="eyebrow">SYSTEM ACCESS</span>
-  <h3>Choose Your Portal</h3>
-  <p>Select the portal that matches your role.</p>
-</section>
-
-<section class="portal-grid">
-  <a class="portal-card" href="/teacher.html">
-    <div class="portal-top"><span class="portal-tag">FOR TEACHERS</span><span>↗</span></div>
-    <div class="portal-icon">👩‍🏫</div>
-    <h4>Teacher Portal</h4>
-    <p>Register students for events, categories, and sports houses. Review recently submitted registrations.</p>
-    <div class="portal-link"><span>Register Participants</span><span>→</span></div>
-  </a>
-
-  <a class="portal-card admin" href="/admin.html">
-    <div class="portal-top"><span class="portal-tag">RESTRICTED ACCESS</span><span>↗</span></div>
-    <div class="portal-icon">🔐</div>
-    <h4>Admin Portal</h4>
-    <p>Monitor all registrations, enter competition results, manage records, and view top performers.</p>
-    <div class="portal-link"><span>Open Admin Dashboard</span><span>→</span></div>
-  </a>
-</section>
-
-<section class="section-title">
-  <span class="eyebrow">PUBLIC RESULTS</span>
-  <h3>Latest Results</h3>
-  <p>Competition results published by the administrator.</p>
-</section>
-
-<section class="results-zone">
-  <div class="results-visual">
-    <div class="results-visual-bg"></div>
-    <div class="track-lane lane-a"></div>
-    <div class="track-lane lane-b"></div>
-    <div class="track-lane lane-c"></div>
-    <div class="track-lane lane-d"></div>
-    <div class="sports-figure">🏃</div>
-    <div class="sports-ball ball-a">🏀</div>
-    <div class="sports-ball ball-b">⚽</div>
-    <div class="sports-medal">🏅</div>
-    <div class="results-visual-copy">
-      <span class="eyebrow">SPORTS HIGHLIGHTS</span>
-      <h4>Keputusan & Aktiviti Sukan</h4>
-      <p>Latest competition results and school sports highlights.</p>
-    </div>
-  </div>
-
-  <div class="results-panel">
-    <div class="results-panel-head">
-      <div>
-        <span class="eyebrow">PUBLIC RESULTS</span>
-        <h3>Latest Results</h3>
-        <p>Competition results published by the administrator.</p>
+  <section class="hero-grid">
+    <div class="hero-card">
+      <span class="hero-eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
+      <h2>School Sports<br><span>Control Center</span></h2>
+      <p>
+        A dedicated portal for student registration, event monitoring,
+        competition results, and performance records.
+      </p>
+      <div class="hero-actions">
+        <a class="primary" href="/teacher.html">Open Teacher Portal</a>
+        <a class="secondary" href="/admin.html">Open Admin Portal</a>
       </div>
-      <span class="result-badge">LIVE BOARD</span>
+      <div class="hero-meta">
+        <span>Centralized Records</span>
+        <span>Secure Admin Access</span>
+        <span>2026 Session</span>
+      </div>
     </div>
-    <div id="results" class="results-grid">
-      <div class="no-results">No published results yet.</div>
-    </div>
-  </div>
-</section>
 
-<section class="feature-strip">
-  <div class="feature-card"><span class="feature-icon">☁️</span><div><strong>Centralized Records</strong><span>Organized school data.</span></div></div>
-  <div class="feature-card"><span class="feature-icon">📊</span><div><strong>Easy Monitoring</strong><span>Clear dashboard overview.</span></div></div>
-  <div class="feature-card"><span class="feature-icon">🔒</span><div><strong>Role-Based Access</strong><span>Separate teacher and admin access.</span></div></div>
-</section>
+    <div class="hero-visual">
+      <span class="track-label">SPORTS CENTER</span>
+      <div class="track-board">
+        <strong>SMKDHAB</strong>
+        <span>SPORTS</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">SYSTEM ACCESS</div>
+        <h3>Choose Your Portal</h3>
+        <p>Select the portal that matches your role.</p>
+      </div>
+    </div>
+
+    <div class="portal-grid">
+      <a class="portal" href="/teacher.html">
+        <div class="portal-top">
+          <span class="portal-tag">FOR TEACHERS</span><span>↗</span>
+        </div>
+        <div class="portal-icon">👩‍🏫</div>
+        <h4>Teacher Portal</h4>
+        <p>Register students for school sports events and manage recent registrations.</p>
+        <div class="portal-footer"><span>Register Participants</span><span>→</span></div>
+      </a>
+
+      <a class="portal admin" href="/admin.html">
+        <div class="portal-top">
+          <span class="portal-tag">RESTRICTED ACCESS</span><span>↗</span>
+        </div>
+        <div class="portal-icon">🔐</div>
+        <h4>Admin Portal</h4>
+        <p>Monitor registrations, record competition results, and manage the leaderboard.</p>
+        <div class="portal-footer"><span>Open Admin Dashboard</span><span>→</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <div class="section-kicker">PUBLIC RESULTS</div>
+        <h3>Latest Results</h3>
+        <p>Results published by the administrator.</p>
+      </div>
+    </div>
+
+    <div class="results-layout">
+      <section class="results-card">
+        <div class="results-heading">
+          <h3>Competition Results</h3>
+          <p>Recent published achievements.</p>
+        </div>
+        <div id="results" class="result-list">
+          <div class="no-result">No published results yet.</div>
+        </div>
+      </section>
+
+      <section class="results-visual-card">
+        <div class="mini-track"></div>
+        <div class="mini-track two"></div>
+        <div class="visual-core"><strong>SMKDHAB</strong><span>SPORTS</span></div>
+        <div class="visual-copy">
+          <div class="section-kicker">SPORTS HIGHLIGHTS</div>
+          <h4>School Competition Board</h4>
+          <p>Results, participation and achievement records in one organized view.</p>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="info-strip">
+    <div class="info-card"><span class="icon">☁️</span><div><strong>Centralized Records</strong><span>Organized school data.</span></div></div>
+    <div class="info-card"><span class="icon">📊</span><div><strong>Easy Monitoring</strong><span>Clear dashboard overview.</span></div></div>
+    <div class="info-card"><span class="icon">🔒</span><div><strong>Role-Based Access</strong><span>Separate teacher and admin access.</span></div></div>
+  </section>
+
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
 function renderResults(){
-  const results=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
+  const data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
   const box=document.getElementById("results");
-  if(!results.length){
-    box.innerHTML='<div class="no-results">No published results yet.</div>';
+  if(!data.length){
+    box.innerHTML='<div class="no-result">No published results yet.</div>';
     return;
   }
-  box.innerHTML=results.slice(0,9).map(x=>`
-    <article class="result-card">
+  box.innerHTML=data.slice(0,6).map(x=>`
+    <article class="result-item">
       <div class="event">${x.event||"EVENT"}</div>
-      <h5>🏅 ${x.studentName||"Participant"}</h5>
-      <p>${x.position?`Position ${x.position}`:""} ${x.points?` · ${x.points} points`:""} ${x.timing?` · ${x.timing}`:""}</p>
-    </article>
-  `).join("");
+      <strong>${x.studentName||"Participant"}</strong>
+      <span>${x.position?`Position ${x.position}`:""} ${x.points?` · ${x.points} points`:""} ${x.timing?` · ${x.timing}`:""}</span>
+    </article>`).join("");
 }
 renderResults();
 </script>
