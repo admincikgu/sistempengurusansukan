@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Results | SMK Datuk Haji Ahmad Badawi</title><link rel="stylesheet" href="/style.css"></head><body><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
+<div class="admin-sidebar-brand"><div class="admin-sidebar-logo">🏫</div><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div>
+<div class="admin-sidebar-label">MAIN</div>
+<nav class="admin-sidebar-nav">
+<a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a>
+<a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a>
+<a class="admin-sidebar-link active" href="/admin-results.html"><span class="ico">🏆</span>Results</a>
+</nav>
+<div class="admin-sidebar-footer">
+<a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a>
+<button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button>
+</div></aside>
+<main class="admin-page-main">
+<header class="admin-page-header"><div><a class="page-nav-back" href="/admin-dashboard.html">← Dashboard</a><h1>Competition Results</h1><p>Record official results and view the school leaderboard.</p></div></header>
+<section class="surface panel"><div class="panel-head"><div><h3>Save Official Result</h3><p>Select a participant and record their competition performance.</p></div></div><div class="form-grid"><div class="field"><label>PARTICIPANT</label><select id="participant"></select></div><div class="field"><label>POSITION</label><input id="position" type="number" min="1" placeholder="1"></div><div class="field"><label>POINTS</label><input id="points" type="number" min="0" placeholder="10"></div><div class="field"><label>TIME / SCORE</label><input id="timing" placeholder="12.45s / 5.20m"></div></div><div class="form-actions"><span class="left-note">Saved results update the leaderboard.</span><div class="actions"><button class="button-primary" id="saveResultBtn">Save Result</button></div></div><div id="resultMessage" class="message"></div></section>
+<section class="section grid2"><section class="surface panel"><div class="panel-head"><div><h3>Leaderboard</h3><p>Highest scoring participants.</p></div></div><div id="leaders"><div class="empty">Loading...</div></div></section><section class="surface panel"><div class="panel-head"><div><h3>Result Overview</h3><p>Current competition statistics.</p></div></div><div class="quick-stat-line"><div class="quick-stat"><small>Total Results</small><strong id="resultCount">0</strong></div><div class="quick-stat"><small>Participants</small><strong id="participantCount">0</strong></div><div class="quick-stat"><small>Events</small><strong id="eventCount">0</strong></div></div></section></section>
+</main></div>
+<script>const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
+async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
+function logout(){sessionStorage.removeItem("smkAdminToken");location.href="/admin.html"}
+const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");
+if(mb)mb.addEventListener("click",()=>{sb.classList.add("open");ov.classList.add("show")});
+if(ov)ov.addEventListener("click",()=>{sb.classList.remove("open");ov.classList.remove("show")});
+document.getElementById("sidebarLogout")?.addEventListener("click",logout);
+const $=id=>document.getElementById(id);let registrations=[];
+function fillParticipants(){$("participant").innerHTML='<option value="">Select participant...</option>'+registrations.map(x=>`<option value="${x._id}">${x.studentName} — ${x.event}</option>`).join("")}
+async function loadResults(){const a={"x-admin-pin":TOKEN},r=await api("/api/admin?action=registrations",{headers:a}),l=await api("/api/admin?action=leaderboard",{headers:a}),o=await api("/api/admin?action=overview",{headers:a});registrations=r;fillParticipants();$("participantCount").textContent=r.length;$("eventCount").textContent=new Set(r.map(x=>x.event)).size;$("resultCount").textContent=o.totalResults;$("leaders").innerHTML=l.length?l.map((x,i)=>`<div class="recent-item"><div class="recent-icon">${i<3?["🥇","🥈","🥉"][i]:"🏅"}</div><div class="recent-copy"><strong>${i+1}. ${x.studentName}</strong><span>${x.house||"-"}</span></div><span class="recent-time">${x.points||0} pts</span></div>`).join(""):'<div class="empty">No results yet.</div>'}
+$("saveResultBtn").addEventListener("click",async()=>{const id=$("participant").value;if(!id){$("resultMessage").className="message error";$("resultMessage").textContent="Please select a participant first.";return}try{const d=await api("/api/admin?action=result",{method:"POST",headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},body:JSON.stringify({registrationId:id,position:$("position").value,points:$("points").value,timing:$("timing").value,score:0})});$("resultMessage").className="message ok";$("resultMessage").textContent="✓ "+d.message;$("position").value="";$("points").value="";$("timing").value="";await loadResults()}catch(e){$("resultMessage").className="message error";$("resultMessage").textContent="✕ "+e.message}});
+loadResults();</script></body></html>

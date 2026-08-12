@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Dashboard | SMK Datuk Haji Ahmad Badawi</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
+<div class="admin-sidebar-brand"><div class="admin-sidebar-logo">🏫</div><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div>
+<div class="admin-sidebar-label">MAIN</div>
+<nav class="admin-sidebar-nav">
+<a class="admin-sidebar-link active" href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a>
+<a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a>
+<a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a>
+</nav>
+<div class="admin-sidebar-footer">
+<a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a>
+<button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button>
+</div></aside>
+<main class="admin-page-main">
+<section class="surface dashboard-welcome"><div><span class="eyebrow">ADMIN SPORTS CENTER · 2026</span><h1>Admin Dashboard</h1><p>A focused overview of the school sports system. Participant management and competition results are handled in dedicated workspaces.</p><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:14px"><span class="status ok">● Secure Access</span><span id="dbStatus" class="status wait">● Database: Checking</span></div></div><div class="dashboard-art"><div class="art-center"><strong>ADMIN</strong><span>SMKDHAB</span></div></div></section>
+<section class="section"><div class="overview-grid">
+<div class="overview-card"><div class="overview-icon">👥</div><span class="overview-label">TOTAL REGISTRATIONS</span><strong id="total" class="overview-value">0</strong><span class="overview-note">Participant records</span></div>
+<div class="overview-card"><div class="overview-icon">🏃</div><span class="overview-label">REGISTERED EVENTS</span><strong id="events" class="overview-value">0</strong><span class="overview-note">Different events</span></div>
+<div class="overview-card"><div class="overview-icon">🏅</div><span class="overview-label">SAVED RESULTS</span><strong id="results" class="overview-value">0</strong><span class="overview-note">Official results</span></div>
+<div class="overview-card"><div class="overview-icon">☁️</div><span class="overview-label">DATABASE</span><strong id="dbCount" class="overview-value" style="font-size:15px">Checking</strong><span class="overview-note">Live connection</span></div>
+</div></section>
+<section class="section"><div class="section-head"><div class="section-title"><span class="eyebrow">QUICK ACCESS</span><h2>Choose a workspace</h2><p>Keep the dashboard simple. Open detailed management only when you need it.</p></div></div>
+<div class="dashboard-shortcuts">
+<a class="dashboard-shortcut" href="/admin-participants.html"><div class="shortcut-icon">👥</div><div><strong>Manage Participants</strong><span>Edit, delete and update participant records.</span></div></a>
+<a class="dashboard-shortcut" href="/admin-results.html"><div class="shortcut-icon">🏆</div><div><strong>Competition Results</strong><span>Record results and maintain the leaderboard.</span></div></a>
+<a class="dashboard-shortcut" href="/admin-participants.html"><div class="shortcut-icon">🖨️</div><div><strong>Official Print</strong><span>Print the current participant list as an official document.</span></div></a>
+</div></section>
+<section class="section grid2">
+<section class="surface dashboard-section-card"><div class="dashboard-section-title"><div><span class="eyebrow">SYSTEM SNAPSHOT</span><h2>Current Overview</h2><p>Key information at a glance.</p></div></div><div class="quick-stat-line"><div class="quick-stat"><small>Session</small><strong>2026</strong></div><div class="quick-stat"><small>Access</small><strong>Admin</strong></div><div class="quick-stat"><small>Status</small><strong style="color:var(--success)">Online</strong></div></div></section>
+<section class="surface dashboard-section-card"><div class="dashboard-section-title"><div><span class="eyebrow">RECENT RECORDS</span><h2>Latest Participants</h2><p>Most recent registrations.</p></div><a class="page-nav-back" href="/admin-participants.html">View all →</a></div><div id="recentList" class="recent-list"><div class="empty">Loading...</div></div></section>
+</section>
+</main></div>
+<script>const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
+async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
+function logout(){sessionStorage.removeItem("smkAdminToken");location.href="/admin.html"}
+const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");
+if(mb)mb.addEventListener("click",()=>{sb.classList.add("open");ov.classList.add("show")});
+if(ov)ov.addEventListener("click",()=>{sb.classList.remove("open");ov.classList.remove("show")});
+document.getElementById("sidebarLogout")?.addEventListener("click",logout);
+async function load(){try{const a={"x-admin-pin":TOKEN},s=await api("/api/admin?action=status",{headers:a}),o=await api("/api/admin?action=overview",{headers:a}),r=await api("/api/admin?action=registrations",{headers:a});document.getElementById("dbStatus").textContent="● Database: Connected";document.getElementById("dbStatus").className="status ok";document.getElementById("dbCount").textContent=s.total+" records";document.getElementById("total").textContent=o.total;document.getElementById("events").textContent=o.eventsOngoing;document.getElementById("results").textContent=o.totalResults;const recent=r.slice(0,5);document.getElementById("recentList").innerHTML=recent.length?recent.map(x=>`<div class="recent-item"><div class="recent-icon">👤</div><div class="recent-copy"><strong>${x.studentName}</strong><span>${x.event||"-"} · ${x.house||"-"}</span></div><span class="recent-time">${x.createdAt?new Date(x.createdAt).toLocaleDateString("en-MY"):"-"}</span></div>`).join(""):'<div class="empty">No participant records yet.</div>'}catch(e){document.getElementById("dbStatus").textContent="● Database: Error";document.getElementById("dbStatus").className="status bad";document.getElementById("dbCount").textContent="Error"}}load();</script>
+</body></html>

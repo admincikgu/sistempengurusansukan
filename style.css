@@ -1377,3 +1377,271 @@ button, .nav-link, .button-secondary, .action-card, .portal-card{
 .admin-sidebar-footer{
   padding-top:10px;
 }
+
+/* =========================================================
+   V28 — OFFICIAL PRINT DOCUMENT
+   ========================================================= */
+.print-document{
+  display:none;
+}
+
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:15mm 13mm 17mm;
+  }
+
+  html,body{
+    background:#fff!important;
+    color:#111!important;
+    font-family:Arial,Helvetica,sans-serif!important;
+  }
+
+  body:before,
+  .topbar,
+  .admin-sidebar,
+  .admin-mobile-top,
+  .mobile-overlay,
+  .page-sport-header,
+  .home-hero,
+  .feature-row,
+  .section-head,
+  .kpi-grid,
+  .overview-grid,
+  .action-grid,
+  .panel,
+  .participant-manager,
+  .editor,
+  .admin-top,
+  footer,
+  #login,
+  #app .section:not(#participants),
+  .toast{
+    display:none!important;
+  }
+
+  .admin-main{
+    padding:0!important;
+  }
+
+  .print-document{
+    display:block!important;
+    width:100%;
+    color:#111;
+    background:#fff;
+  }
+
+  .print-header{
+    display:grid;
+    grid-template-columns:82px 1fr;
+    gap:14px;
+    align-items:center;
+    padding-bottom:12px;
+    border-bottom:2px solid #1f334a;
+  }
+
+  .print-logo{
+    width:68px;
+    height:68px;
+    border:1px solid #1f334a;
+    display:grid;
+    place-items:center;
+    font-size:28px;
+    border-radius:5px;
+  }
+
+  .print-school{
+    text-align:center;
+  }
+
+  .print-school .gov{
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+  }
+
+  .print-school h1{
+    margin:4px 0 1px;
+    font-size:15px;
+    letter-spacing:.2px;
+    text-transform:uppercase;
+  }
+
+  .print-school h2{
+    margin:1px 0;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+
+  .print-school .system{
+    margin-top:5px;
+    font-size:9px;
+    letter-spacing:1px;
+    font-weight:700;
+  }
+
+  .print-title{
+    text-align:center;
+    margin:18px 0 11px;
+  }
+
+  .print-title h3{
+    margin:0;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+  }
+
+  .print-title p{
+    margin:4px 0 0;
+    font-size:9px;
+  }
+
+  .print-meta{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0;
+    margin:8px 0 12px;
+    border:1px solid #999;
+  }
+
+  .print-meta div{
+    min-height:34px;
+    padding:6px 8px;
+    border-right:1px solid #999;
+  }
+
+  .print-meta div:last-child{border-right:0}
+
+  .print-meta span{
+    display:block;
+    font-size:7px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#555;
+  }
+
+  .print-meta strong{
+    display:block;
+    margin-top:2px;
+    font-size:9px;
+  }
+
+  .print-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:8px;
+  }
+
+  .print-table th,
+  .print-table td{
+    border:1px solid #777;
+    padding:6px 5px;
+    vertical-align:top;
+  }
+
+  .print-table th{
+    background:#eef1f2!important;
+    color:#111!important;
+    text-transform:uppercase;
+    font-size:7px;
+    letter-spacing:.3px;
+  }
+
+  .print-table td:nth-child(1){width:5%;text-align:center}
+  .print-table td:nth-child(2){width:13%}
+  .print-table td:nth-child(3){width:19%}
+  .print-table td:nth-child(4){width:9%}
+  .print-table td:nth-child(5){width:18%}
+  .print-table td:nth-child(6){width:12%}
+  .print-table td:nth-child(7){width:14%}
+  .print-table td:nth-child(8){width:10%}
+
+  .print-total{
+    margin-top:9px;
+    font-size:8px;
+    font-weight:700;
+  }
+
+  .print-note{
+    margin-top:7px;
+    font-size:7px;
+    color:#444;
+    line-height:1.45;
+  }
+
+  .print-signatures{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    margin-top:42px;
+    page-break-inside:avoid;
+  }
+
+  .sig{
+    text-align:center;
+    font-size:8px;
+  }
+
+  .sig-line{
+    height:36px;
+    border-bottom:1px solid #555;
+    margin-bottom:5px;
+  }
+
+  .print-footer{
+    margin-top:25px;
+    padding-top:7px;
+    border-top:1px solid #aaa;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:7px;
+    color:#555;
+  }
+
+  #participants{display:none!important}
+}
+
+/* V29 multi-page admin workspace */
+.admin-page-main{width:min(1180px,calc(100% - 30px));margin:0 auto;padding:28px 0 56px}
+.admin-page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.admin-page-header h1{margin:5px 0 0;color:var(--navy);font-size:28px;letter-spacing:-.8px}
+.admin-page-header p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
+.header-actions{display:flex;gap:7px;flex-wrap:wrap}
+.dashboard-welcome{min-height:190px;padding:28px;display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:center;overflow:hidden;position:relative;background:radial-gradient(circle at 86% 18%,rgba(127,155,135,.11),transparent 23%),linear-gradient(145deg,#fff,#f1f5f2)}
+.dashboard-welcome h1{margin:7px 0 9px;color:var(--navy);font-size:34px;letter-spacing:-1px}
+.dashboard-welcome p{max-width:650px;margin:0;color:var(--muted);font-size:10px;line-height:1.75}
+.dashboard-art{min-height:150px;border-radius:18px;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(145deg,#eef3f0,#eef2f6)}
+.dashboard-art:before{content:"";position:absolute;width:170px;height:170px;border-radius:50%;border:1px dashed rgba(75,99,125,.16)}
+.dashboard-art .art-center{width:118px;height:96px}
+.dashboard-shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.dashboard-shortcut{min-height:92px;padding:15px;display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow-sm);transition:.18s ease}
+.dashboard-shortcut:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.dashboard-shortcut .shortcut-icon{width:38px;height:38px;flex:0 0 auto;display:grid;place-items:center;border-radius:11px;background:var(--lavSoft);font-size:16px}
+.dashboard-shortcut:nth-child(2) .shortcut-icon{background:var(--sage-soft)}
+.dashboard-shortcut:nth-child(3) .shortcut-icon{background:var(--blueSoft)}
+.dashboard-shortcut strong{display:block;color:var(--navy);font-size:10px}
+.dashboard-shortcut span{display:block;margin-top:3px;color:var(--muted);font-size:8px;line-height:1.45}
+.dashboard-section-card{padding:20px}
+.dashboard-section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}
+.dashboard-section-title h2{margin:0;color:var(--navy);font-size:18px}
+.dashboard-section-title p{margin:3px 0 0;color:var(--muted);font-size:9px}
+.quick-stat-line{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.quick-stat{padding:12px;border:1px solid var(--line);border-radius:13px;background:#fbfbfa}
+.quick-stat small{display:block;color:var(--muted);font-size:8px}
+.quick-stat strong{display:block;margin-top:3px;color:var(--navy);font-size:17px}
+.recent-list{display:grid;gap:7px}
+.recent-item{display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line2)}
+.recent-item:last-child{border-bottom:0}
+.recent-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--sage-soft);font-size:12px}
+.recent-copy strong{display:block;color:var(--navy);font-size:9px}
+.recent-copy span{display:block;margin-top:2px;color:var(--muted);font-size:8px}
+.recent-time{font-size:8px;color:#9aa3ae}
+.page-nav-back{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:850;color:#68768a}
+.page-nav-back:hover{color:var(--navy)}
+@media(max-width:900px){.dashboard-welcome{grid-template-columns:1fr}.dashboard-art{min-height:170px}}
+@media(max-width:720px){.admin-page-main{width:calc(100% - 20px);padding-top:18px}.admin-page-header{align-items:flex-start;flex-direction:column}.header-actions{width:100%}.header-actions>*{flex:1}.dashboard-shortcuts{grid-template-columns:1fr}.quick-stat-line{grid-template-columns:1fr}}
+@media(max-width:460px){.admin-page-main{width:calc(100% - 14px)}.dashboard-welcome{padding:22px}.dashboard-welcome h1{font-size:29px}}
