@@ -44,6 +44,39 @@
 
 <div class="admin-shell-bg"></div>
 <main id="app" class="hidden">
+<div class="admin-layout">
+  <aside id="adminSidebar" class="admin-sidebar" aria-label="Admin navigation">
+    <div class="admin-sidebar-brand">
+      <div class="admin-sidebar-logo">🏫</div>
+      <div>
+        <strong>SMKDHAB</strong>
+        <span>Sports Administration</span>
+      </div>
+    </div>
+
+    <div class="admin-sidebar-label">MAIN</div>
+    <nav class="admin-sidebar-nav">
+      <a class="admin-sidebar-link active" href="/admin.html"><span class="ico">⌂</span>Dashboard</a>
+      <a class="admin-sidebar-link" href="/admin.html#participants"><span class="ico">👥</span>Participants</a>
+      <a class="admin-sidebar-link" href="/admin.html#results-section"><span class="ico">🏆</span>Results</a>
+      <a class="admin-sidebar-link" href="/admin.html#leaderboard-section"><span class="ico">📊</span>Leaderboard</a>
+      <a class="admin-sidebar-link" href="/teacher.html"><span class="ico">👩‍🏫</span>Teacher Portal</a>
+    </nav>
+
+    <div class="admin-sidebar-label">SYSTEM</div>
+    <div class="admin-sidebar-footer">
+      <a class="admin-sidebar-link" href="/"><span class="ico">↩</span>Main Dashboard</a>
+      <button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-mobile-top">
+      <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button>
+      <strong style="color:var(--navy);font-size:11px">Admin Dashboard</strong>
+      <a class="nav-link" href="/">Home</a>
+    </div>
+    <div id="mobileOverlay" class="mobile-overlay"></div>
 <div style="position:relative;z-index:2;display:flex;justify-content:flex-end;margin-bottom:10px"><a href="/" class="button-secondary">← Main Dashboard</a></div>
 
 <div class="page">
@@ -55,20 +88,41 @@
       <p>Manage participant records, sports assignments, official results, and leaderboard data from one organized workspace.</p>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:14px">
         <span class="status ok">● Secure Access</span>
-        <span id="dbStatus" class="status wait">● Database: Checking</span>
+        <span id="dbStatus" class="status wait pulse-status">● Database: Checking</span>
       </div>
     </div>
     <div class="surface admin-art"><div class="art-center"><strong>ADMIN</strong><span>SMKDHAB</span></div></div>
   </section>
 
-  <section class="section">
-    <div class="kpi-grid">
-      <div class="kpi"><small>Total Registrations</small><strong id="total">0</strong></div>
-      <div class="kpi"><small>Registered Events</small><strong id="events">0</strong></div>
-      <div class="kpi"><small>Saved Results</small><strong id="results">0</strong></div>
-      <div class="kpi"><small>Database</small><strong id="dbCount">Checking</strong></div>
+  
+<section class="section">
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-icon">👥</div>
+      <span class="overview-label">TOTAL REGISTRATIONS</span>
+      <strong id="total" class="overview-value">0</strong>
+      <span class="overview-note">All participant records</span>
     </div>
-  </section>
+    <div class="overview-card">
+      <div class="overview-icon">🏃</div>
+      <span class="overview-label">REGISTERED EVENTS</span>
+      <strong id="events" class="overview-value">0</strong>
+      <span class="overview-note">Active event categories</span>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon">🏅</div>
+      <span class="overview-label">SAVED RESULTS</span>
+      <strong id="results" class="overview-value">0</strong>
+      <span class="overview-note">Official competition results</span>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon">☁️</div>
+      <span class="overview-label">DATABASE</span>
+      <strong id="dbCount" class="overview-value" style="font-size:15px">Checking</strong>
+      <span class="overview-note">Live connection status</span>
+    </div>
+  </div>
+</section>
 
   <section class="section">
     <div class="section-head"><div class="section-title"><span class="eyebrow">ADMINISTRATION</span><h2>Management Tools</h2><p>Common administrator actions.</p></div></div>
@@ -80,7 +134,7 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="participants">
     <div class="section-head"><div class="section-title"><span class="eyebrow">MASTER DATA</span><h2>Participant Registrations</h2><p>Edit or delete any record.</p></div></div>
     <section class="surface panel sports-panel">
       <div class="table-toolbar"><input id="search" placeholder="Search student, ID, class, event, category, house or teacher..."></div>
@@ -148,7 +202,7 @@
 </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="results-section">
     <div class="section-head"><div class="section-title"><span class="eyebrow">COMPETITION RESULTS</span><h2>Results Management</h2><p>Save official competition results.</p></div></div>
     <section class="surface panel sports-panel">
       <div class="form-grid">
@@ -162,13 +216,15 @@
     </section>
   </section>
 
-  <section class="section">
+  <section class="section" id="leaderboard-section">
     <div class="section-head"><div class="section-title"><span class="eyebrow">LEADERBOARD</span><h2>Top Participants</h2><p>Highest scoring participants.</p></div></div>
     <section class="surface panel sports-panel">
       <div id="leaders"></div>
     </section>
   </section>
 
+</div>
+</div>
 </div>
 </main>
 
@@ -315,6 +371,37 @@ async function loadLeaderboard(){
 function logout(){location.reload()}
 $("loginBtn").addEventListener("click",login);$("pin").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();login()}});
 $("search").addEventListener("input",renderTable);$("refreshBtn").addEventListener("click",loadDashboard);$("printBtn").addEventListener("click",()=>window.print());$("logoutBtn").addEventListener("click",logout);$("clearEditBtn").addEventListener("click",clearEdit);$("loadDbRecordBtn").addEventListener("click",loadDbRecord);$("editRecordSelect").addEventListener("change",loadDbRecord);$("saveEditBtn").addEventListener("click",saveEdit);$("saveResultBtn").addEventListener("click",saveResult);
+
+const adminSidebar=document.getElementById("adminSidebar");
+const mobileMenuButton=document.getElementById("mobileMenuButton");
+const mobileOverlay=document.getElementById("mobileOverlay");
+const sidebarLogout=document.getElementById("sidebarLogout");
+
+function toggleAdminMenu(open){
+  if(!adminSidebar)return;
+  adminSidebar.classList.toggle("open",open);
+  if(mobileOverlay)mobileOverlay.classList.toggle("show",open);
+}
+if(mobileMenuButton)mobileMenuButton.addEventListener("click",()=>toggleAdminMenu(true));
+if(mobileOverlay)mobileOverlay.addEventListener("click",()=>toggleAdminMenu(false));
+document.querySelectorAll(".admin-sidebar-link[href]").forEach(link=>{
+  link.addEventListener("click",()=>toggleAdminMenu(false));
+});
+if(sidebarLogout)sidebarLogout.addEventListener("click",()=>logout());
+window.addEventListener("resize",()=>{
+  if(window.innerWidth>900)toggleAdminMenu(false);
+});
+
+
+function syncAdminNav(){
+  const current=location.hash||"";
+  document.querySelectorAll(".admin-sidebar-link").forEach(link=>link.classList.remove("active"));
+  const match=current ? document.querySelector(`.admin-sidebar-link[href="${location.pathname}${current}"]`) : document.querySelector('.admin-sidebar-link[href="/admin.html"]');
+  if(match)match.classList.add("active");
+}
+window.addEventListener("hashchange",syncAdminNav);
+syncAdminNav();
+
 </script>
 </body>
 </html>
