@@ -37,5 +37,69 @@ const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mob
 if(mb)mb.addEventListener("click",()=>{sb.classList.add("open");ov.classList.add("show")});
 if(ov)ov.addEventListener("click",()=>{sb.classList.remove("open");ov.classList.remove("show")});
 document.getElementById("sidebarLogout")?.addEventListener("click",logout);
-async function load(){try{const a={"x-admin-pin":TOKEN},s=await api("/api/admin?action=status",{headers:a}),o=await api("/api/admin?action=overview",{headers:a}),r=await api("/api/admin?action=registrations",{headers:a});document.getElementById("dbStatus").textContent="● Database: Connected";document.getElementById("dbStatus").className="status ok";document.getElementById("dbCount").textContent=s.total+" records";document.getElementById("total").textContent=o.total;document.getElementById("events").textContent=o.eventsOngoing;document.getElementById("results").textContent=o.totalResults;const recent=r.slice(0,5);document.getElementById("recentList").innerHTML=recent.length?recent.map(x=>`<div class="recent-item"><div class="recent-icon">👤</div><div class="recent-copy"><strong>${x.studentName}</strong><span>${x.event||"-"} · ${x.house||"-"}</span></div><span class="recent-time">${x.createdAt?new Date(x.createdAt).toLocaleDateString("en-MY"):"-"}</span></div>`).join(""):'<div class="empty">No participant records yet.</div>'}catch(e){document.getElementById("dbStatus").textContent="● Database: Error";document.getElementById("dbStatus").className="status bad";document.getElementById("dbCount").textContent="Error"}}load();</script>
+async function load(){
+  try{
+    const a={"x-admin-pin":TOKEN};
+
+    const [status, overview, registrations, savedResults] = await Promise.all([
+      api("/api/admin?action=status",{headers:a}),
+      api("/api/admin?action=overview",{headers:a}),
+      api("/api/admin?action=registrations",{headers:a}),
+      api("/api/admin?action=results",{headers:a})
+    ]);
+
+    document.getElementById("dbStatus").textContent="● Database: Connected";
+    document.getElementById("dbStatus").className="status ok";
+    document.getElementById("dbCount").textContent=status.total+" records";
+
+    document.getElementById("total").textContent=overview.total;
+    document.getElementById("events").textContent=overview.eventsOngoing;
+    document.getElementById("results").textContent=overview.totalResults;
+
+    const publicBox=document.getElementById("publicResults");
+
+    if(!savedResults.length){
+      publicBox.innerHTML='<div class="public-results-empty">No competition results have been published yet.</div>';
+    }else{
+      const latest=savedResults.slice(0,6);
+      publicBox.innerHTML=latest.map(result=>{
+        const medal=result.position==1?"🥇":result.position==2?"🥈":result.position==3?"🥉":"🏅";
+        return `
+          <article class="public-result-card">
+            <span class="medal">${medal}</span>
+            <span class="position">#${result.position||"-"}</span>
+            <h4>${result.studentName}</h4>
+            <div class="event">${result.event} · ${result.category}</div>
+            <div class="meta">
+              ${result.house||"-"} · ${result.points||0} points
+              ${result.timing ? " · "+result.timing : ""}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    const recent=registrations.slice(0,5);
+    document.getElementById("recentList").innerHTML=recent.length
+      ?recent.map(x=>`
+        <div class="recent-item">
+          <div class="recent-icon">👤</div>
+          <div class="recent-copy">
+            <strong>${x.studentName}</strong>
+            <span>${x.event||"-"} · ${x.house||"-"}</span>
+          </div>
+          <span class="recent-time">${x.createdAt?new Date(x.createdAt).toLocaleDateString("en-MY"):"-"}</span>
+        </div>
+      `).join("")
+      :'<div class="empty">No participant records yet.</div>';
+
+  }catch(e){
+    document.getElementById("dbStatus").textContent="● Database: Error";
+    document.getElementById("dbStatus").className="status bad";
+    document.getElementById("dbCount").textContent="Error";
+
+    const box=document.getElementById("publicResults");
+    if(box)box.innerHTML='<div class="public-results-empty">Unable to load latest results.</div>';
+  }
+}load();</script>
 </body></html>
