@@ -76,13 +76,22 @@
   <section class="section">
     <div class="editor">
       <div class="editor-head">
-        <div><span class="eyebrow">EDIT REGISTRATION</span><h3>Manage Participant</h3><p>Change the student, class, event, category, sports house, or teacher.</p></div>
+        <div><span class="eyebrow">EDIT REGISTRATION</span><h3>Manage Participant</h3><p>Student Name and Student ID are read from the database. You can change the class, event, category, sports house, or teacher.</p></div>
         <span id="editStatus" class="status wait">No selection</span>
       </div>
 
+      <div class="db-record-picker">
+        <div class="field">
+          <label>DATABASE REGISTRATION</label>
+          <select id="editRecordSelect"><option value="">Select a registration...</option></select>
+          <div class="db-source-note">Student Name and Student ID are loaded directly from the database.</div>
+        </div>
+        <button class="button-secondary" id="loadDbRecordBtn" type="button">Load Record</button>
+      </div>
+
       <div class="editor-grid">
-        <div class="field"><label>STUDENT NAME</label><input id="editStudentName"></div>
-        <div class="field"><label>STUDENT ID</label><input id="editStudentId"></div>
+        <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
+        <div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div>
         <div class="field"><label>CLASS</label><select id="editClass"></select></div>
         <div class="field"><label>EVENT</label><select id="editEvent"></select></div>
         <div class="field"><label>CATEGORY</label><select id="editCategory"></select></div>
@@ -91,7 +100,7 @@
       </div>
 
       <div class="form-actions">
-        <span class="left-note">Select Edit in the table to load a record.</span>
+        <span class="left-note">Select a database record above or click Edit in the table.</span>
         <div class="actions"><button class="button-secondary" id="clearEditBtn">Clear</button><button class="button-primary" id="saveEditBtn">Save Changes</button></div>
       </div>
       <div id="editMessage" class="message"></div>
@@ -181,14 +190,42 @@ function renderTable(){
 }
 function fillParticipants(){
   $("participant").innerHTML='<option value="">Select participant...</option>'+registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.event}</option>`).join("");
+  $("editRecordSelect").innerHTML='<option value="">Select a registration...</option>'+registrations.map(item=>`<option value="${item._id}">${item.studentName} — ${item.studentId} — ${item.event}</option>`).join("");
 }
 function selectEdit(item){
-  editingId=item._id;$("editStudentName").value=item.studentName||"";$("editStudentId").value=item.studentId||"";$("editClass").value=item.className||"";$("editEvent").value=item.event||"";$("editCategory").value=item.category||"";$("editHouse").value=item.house||"";$("editTeacher").value=item.teacher||"";
-  $("editStatus").textContent="Editing";$("editStatus").className="status ok";document.querySelector(".editor").scrollIntoView({behavior:"smooth",block:"start"})
+  editingId=item._id;
+  $("editRecordSelect").value=item._id;
+  $("editStudentName").value=item.studentName||"";
+  $("editStudentId").value=item.studentId||"";
+  $("editClass").value=item.className||"";
+  $("editEvent").value=item.event||"";
+  $("editCategory").value=item.category||"";
+  $("editHouse").value=item.house||"";
+  $("editTeacher").value=item.teacher||"";
+  $("editStatus").textContent="Loaded from database";
+  $("editStatus").className="status ok";
+  $("editMessage").textContent="";
+  document.querySelector(".editor").scrollIntoView({behavior:"smooth",block:"start"});
 }
+function loadDbRecord(){
+  const id=$("editRecordSelect").value;
+  const item=registrations.find(row=>row._id===id);
+  if(!item){
+    $("editMessage").className="message error";
+    $("editMessage").textContent="Select a database record first.";
+    return;
+  }
+  selectEdit(item);
+}
+
 function clearEdit(){
-  editingId="";["editStudentName","editStudentId","editTeacher"].forEach(id=>$(id).value="");["editClass","editEvent","editCategory","editHouse"].forEach(id=>$(id).value="");
-  $("editStatus").textContent="No selection";$("editStatus").className="status wait";$("editMessage").textContent=""
+  editingId="";
+  $("editRecordSelect").value="";
+  ["editStudentName","editStudentId","editTeacher"].forEach(id=>$(id).value="");
+  ["editClass","editEvent","editCategory","editHouse"].forEach(id=>$(id).value="");
+  $("editStatus").textContent="No selection";
+  $("editStatus").className="status wait";
+  $("editMessage").textContent="";
 }
 async function saveEdit(){
   if(!editingId){$("editMessage").className="message error";$("editMessage").textContent="Select a registration first.";return}
