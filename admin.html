@@ -294,6 +294,10 @@ function loadPublished(){
 }
 function clearPublished(){localStorage.removeItem("smkPublishedResults");loadPublished()}
 function showError(m){$("alert").textContent="Admin: "+m;$("alert").classList.remove("hidden")}
-\n\ndocument.getElementById("pin").addEventListener("keydown",function(e){\n  if(e.key==="Enter"){e.preventDefault();login();}\n});\n</script>
+
+document.getElementById("pin").addEventListener("keydown",function(e){
+  if(e.key==="Enter"){e.preventDefault();login();}
+});
+</script>
 </body>
 </html>
