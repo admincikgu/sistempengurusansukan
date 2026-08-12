@@ -57,7 +57,14 @@ if(mb)mb.addEventListener("click",()=>{
 if(ov)ov.addEventListener("click",()=>{
   sb.classList.remove("open");ov.classList.remove("show");
 });
-document.getElementById("sidebarLogout")?.addEventListener("click",logout);
+document.getElementById("sidebarLogout")?.addEventListener("click",e=>{e.preventDefault();logout()});
+document.querySelectorAll(".admin-sidebar a").forEach(link=>{
+  link.addEventListener("click",e=>{
+    if(window.innerWidth<=900){
+      closeAdminMenu();
+    }
+  });
+});
 
 const $=id=>document.getElementById(id);
 let registrations=[];

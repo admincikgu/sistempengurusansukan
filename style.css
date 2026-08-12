@@ -1958,3 +1958,67 @@ body:before{
   border-radius:5px;
   background:#fff;
 }
+
+/* =========================================================
+   V40 — MOBILE SIDEBAR INTERACTION FIX
+   ========================================================= */
+
+@media(max-width:900px){
+  .admin-sidebar,
+  .teacher-sidebar{
+    z-index:220 !important;
+    pointer-events:auto !important;
+    visibility:visible;
+    opacity:1;
+  }
+
+  .admin-sidebar.open,
+  .teacher-sidebar.open{
+    pointer-events:auto !important;
+  }
+
+  .mobile-overlay,
+  .teacher-overlay{
+    z-index:200 !important;
+    background:rgba(31,51,74,.24) !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    pointer-events:auto;
+  }
+
+  .admin-sidebar a,
+  .admin-sidebar button,
+  .teacher-sidebar a,
+  .teacher-sidebar button{
+    position:relative;
+    z-index:230 !important;
+    pointer-events:auto !important;
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .admin-sidebar-link,
+  .teacher-sidebar-link{
+    cursor:pointer;
+    user-select:none;
+  }
+
+  /* Keep the mobile menu trigger above everything. */
+  .admin-mobile-top,
+  .teacher-mobile-top{
+    z-index:240 !important;
+  }
+
+  .mobile-menu-button{
+    position:relative;
+    z-index:250;
+    cursor:pointer;
+    touch-action:manipulation;
+  }
+
+  /* Prevent the page from feeling blurred when the menu is open. */
+  body.menu-open .admin-sidebar,
+  body.menu-open .teacher-sidebar{
+    filter:none !important;
+  }
+}
