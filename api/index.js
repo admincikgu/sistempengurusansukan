@@ -3,6 +3,14 @@ const mongoose = require("mongoose");
 
 const app = express();
 app.use(express.json());
+app.use((req, res, next) => {
+  if (req.url === "/api") {
+    req.url = "/";
+  } else if (req.url.startsWith("/api/")) {
+    req.url = req.url.slice(4);
+  }
+  next();
+});
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const ADMIN_PIN = process.env.ADMIN_PIN || "smkbadawi2026";
