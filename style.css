@@ -540,3 +540,82 @@ button{cursor:pointer}
 }
 @media(max-width:950px){.admin-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.admin-top-row{align-items:flex-start;flex-direction:column}.admin-badges{justify-content:flex-start}.admin-actions,.results-summary,.form-grid.pro{grid-template-columns:1fr}}
+
+/* Sports visual layer */
+.sports-banner{
+  position:relative;overflow:hidden;
+  min-height:130px;
+  border-radius:22px;
+  margin:16px 0;
+  padding:20px 24px;
+  background:
+    linear-gradient(115deg,rgba(31,48,73,.98),rgba(66,90,125,.95) 52%,rgba(125,159,137,.92));
+  color:#fff;
+  box-shadow:var(--shadow);
+}
+.sports-banner:before{
+  content:"";
+  position:absolute;right:-40px;top:-80px;
+  width:250px;height:250px;border-radius:50%;
+  border:1px dashed rgba(255,255,255,.18);
+  box-shadow:0 0 0 44px rgba(255,255,255,.025),0 0 0 88px rgba(255,255,255,.018);
+}
+.sports-banner:after{
+  content:"";
+  position:absolute;left:18px;bottom:10px;width:62%;height:46px;
+  border-top:2px dashed rgba(255,255,255,.18);
+  transform:skewY(-7deg);
+}
+.sports-banner-content{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.sports-banner-copy .eyebrow{color:rgba(255,255,255,.68)}
+.sports-banner-copy h3{margin:5px 0 3px;font-size:22px;color:#fff}
+.sports-banner-copy p{margin:0;color:rgba(255,255,255,.72);font-size:11px}
+.sports-visuals{display:flex;gap:9px;align-items:flex-end;position:relative;z-index:2}
+.sports-visual{
+  width:50px;height:50px;border-radius:15px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.17);
+  font-size:22px;
+  backdrop-filter:blur(8px)
+}
+.sports-visual:nth-child(2){margin-bottom:16px}
+.sports-visual:nth-child(3){margin-bottom:8px}
+
+.form-section{
+  position:relative;overflow:hidden;
+}
+.form-section:after{
+  content:"⚽  🏃  🏅";
+  position:absolute;right:16px;top:14px;
+  font-size:22px;letter-spacing:7px;
+  opacity:.055;pointer-events:none;
+}
+.registration-highlight{
+  display:grid;grid-template-columns:1.2fr .8fr;gap:14px;
+  margin:16px 0;
+}
+.registration-side{
+  position:relative;overflow:hidden;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,#f5f8f6,#faf8fb);
+  min-height:190px;padding:20px;
+}
+.registration-side h4{margin:0 0 6px;color:var(--navy);font-size:17px}
+.registration-side p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+.sport-cloud{position:absolute;right:18px;bottom:14px;font-size:44px;opacity:.14;letter-spacing:12px;white-space:nowrap}
+.sports-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.sport-stat{padding:11px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.sport-stat small{display:block;color:var(--muted);font-size:9px}.sport-stat strong{display:block;color:var(--navy);font-size:16px;margin-top:2px}
+
+@media(max-width:800px){
+  .registration-highlight{grid-template-columns:1fr}
+  .sports-banner-content{align-items:flex-start;flex-direction:column}
+  .sports-visuals{align-self:flex-end}
+}
+@media(max-width:620px){
+  .sports-banner{padding:18px}
+  .sports-visual{width:44px;height:44px;font-size:19px}
+  .sports-stats{grid-template-columns:1fr}
+}

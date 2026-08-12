@@ -1,132 +1,196 @@
 <!doctype html>
-<html lang="ms">
+<html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Teacher Portal | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="/"><span class="brand-mark">🏫</span><span><strong>SMK Datuk Haji Ahmad Badawi</strong><span>School Sports Management System</span></span></a>
+  <a class="brand" href="/">
+    <span class="brand-mark">🏫</span>
+    <span><strong>SMK Datuk Haji Ahmad Badawi</strong><span>School Sports Management System</span></span>
+  </a>
   <nav class="nav-actions">
     <a class="nav-link active" href="/teacher.html">Teacher</a>
     <a class="nav-link" href="/admin.html">Admin</a>
   </nav>
 </header>
 
-<main class="app-shell">
-<section class="page-header">
-  <div class="page-header-copy">
-    <span class="eyebrow">TEACHER PORTAL</span>
-    <h1>Participant Registration</h1>
-    <p>Register students for school sports events with complete and organized information.</p>
-  </div>
-  <div class="header-actions"><span id="dbBadge" class="status wait">● Database: Checking</span></div>
-</section>
-
-<section class="app-hero">
-  <div class="app-hero-row">
-    <div class="app-title">
-      <div class="app-title-icon">👩‍🏫</div>
-      <div><h2>Teacher Registration Portal</h2><p>SMK Datuk Haji Ahmad Badawi · 2026 Session</p></div>
-    </div>
-    <span class="app-badge">TEACHER PORTAL</span>
-  </div>
-</section>
-
-<div class="form-card">
-<section class="panel" style="margin-top:16px">
-  <div class="form-header">
-    <div class="form-icon">📝</div>
-    <div><h2>Register Participant New</h2><p>Enter teacher and participant information. Records are saved directly to the school database.</p></div>
-  </div>
-
-  <div class="form-step">
-    <div class="step"><div class="step-num">01</div><div><strong>Teacher</strong><span>Information pendaftar</span></div></div>
-    <div class="step"><div class="step-num">02</div><div><strong>Participant</strong><span>Information student</span></div></div>
-    <div class="step"><div class="step-num">03</div><div><strong>Event</strong><span>Category & house</span></div></div>
-  </div>
-
-  <form id="f">
-    <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div>
-      <div class="grid">
-        <div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Contoh: Cikgu Ahmad" required></div>
+<main class="container">
+  <section class="sports-banner">
+    <div class="sports-banner-content">
+      <div class="sports-banner-copy">
+        <span class="eyebrow">TEACHER SPORTS PORTAL · 2026</span>
+        <h3>Participant Registration</h3>
+        <p>Register students for school sports events quickly and accurately.</p>
+      </div>
+      <div class="sports-visuals" aria-hidden="true">
+        <div class="sports-visual">🏃</div>
+        <div class="sports-visual">🏅</div>
+        <div class="sports-visual">🏟️</div>
+        <div class="sports-visual">⚽</div>
       </div>
     </div>
+  </section>
 
-    <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div>
-      <div class="grid">
-        <div class="field"><label>STUDENT NAME</label><input id="studentName" placeholder="Nama penuh student" required></div>
-        <div class="field"><label>ID / STUDENT ID</label><input id="studentId" placeholder="Contoh: 10001" required></div>
-      </div>
+  <section class="page-header">
+    <div class="page-header-copy">
+      <span class="eyebrow">TEACHER PORTAL</span>
+      <h1>Participant Registration</h1>
+      <p>Complete the participant details below and save the registration to the school database.</p>
     </div>
-
-    <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">🏃</span><strong>EVENT & SPORTS HOUSE</strong></div>
-      <div class="grid">
-        <div class="field"><label>EVENT</label><select id="event" required></select></div>
-        <div class="field"><label>CATEGORY</label><select id="category" required></select></div>
-        <div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div>
-      </div>
+    <div class="header-actions">
+      <span id="dbBadge" class="status wait">● Database: Checking</span>
     </div>
+  </section>
 
-    <div class="form-actions pro">
-      <span class="hint">Make sure all information is correct before submitting.</span>
-      <div style="display:flex;gap:8px">
-        <button class="secondary" type="reset">Clear</button>
-        <button class="primary" type="submit">✓ Save Registration</button>
+  <section class="registration-highlight">
+    <div class="registration-side">
+      <h4>Sports Registration Center</h4>
+      <p>Organize your student entries by event, category, and sports house. Keep every registration in one place.</p>
+      <div class="sports-stats">
+        <div class="sport-stat"><small>Events</small><strong>14</strong></div>
+        <div class="sport-stat"><small>Categories</small><strong>6</strong></div>
+        <div class="sport-stat"><small>Sports Houses</small><strong>4</strong></div>
       </div>
+      <div class="sport-cloud">🏃 🏅 🏟️</div>
     </div>
-    <div id="m" class="message"></div>
-  </form>
-</section>
+    <div class="registration-side">
+      <h4>Quick Guide</h4>
+      <p>1. Enter teacher information<br>2. Add student details<br>3. Select the event and sports house<br>4. Save the registration</p>
+      <div class="sport-cloud">🥇 🥈 🥉</div>
+    </div>
+  </section>
 
-<section class="panel">
-  <div class="panel-title">
-    <div><h3>Recent Registrations</h3><p>Records registered by the teacher.</p></div>
-    <button class="secondary" type="button" onclick="loadRows()">↻ Refresh</button>
-  </div>
-  <div class="table-toolbar">
-    <input id="filterTeacher" class="search" placeholder="Filter berdasarkan nama teacher...">
-  </div>
-  <div class="table-wrap">
-    <table class="table">
-      <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th><th>Date</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="7" class="empty">Loading records...</td></tr></tbody>
-    </table>
-  </div>
-</section>
-</div>
+  <section class="form-card">
+    <div class="panel">
+      <div class="form-header">
+        <div class="form-icon">📝</div>
+        <div><h2>New Participant</h2><p>Enter accurate information before saving the registration.</p></div>
+      </div>
+
+      <div class="form-step">
+        <div class="step"><div class="step-num">01</div><div><strong>Teacher</strong><span>Registration owner</span></div></div>
+        <div class="step"><div class="step-num">02</div><div><strong>Student</strong><span>Participant details</span></div></div>
+        <div class="step"><div class="step-num">03</div><div><strong>Sports</strong><span>Event & sports house</span></div></div>
+      </div>
+
+      <form id="f">
+        <div class="form-section">
+          <div class="form-section-title"><span class="mini-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div>
+          <div class="grid">
+            <div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="e.g. Cikgu Ahmad" required></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="mini-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div>
+          <div class="grid">
+            <div class="field"><label>STUDENT NAME</label><input id="studentName" placeholder="Full student name" required></div>
+            <div class="field"><label>ID / STUDENT ID</label><input id="studentId" placeholder="e.g. 10001" required></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="mini-icon">🏃</span><strong>SPORTS EVENT & HOUSE</strong></div>
+          <div class="grid">
+            <div class="field"><label>EVENT</label><select id="event" required></select></div>
+            <div class="field"><label>CATEGORY</label><select id="category" required></select></div>
+            <div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div>
+          </div>
+        </div>
+
+        <div class="form-actions pro">
+          <span class="hint">Sports event names remain in the school's Malay terminology.</span>
+          <div style="display:flex;gap:8px">
+            <button class="secondary" type="reset">Clear</button>
+            <button class="primary" type="submit">✓ Save Registration</button>
+          </div>
+        </div>
+        <div id="m" class="message"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-title">
+      <div><h3>Recent Registrations</h3><p>Students recently registered by this portal.</p></div>
+      <button class="secondary" type="button" onclick="loadRows()">↻ Refresh</button>
+    </div>
+    <div class="table-toolbar">
+      <input id="filterTeacher" class="search" placeholder="Search by teacher name...">
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Date</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="7" class="empty">Loading registrations...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
 </main>
+
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
 
 <script>
-const $=i=>document.getElementById(i);
+const $=id=>document.getElementById(id);
+const eventBM={
+  "Long Jump":"Lompat Jauh",
+  "High Jump":"Lompat Tinggi",
+  "Triple Jump":"Lompat Kijang",
+  "Discus Throw":"Lempar Cakera",
+  "Shot Put":"Lontar Peluru",
+  "Javelin Throw":"Merejam Lembing",
+  "Tug of War":"Tarik Tali"
+};
+const sportsHouses={
+  "Bahaman":"Bahaman",
+  "Mat Kilau":"Mat Kilau",
+  "Dato' Sagor":"Dato' Sagor",
+  "Dato' Maharajalela":"Dato' Maharajalela"
+};
 async function api(u,o={}){const r=await fetch(u,{cache:"no-store",...o}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw Error("HTTP "+r.status+" - server returned non-JSON")};if(!r.ok)throw Error(d.message||d.error);return d}
+function translateSportsEvents(arr){return arr.map(x=>eventBM[x]||x)}
 function fill(id,a){$(id).innerHTML='<option value="">Select...</option>'+a.map(x=>`<option>${x}</option>`).join("")}
 async function init(){
   try{
-    const m=await api("/api/master");fill("event",m.events);fill("category",m.categories);fill("house",m.houses);
-    const s=await api("/api/teacher?action=list");
-    $("dbBadge").textContent="● Database: Connected";$("dbBadge").className="status ok";
-  }catch(e){$("dbBadge").textContent="● Database: Offline";$("dbBadge").className="status bad"}
+    const m=await api("/api/master");
+    fill("event",translateSportsEvents(m.events));
+    fill("category",m.categories);
+    fill("house",m.houses);
+    await api("/api/teacher?action=list");
+    $("dbBadge").textContent="● Database: Connected";
+    $("dbBadge").className="status ok";
+  }catch(e){
+    $("dbBadge").textContent="● Database: Offline";
+    $("dbBadge").className="status bad";
+  }
   loadRows();
 }
 async function loadRows(){
   try{
     const t=$("filterTeacher").value.trim();
     const d=await api("/api/teacher?action=list&teacher="+encodeURIComponent(t));
-    $("rows").innerHTML=d.length?d.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("ms-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">No registrations yet.</td></tr>';
+    $("rows").innerHTML=d.length?d.map(x=>`
+      <tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td></tr>`).join("")
+      :'<tr><td colspan="7" class="empty">No registrations yet.</td></tr>';
   }catch(e){$("rows").innerHTML=`<tr><td colspan="7" class="empty">${e.message}</td></tr>`}
 }
 $("f").onsubmit=async e=>{
   e.preventDefault();$("m").className="message";$("m").textContent="Saving...";
   try{
-    const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,studentId:$("studentId").value,event:$("event").value,category:$("category").value,house:$("house").value})});
+    const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      teacher:$("teacher").value,
+      studentName:$("studentName").value,
+      studentId:$("studentId").value,
+      event:$("event").value,
+      category:$("category").value,
+      house:$("house").value
+    })});
     $("m").className="message ok";$("m").textContent="✓ "+d.message;
-    $("studentName").value="";$("studentId").value="";await loadRows();
+    $("studentName").value="";$("studentId").value="";
+    await loadRows();
   }catch(e){$("m").className="message error";$("m").textContent="✕ "+e.message}
 };
 $("filterTeacher").addEventListener("input",loadRows);
