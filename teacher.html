@@ -5,14 +5,34 @@
 <title>Teacher Portal | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
-<body>
+<body><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
+
+<div class="teacher-layout">
+<aside id="teacherSidebar" class="teacher-sidebar" aria-label="Teacher navigation">
+  <div class="teacher-sidebar-brand">
+    <div class="teacher-sidebar-logo">🏫</div>
+    <div><strong>SMKDHAB</strong><span>Teacher Portal</span></div>
+  </div>
+  <div class="teacher-sidebar-label">MAIN</div>
+  <nav class="teacher-sidebar-nav">
+    <a class="teacher-sidebar-link active" href="/teacher.html"><span class="ico">📝</span>Registration</a>
+    <a class="teacher-sidebar-link" href="/teacher.html#records"><span class="ico">👥</span>My Records</a>
+  </nav>
+  <div class="teacher-sidebar-footer">
+    <a class="teacher-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a>
+    <a class="teacher-sidebar-link" href="/admin.html"><span class="ico">🔐</span>Admin Access</a>
+  </div>
+</aside>
+<div class="teacher-main">
+<div class="teacher-mobile-top">
+  <button id="teacherMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button>
+  <strong style="color:var(--navy);font-size:11px">Teacher Portal</strong>
+  <a class="nav-link" href="/">Home</a>
+</div>
+<div id="teacherOverlay" class="teacher-overlay"></div>
 <header class="topbar">
   <a class="brand" href="/"><span class="brand-mark">🏫</span><span class="brand-copy"><strong>SMK Datuk Haji Ahmad Badawi</strong><small>School Sports Management System</small></span></a>
-  <div class="top-actions">
-    <span id="dbBadge" class="status wait">● Database: Checking</span>
-    <a class="nav-link active" href="/teacher.html">Teacher</a>
-    <a class="nav-link" href="/admin.html">Admin</a>
-  </div>
+  <div class="top-actions"><span id="dbBadge" class="status wait">● Database: Checking</span></div>
 </header>
 
 <main class="page">
@@ -68,14 +88,14 @@
         </div>
       </div>
       <div class="form-actions">
-        <span class="left-note">Sports event names remain in the school's Malay terminology.</span>
+        
         <div class="actions"><button class="button-secondary" type="reset">Clear</button><button class="button-primary" type="submit">Save Registration</button></div>
       </div>
       <div id="message" class="message"></div>
     </form>
   </section>
 
-  <section class="section">
+  <section class="section" id="records">
     <div class="section-head"><div class="section-title"><span class="eyebrow">REGISTRATION RECORDS</span><h2>Recent Registrations</h2><p>Latest entries created through this portal.</p></div></div>
     <section class="surface panel sports-panel">
       <div class="table-toolbar"><input id="teacherFilter" placeholder="Search by teacher name..."><button class="button-secondary" id="refreshBtn" type="button">Refresh</button></div>
@@ -85,6 +105,8 @@
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
+</div>
+</div>
 
 <script>
 const $=id=>document.getElementById(id);
