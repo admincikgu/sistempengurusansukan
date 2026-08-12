@@ -20,15 +20,11 @@
 </header>
 
 <main class="systematic-home">
-
   <section class="hero-grid">
     <div class="hero-card">
       <span class="hero-eyebrow">SPORTS MANAGEMENT PORTAL · 2026</span>
       <h2>School Sports<br><span>Control Center</span></h2>
-      <p>
-        A dedicated portal for student registration, event monitoring,
-        competition results, and performance records.
-      </p>
+      <p>A dedicated school portal for student registration, event monitoring, competition results, and performance records.</p>
       <div class="hero-actions">
         <a class="primary" href="/teacher.html">Open Teacher Portal</a>
         <a class="secondary" href="/admin.html">Open Admin Portal</a>
@@ -39,40 +35,26 @@
         <span>2026 Session</span>
       </div>
     </div>
-
     <div class="hero-visual">
       <span class="track-label">SPORTS CENTER</span>
-      <div class="track-board">
-        <strong>SMKDHAB</strong>
-        <span>SPORTS</span>
-      </div>
+      <div class="track-board"><strong>SMKDHAB</strong><span>SPORTS</span></div>
     </div>
   </section>
 
   <section class="section-block">
     <div class="section-heading">
-      <div>
-        <div class="section-kicker">SYSTEM ACCESS</div>
-        <h3>Choose Your Portal</h3>
-        <p>Select the portal that matches your role.</p>
-      </div>
+      <div><div class="section-kicker">SYSTEM ACCESS</div><h3>Choose Your Portal</h3><p>Select the portal that matches your role.</p></div>
     </div>
-
     <div class="portal-grid">
       <a class="portal" href="/teacher.html">
-        <div class="portal-top">
-          <span class="portal-tag">FOR TEACHERS</span><span>↗</span>
-        </div>
+        <div class="portal-top"><span class="portal-tag">FOR TEACHERS</span><span>↗</span></div>
         <div class="portal-icon">👩‍🏫</div>
         <h4>Teacher Portal</h4>
         <p>Register students for school sports events and manage recent registrations.</p>
         <div class="portal-footer"><span>Register Participants</span><span>→</span></div>
       </a>
-
       <a class="portal admin" href="/admin.html">
-        <div class="portal-top">
-          <span class="portal-tag">RESTRICTED ACCESS</span><span>↗</span>
-        </div>
+        <div class="portal-top"><span class="portal-tag">RESTRICTED ACCESS</span><span>↗</span></div>
         <div class="portal-icon">🔐</div>
         <h4>Admin Portal</h4>
         <p>Monitor registrations, record competition results, and manage the leaderboard.</p>
@@ -83,33 +65,18 @@
 
   <section class="section-block">
     <div class="section-heading">
-      <div>
-        <div class="section-kicker">PUBLIC RESULTS</div>
-        <h3>Latest Results</h3>
-        <p>Results published by the administrator.</p>
-      </div>
+      <div><div class="section-kicker">PUBLIC RESULTS</div><h3>Latest Results</h3><p>Results published by the administrator.</p></div>
     </div>
 
     <div class="results-layout">
       <section class="results-card">
-        <div class="results-heading">
-          <h3>Competition Results</h3>
-          <p>Recent published achievements.</p>
-        </div>
-        <div id="results" class="result-list">
-          <div class="no-result">No published results yet.</div>
-        </div>
+        <div class="results-heading"><h3>Competition Results</h3><p>Recent published achievements.</p></div>
+        <div id="results" class="result-list"><div class="no-result">No published results yet.</div></div>
       </section>
-
       <section class="results-visual-card">
-        <div class="mini-track"></div>
-        <div class="mini-track two"></div>
+        <div class="mini-track"></div><div class="mini-track two"></div>
         <div class="visual-core"><strong>SMKDHAB</strong><span>SPORTS</span></div>
-        <div class="visual-copy">
-          <div class="section-kicker">SPORTS HIGHLIGHTS</div>
-          <h4>School Competition Board</h4>
-          <p>Results, participation and achievement records in one organized view.</p>
-        </div>
+        <div class="visual-copy"><div class="section-kicker">SPORTS HIGHLIGHTS</div><h4>School Competition Board</h4><p>Results, participation and achievement records in one organized view.</p></div>
       </section>
     </div>
   </section>
@@ -119,7 +86,6 @@
     <div class="info-card"><span class="icon">📊</span><div><strong>Easy Monitoring</strong><span>Clear dashboard overview.</span></div></div>
     <div class="info-card"><span class="icon">🔒</span><div><strong>Role-Based Access</strong><span>Separate teacher and admin access.</span></div></div>
   </section>
-
 </main>
 
 <footer>SMK Datuk Haji Ahmad Badawi • School Sports Management System • 2026</footer>
@@ -128,16 +94,8 @@
 function renderResults(){
   const data=JSON.parse(localStorage.getItem("smkPublishedResults")||"[]");
   const box=document.getElementById("results");
-  if(!data.length){
-    box.innerHTML='<div class="no-result">No published results yet.</div>';
-    return;
-  }
-  box.innerHTML=data.slice(0,6).map(x=>`
-    <article class="result-item">
-      <div class="event">${x.event||"EVENT"}</div>
-      <strong>${x.studentName||"Participant"}</strong>
-      <span>${x.position?`Position ${x.position}`:""} ${x.points?` · ${x.points} points`:""} ${x.timing?` · ${x.timing}`:""}</span>
-    </article>`).join("");
+  if(!data.length){box.innerHTML='<div class="no-result">No published results yet.</div>';return}
+  box.innerHTML=data.slice(0,6).map(x=>`<article class="result-item"><div class="event">${x.event||"EVENT"}</div><strong>${x.studentName||"Participant"}</strong><span>${x.position?`Position ${x.position}`:""} ${x.points?` · ${x.points} points`:""} ${x.timing?` · ${x.timing}`:""}</span></article>`).join("");
 }
 renderResults();
 </script>
