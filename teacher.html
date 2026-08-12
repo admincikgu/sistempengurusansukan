@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Portal Teacher | SMK Datuk Haji Ahmad Badawi</title>
+<title>Teacher Portal | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -17,9 +17,9 @@
 <main class="app-shell">
 <section class="page-header">
   <div class="page-header-copy">
-    <span class="eyebrow">PORTAL GURU</span>
+    <span class="eyebrow">TEACHER PORTAL</span>
     <h1>Participant Registration</h1>
-    <p>Daftarkan murid ke event sukan dengan information that lengkap and teratur.</p>
+    <p>Register students for school sports events with complete and organized information.</p>
   </div>
   <div class="header-actions"><span id="dbBadge" class="status wait">● Database: Checking</span></div>
 </section>
@@ -28,7 +28,7 @@
   <div class="app-hero-row">
     <div class="app-title">
       <div class="app-title-icon">👩‍🏫</div>
-      <div><h2>Portal Registration Teacher</h2><p>SMK Datuk Haji Ahmad Badawi · Sesi 2026</p></div>
+      <div><h2>Teacher Registration Portal</h2><p>SMK Datuk Haji Ahmad Badawi · 2026 Session</p></div>
     </div>
     <span class="app-badge">TEACHER PORTAL</span>
   </div>
@@ -38,44 +38,44 @@
 <section class="panel" style="margin-top:16px">
   <div class="form-header">
     <div class="form-icon">📝</div>
-    <div><h2>Daftar Participant New</h2><p>Isi information teacher and participant. Records will terus dihantar ke pangkalan data school.</p></div>
+    <div><h2>Register Participant New</h2><p>Enter teacher and participant information. Records are saved directly to the school database.</p></div>
   </div>
 
   <div class="form-step">
     <div class="step"><div class="step-num">01</div><div><strong>Teacher</strong><span>Information pendaftar</span></div></div>
-    <div class="step"><div class="step-num">02</div><div><strong>Participant</strong><span>Information murid</span></div></div>
+    <div class="step"><div class="step-num">02</div><div><strong>Participant</strong><span>Information student</span></div></div>
     <div class="step"><div class="step-num">03</div><div><strong>Event</strong><span>Category & house</span></div></div>
   </div>
 
   <form id="f">
     <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">👩‍🏫</span><strong>MAKLUMAT GURU</strong></div>
+      <div class="form-section-title"><span class="mini-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div>
       <div class="grid">
-        <div class="field"><label>NAMA GURU</label><input id="teacher" placeholder="Contoh: Cikgu Ahmad" required></div>
+        <div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Contoh: Cikgu Ahmad" required></div>
       </div>
     </div>
 
     <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">🎓</span><strong>MAKLUMAT PESERTA</strong></div>
+      <div class="form-section-title"><span class="mini-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div>
       <div class="grid">
-        <div class="field"><label>NAMA PELAJAR</label><input id="studentName" placeholder="Nama penuh student" required></div>
-        <div class="field"><label>ID / NO. KP</label><input id="studentId" placeholder="Contoh: 10001" required></div>
+        <div class="field"><label>STUDENT NAME</label><input id="studentName" placeholder="Nama penuh student" required></div>
+        <div class="field"><label>ID / STUDENT ID</label><input id="studentId" placeholder="Contoh: 10001" required></div>
       </div>
     </div>
 
     <div class="form-section">
-      <div class="form-section-title"><span class="mini-icon">🏃</span><strong>ACARA & RUMAH SUKAN</strong></div>
+      <div class="form-section-title"><span class="mini-icon">🏃</span><strong>EVENT & SPORTS HOUSE</strong></div>
       <div class="grid">
-        <div class="field"><label>ACARA</label><select id="event" required></select></div>
-        <div class="field"><label>KATEGORI</label><select id="category" required></select></div>
-        <div class="field"><label>RUMAH SUKAN</label><select id="house" required></select></div>
+        <div class="field"><label>EVENT</label><select id="event" required></select></div>
+        <div class="field"><label>CATEGORY</label><select id="category" required></select></div>
+        <div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div>
       </div>
     </div>
 
     <div class="form-actions pro">
       <span class="hint">Make sure all information is correct before submitting.</span>
       <div style="display:flex;gap:8px">
-        <button class="secondary" type="reset">Kosongkan</button>
+        <button class="secondary" type="reset">Clear</button>
         <button class="primary" type="submit">✓ Save Registration</button>
       </div>
     </div>
@@ -85,16 +85,16 @@
 
 <section class="panel">
   <div class="panel-title">
-    <div><h3>Recent Registrations</h3><p>Records that has didaftarkan oleh teacher.</p></div>
+    <div><h3>Recent Registrations</h3><p>Records registered by the teacher.</p></div>
     <button class="secondary" type="button" onclick="loadRows()">↻ Refresh</button>
   </div>
   <div class="table-toolbar">
-    <input id="filterTeacher" class="search" placeholder="Tapis berdasarkan nama teacher...">
+    <input id="filterTeacher" class="search" placeholder="Filter berdasarkan nama teacher...">
   </div>
   <div class="table-wrap">
     <table class="table">
-      <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th><th>Tarikh</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="7" class="empty">Memuatkan records...</td></tr></tbody>
+      <thead><tr><th>Student</th><th>ID</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th><th>Date</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="7" class="empty">Loading records...</td></tr></tbody>
     </table>
   </div>
 </section>
@@ -122,7 +122,7 @@ async function loadRows(){
   }catch(e){$("rows").innerHTML=`<tr><td colspan="7" class="empty">${e.message}</td></tr>`}
 }
 $("f").onsubmit=async e=>{
-  e.preventDefault();$("m").className="message";$("m").textContent="Menyimpan...";
+  e.preventDefault();$("m").className="message";$("m").textContent="Saving...";
   try{
     const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,studentId:$("studentId").value,event:$("event").value,category:$("category").value,house:$("house").value})});
     $("m").className="message ok";$("m").textContent="✓ "+d.message;

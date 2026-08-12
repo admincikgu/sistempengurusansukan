@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
         event: String(body.event || "").trim(),
         category: String(body.category || "").trim(),
         house: String(body.house || "").trim(),
-        teacher: String(body.teacher || "Guru").trim(),
+        teacher: String(body.teacher || "Teacher").trim(),
         createdAt: new Date(),
         updatedAt: new Date()
       };

@@ -26,7 +26,7 @@
 
       <div class="school-mark">🏫</div>
       <h1>Admin Access</h1>
-      <p class="sub">Pusat kawalan administrator school</p>
+      <p class="sub">Center control administrator school</p>
 
       <div class="secure-panel">
         <div class="secure-panel-icon">🛡️</div>
@@ -71,18 +71,18 @@
   <div class="soft-section">
     <div>
       <h3>Competition Overview</h3>
-      <p>Paparan keseluruhan data semasa.</p>
+      <p>View the current competition data at a glance.</p>
     </div>
   </div>
 
   <section class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-icon">👥</div>
-      <div class="kpi-copy"><small>Total Registration</small><strong id="total">0</strong></div>
+      <div class="kpi-copy"><small>Total Registrations</small><strong id="total">0</strong></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-icon">🏃</div>
-      <div class="kpi-copy"><small>Event Berdaftar</small><strong id="events">0</strong></div>
+      <div class="kpi-copy"><small>Registered Events</small><strong id="events">0</strong></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-icon">🏆</div>
@@ -90,7 +90,7 @@
     </div>
     <div class="kpi-card">
       <div class="kpi-icon">☁️</div>
-      <div class="kpi-copy"><small>Status Database</small><strong id="dbCount">Checking</strong></div>
+      <div class="kpi-copy"><small>Database Status</small><strong id="dbCount">Checking</strong></div>
     </div>
   </section>
 
@@ -98,8 +98,8 @@
     <section class="panel">
       <div class="panel-title">
         <div>
-          <h3>Master Data Registration</h3>
-          <p>Semua participant that didaftarkan through Portal Teacher.</p>
+          <h3>Master Registration Data</h3>
+          <p>All participants registered through the Teacher Portal.</p>
         </div>
         <button class="secondary" onclick="load()">↻ Refresh</button>
       </div>
@@ -122,7 +122,7 @@
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="7" class="empty">Memuatkan...</td></tr>
+            <tr><td colspan="7" class="empty">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -133,7 +133,7 @@
         <div class="panel-title">
           <div>
             <h3>Quick Actions</h3>
-            <p>Fungsi penteachersan utama.</p>
+            <p>Fungsi penteachersan main.</p>
           </div>
         </div>
 
@@ -141,7 +141,7 @@
           <button class="quick-action" onclick="window.print()">
             <span class="qa-icon">🖨️</span>
             <strong>Print</strong>
-            <span>Laporan / participant</span>
+            <span>Reports / participants</span>
           </button>
 
           <a class="quick-action" href="/teacher.html">
@@ -168,58 +168,58 @@
         <div class="panel-title">
           <div>
             <h3>Top Participants</h3>
-            <p>Top participant berdasarkan mata.</p>
+            <p>Top participants by points.</p>
           </div>
         </div>
         <ol id="leaders" style="margin:0;padding-left:20px;color:var(--ink)">
-          <li>Memuatkan...</li>
+          <li>Loading...</li>
         </ol>
       </section>
     </div>
   </div>
 
-  <!-- KEPUTUSAN -->
+  <!-- RESULTS -->
   <section class="panel" style="margin-top:16px">
     <div class="panel-title">
       <div>
         <h3>🏆 Competition Results</h3>
-        <p>Enter kedudukan, mata and catatan masa/skor participant.</p>
+        <p>Enter the participant position, points, and time/score.</p>
       </div>
-      <span class="status ok">KEPUTUSAN</span>
+      <span class="status ok">RESULTS</span>
     </div>
 
     <div class="form-section">
       <div class="form-section-title">
         <span class="mini-icon">🎯</span>
-        <strong>MAKLUMAT KEPUTUSAN</strong>
+        <strong>MAKLUMAT RESULTS</strong>
       </div>
 
       <div class="grid">
         <div class="field">
-          <label>PESERTA</label>
+          <label>PARTICIPANT</label>
           <select id="participant">
             <option value="">Select participant...</option>
           </select>
         </div>
 
         <div class="field">
-          <label>KEDUDUKAN</label>
+          <label>POSITION</label>
           <input id="position" type="number" min="1" placeholder="Contoh: 1">
         </div>
 
         <div class="field">
-          <label>MATA</label>
+          <label>POINTS</label>
           <input id="points" type="number" min="0" placeholder="Contoh: 10">
         </div>
 
         <div class="field">
-          <label>MASA / SKOR</label>
+          <label>TIME / SCORE</label>
           <input id="timing" placeholder="Contoh: 12.45s / 5.20m">
         </div>
       </div>
 
       <div class="form-actions pro">
-        <span class="hint">Results that disave will used for leaderboard.</span>
+        <span class="hint">Saved results will be used for the leaderboard.</span>
         <button class="primary" onclick="saveResult()">✓ Save Results</button>
       </div>
 
@@ -229,8 +229,8 @@
 
   <section class="panel" style="margin-top:16px">
   <div class="panel-title">
-    <div><h3>📢 Published Results</h3><p>Results that will dipaparkan di Dashboard Utama school.</p></div>
-    <button class="secondary" type="button" onclick="clearPublished()">Kosongkan Paparan</button>
+    <div><h3>📢 Published Results</h3><p>Results published here will appear on the main school dashboard.</p></div>
+    <button class="secondary" type="button" onclick="clearPublished()">Clear View</button>
   </div>
   <div id="publishedList" class="quick-action-grid"></div>
 </section>
@@ -311,8 +311,8 @@ async function load(){
   try{
     /*
       FIX:
-      Status request juga menghantar admin PIN.
-      Sebelum ini database status boleh menjadi 401 walaupun login berjaya.
+      Status request also menghantar admin PIN.
+      Sebelum ini database status can menjadi 401 walaupun login successfully.
     */
     const auth={"x-admin-pin":token};
 
@@ -351,7 +351,7 @@ async function load(){
       ?l.map((x,i)=>
         `<li style="padding:8px 0;border-bottom:1px solid var(--line)">
           <b>${i+1}. ${x.studentName}</b><br>
-          <small>${x.house||"-"} · ${x.points||0} mata</small>
+          <small>${x.house||"-"} · ${x.points||0} points</small>
         </li>`
       ).join("")
       :"<li>No results yet.</li>";
