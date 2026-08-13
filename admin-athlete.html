@@ -1,9 +1,232 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Athlete Profile | SMKDHAB</title><link rel="stylesheet" href="/style.css"></head><body><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link active" href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside><main class="admin-page-main"><header class="admin-page-header"><div><a class="page-nav-back" href="/admin-participants.html">← Participants</a><h1>Athlete Profile</h1><p>Review one participant's complete sports record.</p></div></header><section class="surface panel"><div class="panel-head"><div><h3>Select Participant</h3><p>Choose a registered participant from MongoDB.</p></div></div><div class="form-grid"><div class="field"><label>PARTICIPANT</label><select id="participantSelect"><option value="">Select participant...</option></select></div></div></section><section id="profileArea" class="section"><div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div></section></main></div><script>const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
-async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options});const t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Athlete Profile | SMKDHAB</title><link rel="stylesheet" href="/style.css"></head><body><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link active" href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside><main class="admin-page-main"><header class="admin-page-header"><div><a class="page-nav-back" href="/admin-participants.html">← Participants</a><h1>Athlete Profile</h1><p>Review one participant's complete sports record.</p></div></header><section class="surface panel"><div class="panel-head"><div><h3>Select Participant</h3><p>Choose a registered participant from MongoDB.</p></div></div><div class="form-grid"><div class="field"><label>PARTICIPANT</label><select id="participantSelect"><option value="">Select participant...</option></select></div></div></section><section id="profileArea" class="section"><div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div></section></main></div><script>
+const TOKEN=sessionStorage.getItem("smkAdminToken");
+if(!TOKEN)location.href="/admin.html";
+
+async function api(url,options={}){
+  const r=await fetch(url,{cache:"no-store",...options});
+  const t=await r.text();
+  let d;
+  try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}
+  if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);
+  return d;
+}
 function logout(){sessionStorage.removeItem("smkAdminToken");location.href="/admin.html"}
-const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");if(mb)mb.addEventListener("click",()=>{sb.classList.add("open");ov.classList.add("show")});if(ov)ov.addEventListener("click",()=>{sb.classList.remove("open");ov.classList.remove("show")});document.getElementById("sidebarLogout")?.addEventListener("click",logout);
-const $=id=>document.getElementById(id);let regs=[],results=[];
-async function load(){try{const a={"x-admin-pin":TOKEN};regs=await api("/api/admin?action=registrations",{headers:a});results=await api("/api/admin?action=results",{headers:a});$("participantSelect").innerHTML='<option value="">Select participant...</option>'+regs.map(x=>`<option value="${x._id}">${x.studentName} — ${x.studentId} — ${x.className}</option>`).join("");const sid=new URLSearchParams(location.search).get("studentId");if(sid){const m=regs.find(x=>String(x.studentId)===String(sid));if(m){$("participantSelect").value=m._id;renderProfile(m._id)}}}catch(e){$("profileArea").innerHTML=`<div class="surface profile-card"><div class="message error">${e.message}</div></div>`}}
-function renderProfile(id){const r=regs.find(x=>String(x._id)===String(id));if(!r){$("profileArea").innerHTML='<div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div>';return}const rr=results.filter(x=>String(x.registrationId)===String(r._id));const points=rr.reduce((n,x)=>n+Number(x.points||0),0);const events=regs.filter(x=>String(x.studentId)===String(r.studentId));$("profileArea").innerHTML=`<div class="feature-page-grid"><section class="surface profile-card"><div class="profile-hero"><div class="profile-avatar">👤</div><div><div class="profile-name">${r.studentName}</div><div class="profile-meta">Student ID: ${r.studentId} · Class: ${r.className} · House: ${r.house}</div></div></div><div class="profile-stats"><div class="profile-stat"><small>Registered Events</small><strong>${events.length}</strong></div><div class="profile-stat"><small>Results</small><strong>${rr.length}</strong></div><div class="profile-stat"><small>Total Points</small><strong>${points}</strong></div></div></section><section class="surface profile-card"><div class="panel-head"><div><h3>Recent Results</h3><p>Competition history.</p></div></div>${rr.length?rr.map(x=>`<div class="recent-item"><div class="recent-icon">${Number(x.position)===1?"🥇":"🏅"}</div><div class="recent-copy"><strong>${x.event}</strong><span>Position ${x.position||"-"} · ${x.points||0} points · ${x.timing||"-"}</span></div></div>`).join(""):'<div class="empty">No results recorded yet.</div>'}</section></div><section class="section surface panel"><div class="panel-head"><div><h3>Registered Events</h3><p>All registrations under this student ID.</p></div></div><div class="table-wrap"><table class="table"><thead><tr><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th></tr></thead><tbody>${events.map(x=>`<tr><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td></tr>`).join("")}</tbody></table></div></section>`}
-$("participantSelect").addEventListener("change",e=>renderProfile(e.target.value));load();
+
+const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");
+function openMenu(){sb.classList.add("open");ov.classList.add("show")}
+function closeMenu(){sb.classList.remove("open");ov.classList.remove("show")}
+mb?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openMenu()});
+ov?.addEventListener("click",closeMenu);
+document.getElementById("sidebarLogout")?.addEventListener("click",logout);
+document.querySelectorAll(".admin-sidebar a").forEach(a=>a.addEventListener("click",closeMenu));
+
+const $=id=>document.getElementById(id);
+let registrations=[];
+let results=[];
+let grouped=[];
+
+function groupParticipants(){
+  const map=new Map();
+
+  for(const row of registrations){
+    const key=String(row.studentId||"").trim();
+    if(!key)continue;
+
+    if(!map.has(key)){
+      map.set(key,{
+        studentId:key,
+        studentName:row.studentName||"Unknown",
+        className:row.className||"",
+        house:row.house||"",
+        teacher:row.teacher||"",
+        sports:[]
+      });
+    }
+
+    const person=map.get(key);
+
+    // Keep the common participant details current.
+    if(row.studentName)person.studentName=row.studentName;
+    if(row.className)person.className=row.className;
+    if(row.house)person.house=row.house;
+    if(row.teacher)person.teacher=row.teacher;
+
+    person.sports.push(row);
+  }
+
+  return [...map.values()].sort((a,b)=>a.studentName.localeCompare(b.studentName));
+}
+
+function fillParticipantSelect(){
+  grouped=groupParticipants();
+
+  $("participantSelect").innerHTML=
+    '<option value="">Select participant...</option>'+
+    grouped.map(person=>
+      `<option value="${person.studentId}">
+        ${person.studentName} — ${person.studentId} — ${person.sports.length} sport${person.sports.length===1?"":"s"}
+      </option>`
+    ).join("");
+}
+
+function renderProfile(studentId){
+  const person=grouped.find(x=>String(x.studentId)===String(studentId));
+
+  if(!person){
+    $("profileArea").innerHTML='<div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div>';
+    return;
+  }
+
+  const studentResults=results.filter(result=>
+    person.sports.some(sport=>String(sport._id)===String(result.registrationId))
+  );
+
+  const totalPoints=studentResults.reduce((sum,result)=>sum+Number(result.points||0),0);
+  const gold=studentResults.filter(x=>Number(x.position)===1).length;
+  const silver=studentResults.filter(x=>Number(x.position)===2).length;
+  const bronze=studentResults.filter(x=>Number(x.position)===3).length;
+
+  $("profileArea").innerHTML=`
+    <div class="feature-page-grid">
+      <section class="surface profile-card">
+        <div class="profile-hero">
+          <div class="profile-avatar">👤</div>
+          <div>
+            <div class="profile-name">${person.studentName}</div>
+            <div class="profile-meta">
+              Student ID: ${person.studentId} ·
+              Class: ${person.className||"-"} ·
+              House: ${person.house||"-"}
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <small>Registered Sports</small>
+            <strong>${person.sports.length}</strong>
+          </div>
+          <div class="profile-stat">
+            <small>Results</small>
+            <strong>${studentResults.length}</strong>
+          </div>
+          <div class="profile-stat">
+            <small>Total Points</small>
+            <strong>${totalPoints}</strong>
+          </div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <small>🥇 Gold</small>
+            <strong>${gold}</strong>
+          </div>
+          <div class="profile-stat">
+            <small>🥈 Silver</small>
+            <strong>${silver}</strong>
+          </div>
+          <div class="profile-stat">
+            <small>🥉 Bronze</small>
+            <strong>${bronze}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="surface profile-card">
+        <div class="panel-head">
+          <div>
+            <h3>Sports History</h3>
+            <p>All sports this participant has registered for.</p>
+          </div>
+        </div>
+
+        ${person.sports.map(sport=>{
+          const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
+          const medal=result
+            ? Number(result.position)===1?"🥇"
+            : Number(result.position)===2?"🥈"
+            : Number(result.position)===3?"🥉":"🏅"
+            : "•";
+
+          return `
+            <div class="recent-item">
+              <div class="recent-icon">${medal}</div>
+              <div class="recent-copy">
+                <strong>${sport.event}</strong>
+                <span>${sport.category} · ${sport.house||"-"}</span>
+              </div>
+              <span class="recent-time">
+                ${result?`${result.position||"-"}th · ${result.points||0} pts`:"No result"}
+              </span>
+            </div>`;
+        }).join("")}
+      </section>
+    </div>
+
+    <section class="section surface panel">
+      <div class="panel-head">
+        <div>
+          <h3>Complete Sports Record</h3>
+          <p>One participant, all sports in one place.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Sport Event</th>
+              <th>Category</th>
+              <th>Sports House</th>
+              <th>Teacher</th>
+              <th>Result</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${person.sports.map(sport=>{
+              const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
+
+              return `
+                <tr>
+                  <td>${sport.event}</td>
+                  <td>${sport.category}</td>
+                  <td>${sport.house||"-"}</td>
+                  <td>${sport.teacher||"-"}</td>
+                  <td>${result?`#${result.position||"-"} ${result.timing?`· ${result.timing}`:""}`:"Not recorded"}</td>
+                  <td>${result?Number(result.points||0):0}</td>
+                </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>`;
+}
+
+async function load(){
+  try{
+    const auth={"x-admin-pin":TOKEN};
+
+    [registrations,results]=await Promise.all([
+      api("/api/admin?action=registrations",{headers:auth}),
+      api("/api/admin?action=results",{headers:auth})
+    ]);
+
+    fillParticipantSelect();
+
+    const sid=new URLSearchParams(location.search).get("studentId");
+    if(sid){
+      const person=grouped.find(x=>String(x.studentId)===String(sid));
+      if(person){
+        $("participantSelect").value=person.studentId;
+        renderProfile(person.studentId);
+      }
+    }
+  }catch(error){
+    $("profileArea").innerHTML=`<div class="surface profile-card"><div class="message error">✕ ${error.message}</div></div>`;
+  }
+}
+
+$("participantSelect").addEventListener("change",e=>renderProfile(e.target.value));
+load();
 </script></body></html>
