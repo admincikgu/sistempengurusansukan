@@ -64,43 +64,12 @@
   </div>
 
   
-<section class="surface form-panel sports-panel">
-  <form id="registrationForm">
-    <div class="form-section">
-      <div class="section-marker"><span class="section-marker-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div>
-      <div class="form-grid">
-        <div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Teacher name" required></div>
-      </div>
-    </div>
-
-    <div class="form-section">
-      <div class="section-marker"><span class="section-marker-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div>
-      <div class="form-grid">
-        <div class="field"><label>STUDENT NAME</label><input id="studentName" placeholder="Full student name" required></div>
-        <div class="field"><label>STUDENT ID</label><input id="studentId" placeholder="Student ID" required></div>
-        <div class="field"><label>CLASS</label><select id="className" required></select></div>
-        <div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div>
-      </div>
-    </div>
-
-    <div class="form-section">
-      <div class="section-marker"><span class="section-marker-icon">🏃</span><strong>SPORTS SELECTION</strong></div>
-      <div class="field">
-        <label>SELECT ONE OR MORE SPORTS</label>
-        <div id="sportRows"></div>
-        <button class="button-secondary" type="button" id="addSportBtn" style="margin-top:8px">＋ Add Another Sport</button>
-        <span class="field-help">Each selected sport is saved as a separate registration record.</span>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <div class="actions"><button class="button-secondary" type="reset">Clear</button><button class="button-primary" type="submit">Save Registration</button></div>
-    </div>
-    <div id="duplicateWarning" class="duplicate-warning"></div>
-    <div id="message" class="message"></div>
-  </form>
-</section>
-
+<section class="surface form-panel sports-panel"><form id="registrationForm">
+<div class="form-section"><div class="section-marker"><span class="section-marker-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div><div class="form-grid"><div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Teacher name" required></div></div></div>
+<div class="form-section"><div class="section-marker"><span class="section-marker-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div><div class="form-grid"><div class="field student-search-wrap"><label>STUDENT NAME</label><input id="studentName" placeholder="Start typing student name..." autocomplete="off" required><div id="studentSuggestions" class="student-suggestions"></div></div><div class="field"><label>STUDENT ID</label><input id="studentId" placeholder="Student ID" required></div><div class="field"><label>CLASS</label><select id="className" required></select></div><div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div></div></div>
+<div class="form-section"><div class="section-marker"><span class="section-marker-icon">🏃</span><strong>SPORTS SELECTION</strong></div><div class="field"><label>SELECT ONE OR MORE SPORTS</label><div id="sportRows"></div><button class="button-secondary" type="button" id="addSportBtn" style="margin-top:8px">＋ Add Another Sport</button><span class="field-help">Each selected sport is saved as a separate registration.</span></div></div>
+<div class="form-actions"><div class="actions"><button class="button-secondary" type="reset">Clear</button><button class="button-primary" type="submit">Save Registration</button></div></div><div id="duplicateWarning" class="duplicate-warning"></div><div id="message" class="message"></div>
+</form></section>
   <section class="section" id="records">
     <div class="section-head"><div class="section-title"><span class="eyebrow">REGISTRATION RECORDS</span><h2>Recent Registrations</h2><p>Latest entries created through this portal.</p></div></div>
     <section class="surface panel sports-panel">
@@ -114,125 +83,20 @@
 </div>
 </div>
 
-<script>
-const $=id=>document.getElementById(id);
-async function api(url,options={}){
-  const r=await fetch(url,{cache:"no-store",...options});
-  const text=await r.text();let data;
-  try{data=JSON.parse(text)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}
-  if(!r.ok)throw new Error(data.message||data.error||`HTTP ${r.status}`);
-  return data;
-}
-let master={events:[],categories:[],houses:[],classes:[]};
-
-function fill(id,items){
-  $(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("");
-}
-function addSportRow(){
-  const row=document.createElement("div");
-  row.className="sport-row";
-  row.innerHTML=`
-    <div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div>
-    <div class="field"><label>CATEGORY</label><select class="sport-category"></select></div>
-    <button type="button" class="button-secondary sport-row-remove">Remove</button>`;
-  row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");
-  row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");
-  row.querySelector(".sport-row-remove").addEventListener("click",()=>row.remove());
-  $("sportRows").appendChild(row);
-}
-function collectSports(){
-  return [...document.querySelectorAll(".sport-row")].map(row=>({
-    event:row.querySelector(".sport-event").value,
-    category:row.querySelector(".sport-category").value
-  })).filter(x=>x.event&&x.category);
-}
-async function loadRows(){
-  try{
-    const teacher=$("teacherFilter").value.trim();
-    const data=await api("/api/teacher?action=list&teacher="+encodeURIComponent(teacher));
-    $("rows").innerHTML=data.length
-      ?data.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td></tr>`).join("")
-      :'<tr><td colspan="8" class="empty">No registrations yet.</td></tr>';
-  }catch(e){$("rows").innerHTML=`<tr><td colspan="8" class="empty">${e.message}</td></tr>`}
-}
-async function init(){
-  try{
-    master=await api("/api/master");
-    fill("className",master.classes);
-    fill("house",master.houses);
-    addSportRow();
-    await api("/api/teacher?action=list");
-    $("dbBadge").textContent="● Database: Connected";
-    $("dbBadge").className="status ok";
-  }catch{
-    $("dbBadge").textContent="● Database: Offline";
-    $("dbBadge").className="status bad";
-  }
-  await loadRows();
-}
-$("addSportBtn").addEventListener("click",addSportRow);
-$("teacherFilter").addEventListener("input",loadRows);
-$("refreshBtn").addEventListener("click",loadRows);
-$("registrationForm").addEventListener("reset",()=>{
-  setTimeout(()=>{
-    $("sportRows").innerHTML="";
-    addSportRow();
-    $("duplicateWarning").classList.remove("show");
-    $("message").textContent="";
-  },0);
-});
-$("registrationForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  $("duplicateWarning").classList.remove("show");
-  $("message").className="message";
-  const sports=collectSports();
-  if(!sports.length){
-    $("message").className="message error";
-    $("message").textContent="Please select at least one sport.";
-    return;
-  }
-  $("message").textContent="Saving...";
-  try{
-    const d=await api("/api/teacher?action=register",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        teacher:$("teacher").value,
-        studentName:$("studentName").value,
-        studentId:$("studentId").value,
-        className:$("className").value,
-        house:$("house").value,
-        sports
-      })
-    });
-    $("message").className="message ok";
-    $("message").textContent="✓ "+d.message+(d.spreadsheetSynced===false?" Spreadsheet sync is not configured yet.":"");
-    $("studentName").value="";$("studentId").value="";$("className").value="";$("house").value="";
-    $("sportRows").innerHTML="";addSportRow();await loadRows();
-  }catch(e){
-    if(e.message.includes("already registered")||e.message.includes("HTTP 409")){
-      $("duplicateWarning").textContent="⚠️ "+e.message;
-      $("duplicateWarning").classList.add("show");
-      $("message").className="message error";
-      $("message").textContent="";
-    }else{
-      $("message").className="message error";
-      $("message").textContent="✕ "+e.message;
-    }
-  }
-});
-
-const teacherSidebar=document.getElementById("teacherSidebar");
-const teacherMenuButton=document.getElementById("teacherMenuButton");
-const teacherOverlay=document.getElementById("teacherOverlay");
-function openTeacherMenu(){teacherSidebar.classList.add("open");teacherOverlay.classList.add("show");document.body.classList.add("menu-open")}
-function closeTeacherMenu(){teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show");document.body.classList.remove("menu-open")}
-teacherMenuButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openTeacherMenu()});
-teacherOverlay?.addEventListener("click",closeTeacherMenu);
-document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",closeTeacherMenu));
-window.addEventListener("resize",()=>{if(window.innerWidth>900)closeTeacherMenu()});
-
-init();
+<script>const $=id=>document.getElementById(id);
+async function api(u,o={}){const r=await fetch(u,{cache:"no-store",...o}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error("Server returned invalid data.")}if(!r.ok)throw new Error(d.message||d.error||"Request failed");return d}
+let master={events:[],categories:[],classes:[],houses:[]},students=[];
+function fill(id,a){$(id).innerHTML='<option value="">Select...</option>'+a.map(x=>`<option>${x}</option>`).join("")}
+function addSport(){const row=document.createElement("div");row.className="sport-row";row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div><div class="field"><label>CATEGORY</label><select class="sport-category"></select></div><button type="button" class="button-secondary">Remove</button>';row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");row.querySelector("button").onclick=()=>row.remove();$("sportRows").appendChild(row)}
+function chosenSports(){return [...document.querySelectorAll(".sport-row")].map(r=>({event:r.querySelector(".sport-event").value,category:r.querySelector(".sport-category").value})).filter(x=>x.event&&x.category)}
+function chooseStudent(s){$("studentName").value=s.studentName;$("studentId").value=s.studentId;$("className").value=s.className||"";$("house").value=s.house||"";$("studentSuggestions").classList.remove("show")}
+$("studentName").addEventListener("input",()=>{const q=$("studentName").value.toLowerCase().trim();if(q.length<2){$("studentSuggestions").classList.remove("show");return}const m=students.filter(s=>String(s.studentName).toLowerCase().includes(q)||String(s.studentId).toLowerCase().includes(q)).slice(0,8);$("studentSuggestions").innerHTML=m.map(s=>`<div class="student-suggestion" data-id="${s._id}"><strong>${s.studentName}</strong><span>${s.studentId} · ${s.className||"-"} · ${s.house||"-"}</span></div>`).join("");m.length?$("studentSuggestions").classList.add("show"):$("studentSuggestions").classList.remove("show");document.querySelectorAll(".student-suggestion").forEach(el=>el.onmousedown=e=>{e.preventDefault();const s=students.find(x=>String(x._id)===el.dataset.id);if(s)chooseStudent(s)})});
+document.addEventListener("click",e=>{if(!e.target.closest(".student-search-wrap"))$("studentSuggestions").classList.remove("show")});
+async function loadRows(){try{const teacher=$("teacherFilter").value.trim(),d=await api("/api/teacher?action=list&teacher="+encodeURIComponent(teacher));$("rows").innerHTML=d.length?d.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="8" class="empty">No registrations yet.</td></tr>'}catch(e){$("rows").innerHTML=`<tr><td colspan="8" class="empty">${e.message}</td></tr>`}}
+async function init(){try{master=await api("/api/master");fill("className",master.classes);fill("house",master.houses);students=await api("/api/teacher?action=students");addSport();$("dbBadge").textContent="● Database: Connected";$("dbBadge").className="status ok"}catch{$("dbBadge").textContent="● Database: Offline";$("dbBadge").className="status bad"}await loadRows()}
+$("addSportBtn").onclick=addSport;$("teacherFilter").oninput=loadRows;$("refreshBtn").onclick=loadRows;
+$("registrationForm").onsubmit=async e=>{e.preventDefault();const sports=chosenSports();$("duplicateWarning").classList.remove("show");if(!sports.length){$("message").className="message error";$("message").textContent="Please select at least one sport.";return}try{const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,studentId:$("studentId").value,className:$("className").value,house:$("house").value,sports})});$("message").className="message ok";$("message").textContent="✓ "+d.message;$("registrationForm").reset();$("sportRows").innerHTML="";addSport();await loadRows()}catch(e){$("duplicateWarning").textContent="⚠️ "+e.message;$("duplicateWarning").classList.add("show")}};
+const teacherSidebar=document.getElementById("teacherSidebar"),teacherMenuButton=document.getElementById("teacherMenuButton"),teacherOverlay=document.getElementById("teacherOverlay");function openMenu(){teacherSidebar.classList.add("open");teacherOverlay.classList.add("show")}function closeMenu(){teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show")}teacherMenuButton?.addEventListener("click",e=>{e.stopPropagation();openMenu()});teacherOverlay?.addEventListener("click",closeMenu);document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",closeMenu));init();
 </script>
 </body>
 </html>

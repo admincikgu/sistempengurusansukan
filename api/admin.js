@@ -31,7 +31,23 @@ module.exports = async (req, res) => {
     const db = await getDb();
     const registrations = db.collection("registrations");
     const results = db.collection("results");
+    const students = db.collection("students");
 
+
+    if (action === "students" && req.method === "GET") {
+      const q=String(req.query.q||"").trim();
+      const filter=q?{$or:[{studentName:{$regex:q,$options:"i"}},{studentId:{$regex:q,$options:"i"}}]}:{};
+      const rows=await students.find(filter).sort({studentName:1}).limit(5000).toArray();
+      return res.status(200).json(rows.map(cleanDoc));
+    }
+    if (action === "importStudents" && req.method === "POST") {
+      const input=Array.isArray((req.body||{}).students)?req.body.students:[];
+      const rows=input.map(x=>({studentName:String(x.studentName||x.name||"").trim(),studentId:String(x.studentId||x.id||"").trim(),className:String(x.className||x.class||"").trim().toUpperCase(),house:String(x.house||x.sportsHouse||"").trim().toUpperCase(),updatedAt:new Date()})).filter(x=>x.studentName&&x.studentId);
+      if(!rows.length)return res.status(400).json({ok:false,message:"No valid students found."});
+      const ops=rows.map(x=>({updateOne:{filter:{studentId:x.studentId},update:{$set:x,$setOnInsert:{createdAt:new Date()}},upsert:true}}));
+      const r=await students.bulkWrite(ops,{ordered:false});
+      return res.status(200).json({ok:true,message:"Student master list imported successfully.",imported:rows.length,updated:r.modifiedCount||0,upserted:r.upsertedCount||0});
+    }
     if (action === "master" && (req.method === "GET" || req.method === "PUT")) {
       if (req.method === "GET") {
         const config = await getMasterConfig();
