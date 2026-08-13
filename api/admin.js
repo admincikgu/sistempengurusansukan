@@ -114,6 +114,14 @@ module.exports = async (req, res) => {
       return res.status(200).json(rows.map(cleanDoc));
     }
 
+
+    const officialResultFilter = {
+      $or: [
+        { status: { $in: ["VERIFIED", "PUBLISHED"] } },
+        { status: { $exists: false } }
+      ]
+    };
+
     if (action === "updateResult" && req.method === "PUT") {
       const body = req.body || {};
       const resultId = String(body.resultId || "");
@@ -139,6 +147,9 @@ module.exports = async (req, res) => {
         score: Number(body.score || 0),
         timing: String(body.timing || ""),
         points: Number(body.points || 0),
+        status: ["DRAFT","VERIFIED","PUBLISHED"].includes(String(body.status || "").toUpperCase())
+          ? String(body.status).toUpperCase()
+          : "DRAFT",
         updatedAt: new Date()
       };
 
@@ -148,7 +159,74 @@ module.exports = async (req, res) => {
       );
 
       if (!result.matchedCount) {
-        return res.status(404).json({
+    
+    if (action === "commandCenter" && req.method === "GET") {
+      const config = await getMasterConfig();
+      const [registrationsCount, resultDocs] = await Promise.all([
+        registrations.countDocuments(),
+        results.find({}).sort({ updatedAt:-1, createdAt:-1 }).limit(5000).toArray()
+      ]);
+
+      const official = resultDocs.filter(row =>
+        !row.status || row.status === "VERIFIED" || row.status === "PUBLISHED"
+      );
+
+      const draftCount = resultDocs.filter(row => row.status === "DRAFT").length;
+      const verifiedCount = resultDocs.filter(row => row.status === "VERIFIED").length;
+      const publishedCount = resultDocs.filter(row => !row.status || row.status === "PUBLISHED").length;
+
+      const ids = [...new Set(
+        resultDocs.map(r => r.registrationId).filter(Boolean).map(String)
+      )].filter(id => ObjectId.isValid(id)).map(id => new ObjectId(id));
+
+      const regs = ids.length ? await registrations.find({ _id:{ $in:ids } }).toArray() : [];
+      const regMap = new Map(regs.map(r => [String(r._id), r]));
+
+      const recentResults = official.slice(0, 12).map(row => {
+        const reg = regMap.get(row.registrationId ? String(row.registrationId) : "");
+        if (!reg) return null;
+        return {
+          resultId: String(row._id),
+          studentName: reg.studentName || "Unknown",
+          event: reg.event || "-",
+          category: reg.category || "-",
+          house: reg.house || "-",
+          position: Number(row.position || 0),
+          points: Number(row.points || 0),
+          timing: String(row.timing || ""),
+          status: row.status || "PUBLISHED",
+          updatedAt: row.updatedAt || row.createdAt || null
+        };
+      }).filter(Boolean);
+
+      const eventSet = new Set((config?.events || []).map(String));
+      const activeEvents = [...eventSet].map(event => ({
+        event,
+        participants: 0,
+        results: 0
+      }));
+
+      const registrationsRows = await registrations.find({}).limit(5000).toArray();
+      const eventMap = new Map(activeEvents.map(x => [x.event, x]));
+      for (const row of registrationsRows) {
+        if (!eventMap.has(row.event)) eventMap.set(row.event, {event:row.event,participants:0,results:0});
+        eventMap.get(row.event).participants += 1;
+      }
+      for (const row of official) {
+        const reg = regMap.get(row.registrationId ? String(row.registrationId) : "");
+        if (reg && eventMap.has(reg.event)) eventMap.get(reg.event).results += 1;
+      }
+
+      return res.status(200).json({
+        ok:true,
+        registrations:registrationsCount,
+        events:[...eventMap.values()],
+        counts:{draft:draftCount,verified:verifiedCount,published:publishedCount,totalResults:resultDocs.length},
+        recentResults
+      });
+    }
+
+    return res.status(404).json({
           ok: false,
           message: "Result not found."
         });
@@ -158,6 +236,59 @@ module.exports = async (req, res) => {
         ok: true,
         message: "Competition result updated successfully."
       });
+    }
+
+
+    if (action === "verifyResult" && req.method === "PUT") {
+      const id = String((req.body || {}).resultId || "");
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ ok:false, message:"Invalid result ID." });
+      }
+      const updated = await results.updateOne(
+        { _id:new ObjectId(id) },
+        { $set:{ status:"VERIFIED", verifiedAt:new Date(), updatedAt:new Date() } }
+      );
+      if (!updated.matchedCount) {
+        return res.status(404).json({ ok:false, message:"Result not found." });
+      }
+      return res.status(200).json({ ok:true, message:"Result verified successfully." });
+    }
+
+    if (action === "publishResult" && req.method === "PUT") {
+      const id = String((req.body || {}).resultId || "");
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ ok:false, message:"Invalid result ID." });
+      }
+      const found = await results.findOne({ _id:new ObjectId(id) });
+      if (!found) {
+        return res.status(404).json({ ok:false, message:"Result not found." });
+      }
+      if (found.status && found.status !== "VERIFIED" && found.status !== "PUBLISHED") {
+        return res.status(409).json({
+          ok:false,
+          message:"Verify the result before publishing it."
+        });
+      }
+      await results.updateOne(
+        { _id:new ObjectId(id) },
+        { $set:{ status:"PUBLISHED", publishedAt:new Date(), updatedAt:new Date() } }
+      );
+      return res.status(200).json({ ok:true, message:"Result published successfully." });
+    }
+
+    if (action === "unverifyResult" && req.method === "PUT") {
+      const id = String((req.body || {}).resultId || "");
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ ok:false, message:"Invalid result ID." });
+      }
+      const updated = await results.updateOne(
+        { _id:new ObjectId(id) },
+        { $set:{ status:"DRAFT", updatedAt:new Date() }, $unset:{ verifiedAt:"", publishedAt:"" } }
+      );
+      if (!updated.matchedCount) {
+        return res.status(404).json({ ok:false, message:"Result not found." });
+      }
+      return res.status(200).json({ ok:true, message:"Result moved back to draft." });
     }
 
     if (action === "deleteResult" && req.method === "DELETE") {
@@ -307,6 +438,7 @@ module.exports = async (req, res) => {
         score: Number(body.score || 0),
         timing: String(body.timing || ""),
         points: Number(body.points || 0),
+        status: "DRAFT",
         updatedAt: new Date()
       };
 
@@ -327,7 +459,7 @@ module.exports = async (req, res) => {
 
     if (action === "leaderboard" && req.method === "GET") {
       const resultRows = await results
-        .find({})
+        .find(officialResultFilter)
         .sort({ updatedAt: -1, createdAt: -1 })
         .limit(5000)
         .toArray();
@@ -384,7 +516,7 @@ module.exports = async (req, res) => {
 
     if (action === "results" && req.method === "GET") {
       const resultRows = await results
-        .find({})
+        .find(officialResultFilter)
         .sort({ updatedAt: -1, createdAt: -1 })
         .limit(5000)
         .toArray();
@@ -430,6 +562,7 @@ module.exports = async (req, res) => {
             position: Number(row.position || 0),
             points: Number(row.points || 0),
             timing: String(row.timing || ""),
+            status: row.status || "PUBLISHED",
             updatedAt: row.updatedAt || row.createdAt || null
           };
         }).filter(Boolean)

@@ -15,7 +15,12 @@ module.exports = async (req, res) => {
     const results = db.collection("results");
 
     const resultRows = await results
-      .find({})
+.find({
+        $or:[
+          {status:{$in:["VERIFIED","PUBLISHED"]}},
+          {status:{$exists:false}}
+        ]
+      })
       .sort({ updatedAt: -1, createdAt: -1 })
       .limit(50)
       .toArray();
@@ -63,6 +68,7 @@ module.exports = async (req, res) => {
           position: Number(row.position || 0),
           points: Number(row.points || 0),
           timing: String(row.timing || ""),
+          status: row.status || "PUBLISHED",
           updatedAt: row.updatedAt || row.createdAt || null
         };
       })
