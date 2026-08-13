@@ -122,44 +122,6 @@ module.exports = async (req, res) => {
       ]
     };
 
-    if (action === "updateResult" && req.method === "PUT") {
-      const body = req.body || {};
-      const resultId = String(body.resultId || "");
-
-      if (!ObjectId.isValid(resultId)) {
-        return res.status(400).json({
-          ok: false,
-          message: "Invalid result ID."
-        });
-      }
-
-      const registrationId = String(body.registrationId || "");
-      if (!ObjectId.isValid(registrationId)) {
-        return res.status(400).json({
-          ok: false,
-          message: "Invalid participant ID."
-        });
-      }
-
-      const resultDoc = {
-        registrationId: new ObjectId(registrationId),
-        position: Number(body.position || 0),
-        score: Number(body.score || 0),
-        timing: String(body.timing || ""),
-        points: Number(body.points || 0),
-        status: ["DRAFT","VERIFIED","PUBLISHED"].includes(String(body.status || "").toUpperCase())
-          ? String(body.status).toUpperCase()
-          : "DRAFT",
-        updatedAt: new Date()
-      };
-
-      const result = await results.updateOne(
-        { _id: new ObjectId(resultId) },
-        { $set: resultDoc }
-      );
-
-      if (!result.matchedCount) {
-    
     if (action === "commandCenter" && req.method === "GET") {
       const config = await getMasterConfig();
       const [registrationsCount, resultDocs] = await Promise.all([
@@ -200,17 +162,22 @@ module.exports = async (req, res) => {
       }).filter(Boolean);
 
       const eventSet = new Set((config?.events || []).map(String));
-      const activeEvents = [...eventSet].map(event => ({
-        event,
-        participants: 0,
-        results: 0
-      }));
-
       const registrationsRows = await registrations.find({}).limit(5000).toArray();
-      const eventMap = new Map(activeEvents.map(x => [x.event, x]));
+
       for (const row of registrationsRows) {
-        if (!eventMap.has(row.event)) eventMap.set(row.event, {event:row.event,participants:0,results:0});
-        eventMap.get(row.event).participants += 1;
+        eventSet.add(String(row.event || "UNASSIGNED"));
+      }
+
+      const eventMap = new Map(
+        [...eventSet].map(event => [event, { event, participants: 0, results: 0 }])
+      );
+
+      for (const row of registrationsRows) {
+        const event = String(row.event || "UNASSIGNED");
+        if (!eventMap.has(event)) {
+          eventMap.set(event, { event, participants: 0, results: 0 });
+        }
+        eventMap.get(event).participants += 1;
       }
       for (const row of official) {
         const reg = regMap.get(row.registrationId ? String(row.registrationId) : "");
@@ -226,6 +193,44 @@ module.exports = async (req, res) => {
       });
     }
 
+    if (action === "updateResult" && req.method === "PUT") {
+      const body = req.body || {};
+      const resultId = String(body.resultId || "");
+
+      if (!ObjectId.isValid(resultId)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid result ID."
+        });
+      }
+
+      const registrationId = String(body.registrationId || "");
+      if (!ObjectId.isValid(registrationId)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid participant ID."
+        });
+      }
+
+      const resultDoc = {
+        registrationId: new ObjectId(registrationId),
+        position: Number(body.position || 0),
+        score: Number(body.score || 0),
+        timing: String(body.timing || ""),
+        points: Number(body.points || 0),
+        status: ["DRAFT","VERIFIED","PUBLISHED"].includes(String(body.status || "").toUpperCase())
+          ? String(body.status).toUpperCase()
+          : "DRAFT",
+        updatedAt: new Date()
+      };
+
+      const result = await results.updateOne(
+        { _id: new ObjectId(resultId) },
+        { $set: resultDoc }
+      );
+
+      if (!result.matchedCount) {
+    
     return res.status(404).json({
           ok: false,
           message: "Result not found."

@@ -21,7 +21,9 @@ async function load(){
   ["Verified",data.counts.verified,"Ready to publish"],
   ["Published",data.counts.published,"Official results"]
  ].map(x=>`<div class="quick-stat"><small>${x[0]}</small><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join("");
- document.getElementById("events").innerHTML=data.events.map(x=>`<div class="command-event"><strong>${x.event}</strong><span>${x.participants} registrations · ${x.results} official result(s)</span></div>`).join("");
+ document.getElementById("events").innerHTML=data.events.length
+   ? data.events.map(x=>`<div class="command-event"><strong>${x.event}</strong><span>${x.participants} registrations · ${x.results} official result(s)</span></div>`).join("")
+   : '<div class="empty">No sports events configured.</div>';
  document.getElementById("recent").innerHTML=data.recentResults.length?data.recentResults.map(x=>`<div class="recent-item"><div class="recent-icon">${x.position===1?"🥇":x.position===2?"🥈":x.position===3?"🥉":"🏅"}</div><div class="recent-copy"><strong>${x.studentName}</strong><span>${x.event} · Position ${x.position||"-"} · ${x.points} pts</span></div><span class="recent-time">${x.status}</span></div>`).join(""):'<div class="empty">No official results yet.</div>';
  const medalMap={};
  for(const x of data.recentResults){const h=x.house||"UNASSIGNED";if(!medalMap[h])medalMap[h]={gold:0,silver:0,bronze:0};if(x.position===1)medalMap[h].gold++;if(x.position===2)medalMap[h].silver++;if(x.position===3)medalMap[h].bronze++;}
