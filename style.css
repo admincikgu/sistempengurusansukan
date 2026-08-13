@@ -2099,3 +2099,60 @@ body:before{
 @media(max-width:1000px){.house-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.feature-page-grid,.report-grid{grid-template-columns:1fr}.profile-stats{grid-template-columns:1fr}}
 @media(max-width:520px){.house-grid{grid-template-columns:1fr}}
+
+/* V43 multi-sport + event management */
+.sport-row{
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:8px;
+  align-items:end;
+  margin-top:8px;
+  padding:9px;
+  border:1px solid var(--line2);
+  border-radius:12px;
+  background:#fbfcfb;
+}
+.sport-row .field label{font-size:8px}
+.sport-row-remove{
+  min-height:43px;
+  white-space:nowrap;
+}
+.event-editor-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+  margin-top:7px
+}
+@media(max-width:720px){
+  .sport-row{grid-template-columns:1fr}
+  .sport-row-remove{width:100%}
+}
+
+/* Mobile sidebar must remain crisp and clickable */
+@media(max-width:900px){
+  .teacher-sidebar,.admin-sidebar{
+    z-index:500!important;
+    pointer-events:auto!important;
+    filter:none!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+  .teacher-sidebar.open,.admin-sidebar.open{
+    z-index:500!important;
+    pointer-events:auto!important;
+  }
+  .teacher-sidebar a,.teacher-sidebar button,
+  .admin-sidebar a,.admin-sidebar button{
+    position:relative!important;
+    z-index:510!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+  }
+  .teacher-overlay,.mobile-overlay{
+    z-index:400!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    pointer-events:auto!important;
+  }
+}

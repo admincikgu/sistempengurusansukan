@@ -1,4 +1,4 @@
-const { getDb, adminOK, ObjectId, cleanDoc } = require("../lib/db");
+const { getDb, adminOK, ObjectId, cleanDoc, getMasterConfig, saveMasterConfig } = require("../lib/db");
 
 module.exports = async (req, res) => {
   try {
@@ -31,6 +31,28 @@ module.exports = async (req, res) => {
     const db = await getDb();
     const registrations = db.collection("registrations");
     const results = db.collection("results");
+
+    if (action === "master" && (req.method === "GET" || req.method === "PUT")) {
+      if (req.method === "GET") {
+        const config = await getMasterConfig();
+        return res.status(200).json({ ok:true, ...(config || {}) });
+      }
+      const body=req.body||{};
+      const cleanArray=value=>Array.isArray(value)
+        ? [...new Set(value.map(x=>String(x||"").trim().toUpperCase()).filter(Boolean))]
+        : [];
+      const saved=await saveMasterConfig({
+        events:cleanArray(body.events),
+        categories:cleanArray(body.categories),
+        houses:cleanArray(body.houses),
+        classes:cleanArray(body.classes)
+      });
+      return res.status(200).json({
+        ok:true,
+        message:"Sports configuration updated successfully.",
+        ...saved
+      });
+    }
 
     if (action === "status" && req.method === "GET") {
       return res.status(200).json({
