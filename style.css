@@ -2193,3 +2193,24 @@ body:before{
 .command-actions{display:flex;gap:7px;flex-wrap:wrap}
 @media(max-width:900px){.command-grid{grid-template-columns:1fr}.medal-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.command-status-row{grid-template-columns:1fr}.command-event-grid,.medal-grid{grid-template-columns:1fr}}
+
+.manage-sports-list{display:grid;gap:8px}
+.manage-sport-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
+  gap:8px;align-items:end;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#fbfcfb
+}
+.manage-sport-row[data-new="true"]{background:#f5f9f6;border-color:#d6e4da}
+.manage-sport-remove{min-height:43px;white-space:nowrap}
+.manage-sports-actions{display:flex;gap:7px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+.manage-sports-note{font-size:8px;color:var(--muted)}
+@media(max-width:720px){
+  .manage-sport-row{grid-template-columns:1fr}
+  .manage-sport-remove{width:100%}
+  .manage-sports-actions{display:grid;grid-template-columns:1fr}
+  .manage-sports-actions>*{width:100%}
+}

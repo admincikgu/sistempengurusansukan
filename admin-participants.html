@@ -2,43 +2,332 @@
 <main class="admin-page-main">
 <header class="admin-page-header"><div><a class="page-nav-back" href="/admin-dashboard.html">← Dashboard</a><h1>Participants</h1><p>View, edit, delete and print registered student records.</p></div><div class="header-actions"><button class="button-secondary" id="refreshBtn">↻ Refresh</button><button class="button-primary" id="printBtn">🖨️ Print Official List</button></div></header>
 <section class="surface panel"><div class="panel-head"><div><h3>Participant Records</h3><p>Live registration data from MongoDB.</p></div><span id="dbStatus" class="status wait">● Database: Checking</span></div><div class="table-toolbar"><input id="search" placeholder="Search student, ID, class, event, category, house or teacher..."></div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div></section>
-<section class="section"><section class="surface participant-manager"><div class="manager-head"><div><span class="eyebrow">PARTICIPANT MANAGEMENT</span><h2>Manage Participant</h2><p>Select a registration from the database, review the current record, then update the editable fields.</p></div><span id="managerStatus" class="status wait">No participant selected</span></div><div class="manager-picker"><div class="field"><label>DATABASE REGISTRATION</label><select id="editRecordSelect"><option value="">Select a participant...</option></select><span class="field-help">Records are loaded from MongoDB.</span></div><button class="button-primary" id="loadDbRecordBtn">Load Participant</button></div><div class="selected-participant"><div class="selected-avatar">👤</div><div class="selected-copy"><span class="eyebrow">CURRENT RECORD</span><strong id="selectedName">No participant selected</strong><span id="selectedMeta">Choose a database registration above.</span></div><span id="selectedState" class="status wait">Waiting</span></div><div class="manager-form"><div class="form-grid"><div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div><div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div><div class="field"><label>CLASS</label><select id="editClass"></select></div><div class="field"><label>EVENT</label><select id="editEvent"></select></div><div class="field"><label>CATEGORY</label><select id="editCategory"></select></div><div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div><div class="field"><label>TEACHER</label><input id="editTeacher"></div></div><div class="manager-footer"><div><span class="field-help">Student Name and Student ID are protected database values.</span><div id="editMessage" class="message"></div></div><div class="manager-actions"><button class="button-secondary" id="clearEditBtn">Clear</button><button class="button-primary" id="saveEditBtn">Save Changes</button></div></div></div></section></section>
+
+<section class="section">
+<section class="surface participant-manager">
+<div class="manager-head">
+  <div>
+    <span class="eyebrow">PARTICIPANT MANAGEMENT</span>
+    <h2>Manage Participant</h2>
+    <p>Select a student once, then manage all sports registered under that student.</p>
+  </div>
+  <span id="managerStatus" class="status wait">No participant selected</span>
+</div>
+
+<div class="manager-picker">
+  <div class="field">
+    <label>STUDENT</label>
+    <select id="editParticipantSelect">
+      <option value="">Select student...</option>
+    </select>
+    <span class="field-help">Each student can have more than one sport.</span>
+  </div>
+  <button class="button-primary" id="loadParticipantBtn" type="button">Load Participant</button>
+</div>
+
+<div class="selected-participant">
+  <div class="selected-avatar">👤</div>
+  <div class="selected-copy">
+    <span class="eyebrow">CURRENT PARTICIPANT</span>
+    <strong id="selectedName">No participant selected</strong>
+    <span id="selectedMeta">Choose a student above.</span>
+  </div>
+  <span id="selectedState" class="status wait">Waiting</span>
+</div>
+
+<div class="manager-form">
+  <div class="form-grid">
+    <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
+    <div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div>
+    <div class="field"><label>CLASS</label><select id="editClass"></select></div>
+    <div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div>
+    <div class="field"><label>TEACHER</label><input id="editTeacher"></div>
+  </div>
+
+  <div class="section-marker" style="margin-top:16px">
+    <span class="section-marker-icon">🏃</span>
+    <strong>REGISTERED SPORTS</strong>
+  </div>
+
+  <div id="manageSportsList" class="manage-sports-list">
+    <div class="empty">Load a participant to manage their sports.</div>
+  </div>
+
+  <div class="manage-sports-actions">
+    <span class="manage-sports-note">A participant may have multiple sports. Removing a sport also removes its saved competition result.</span>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="button-secondary" id="addManageSportBtn" type="button">＋ Add Sport</button>
+      <button class="button-secondary" id="clearEditBtn" type="button">Clear</button>
+      <button class="button-primary" id="saveEditBtn" type="button">Save All Changes</button>
+    </div>
+  </div>
+
+  <div id="editMessage" class="message"></div>
+</div>
+</section>
+</section>
+
 </main></div>
-<script>const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
-async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
+<script>
+const TOKEN=sessionStorage.getItem("smkAdminToken");
+if(!TOKEN)location.href="/admin.html";
+
+async function api(url,options={}){
+  const r=await fetch(url,{cache:"no-store",...options});
+  const t=await r.text();
+  let d;
+  try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}
+  if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);
+  return d;
+}
 function logout(){sessionStorage.removeItem("smkAdminToken");location.href="/admin.html"}
 const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");
-function openAdminMenu(){
-  sb.classList.add("open");
-  ov.classList.add("show");
-  document.body.classList.add("menu-open");
+function openAdminMenu(){sb.classList.add("open");ov.classList.add("show");document.body.classList.add("menu-open")}
+function closeAdminMenu(){sb.classList.remove("open");ov.classList.remove("show");document.body.classList.remove("menu-open")}
+mb?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openAdminMenu()});
+ov?.addEventListener("click",closeAdminMenu);
+document.getElementById("sidebarLogout")?.addEventListener("click",logout);
+document.querySelectorAll(".admin-sidebar a").forEach(a=>a.addEventListener("click",closeAdminMenu));
+
+const $=id=>document.getElementById(id);
+let registrations=[];
+let master={events:[],categories:[],classes:[],houses:[]};
+let selectedStudentId="";
+
+function fill(id,items){
+  $(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("");
 }
-function closeAdminMenu(){
-  sb.classList.remove("open");
-  ov.classList.remove("show");
-  document.body.classList.remove("menu-open");
+
+function studentGroups(){
+  const map=new Map();
+  for(const row of registrations){
+    const key=String(row.studentId||"");
+    if(!map.has(key))map.set(key,[]);
+    map.get(key).push(row);
+  }
+  return [...map.entries()].map(([studentId,rows])=>({
+    studentId,
+    studentName:rows[0].studentName||"Unknown",
+    className:rows[0].className||"",
+    house:rows[0].house||"",
+    teacher:rows[0].teacher||"",
+    rows
+  })).sort((a,b)=>a.studentName.localeCompare(b.studentName));
 }
-if(mb)mb.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openAdminMenu()});
-if(ov)ov.addEventListener("click",e=>{e.preventDefault();closeAdminMenu()});
-document.getElementById("sidebarLogout")?.addEventListener("click",e=>{e.preventDefault();logout()});
-document.querySelectorAll(".admin-sidebar a").forEach(link=>{
-  link.addEventListener("click",e=>{
-    if(window.innerWidth<=900){
-      closeAdminMenu();
-    }
-  });
-});
-const $=id=>document.getElementById(id);let registrations=[],editingId="";
-function fill(id,a){$(id).innerHTML='<option value="">Select...</option>'+a.map(x=>`<option>${x}</option>`).join("")}
-async function loadMaster(){const m=await api("/api/master");fill("editClass",m.classes);fill("editEvent",m.events);fill("editCategory",m.categories);fill("editHouse",m.houses)}
-function fillSelector(){$("editRecordSelect").innerHTML='<option value="">Select a participant...</option>'+registrations.map(x=>`<option value="${x._id}">${x.studentName} — ${x.studentId} — ${x.event}</option>`).join("")}
-function render(){const q=$("search").value.trim().toLowerCase(),rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));$("rows").innerHTML=rows.length?rows.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td><div style="display:flex;gap:5px"><a class="button-secondary" style="min-height:30px;padding:0 8px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a><button class="button-secondary" style="min-height:30px;padding:0 8px" onclick='selectEdit(${JSON.stringify(x)})'>Edit</button><button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button></div></td></tr>`).join(""):'<tr><td colspan="8" class="empty">No registrations found.</td></tr>'}
-function selectEdit(x){editingId=String(x._id);$("editRecordSelect").value=editingId;$("editStudentName").value=x.studentName||"";$("editStudentId").value=x.studentId||"";$("editClass").value=x.className||"";$("editEvent").value=x.event||"";$("editCategory").value=x.category||"";$("editHouse").value=x.house||"";$("editTeacher").value=x.teacher||"";$("selectedName").textContent=x.studentName||"Unnamed participant";$("selectedMeta").textContent=`${x.studentId||"No ID"} · ${x.className||"No class"} · ${x.event||"No event"}`;$("selectedState").textContent="Loaded";$("selectedState").className="status ok";$("managerStatus").textContent="Database record loaded";$("managerStatus").className="status ok";document.querySelector(".participant-manager").scrollIntoView({behavior:"smooth",block:"start"})}
-function loadDbRecord(){const id=$("editRecordSelect").value,x=registrations.find(r=>String(r._id)===String(id));if(x)selectEdit(x)}
-function clearEdit(){editingId="";$("editRecordSelect").value="";["editStudentName","editStudentId","editTeacher"].forEach(i=>$(i).value="");["editClass","editEvent","editCategory","editHouse"].forEach(i=>$(i).value="");$("selectedName").textContent="No participant selected";$("selectedMeta").textContent="Choose a database registration above.";$("selectedState").textContent="Waiting";$("selectedState").className="status wait";$("managerStatus").textContent="No participant selected";$("managerStatus").className="status wait";$("editMessage").textContent=""}
-async function load(){try{const a={"x-admin-pin":TOKEN};await loadMaster();registrations=await api("/api/admin?action=registrations",{headers:a});$("dbStatus").textContent="● Database: Connected";$("dbStatus").className="status ok";render();fillSelector()}catch(e){$("dbStatus").textContent="● Database: Error";$("dbStatus").className="status bad";$("rows").innerHTML=`<tr><td colspan="8" class="empty">${e.message}</td></tr>`}}
-async function saveEdit(){if(!editingId){$("editMessage").className="message error";$("editMessage").textContent="Select a participant first.";return}try{const d=await api("/api/admin?action=update",{method:"PUT",headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},body:JSON.stringify({id:editingId,studentName:$("editStudentName").value,studentId:$("editStudentId").value,className:$("editClass").value,event:$("editEvent").value,category:$("editCategory").value,house:$("editHouse").value,teacher:$("editTeacher").value})});$("editMessage").className="message ok";$("editMessage").textContent="✓ "+d.message;await load();const x=registrations.find(r=>String(r._id)===editingId);if(x)selectEdit(x)}catch(e){$("editMessage").className="message error";$("editMessage").textContent="✕ "+e.message}}
-async function deleteRegistration(id){const row=registrations.find(x=>x._id===id);if(!confirm(`Delete ${row?.studentName||"this registration"}? This action cannot be undone.`))return;try{const d=await api("/api/admin?action=delete&id="+encodeURIComponent(id),{method:"DELETE",headers:{"x-admin-pin":TOKEN}});$("editMessage").className="message ok";$("editMessage").textContent="✓ "+d.message;clearEdit();await load()}catch(e){$("editMessage").className="message error";$("editMessage").textContent="✕ "+e.message}}
-function preparePrint(){const q=$("search").value.trim().toLowerCase(),rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));const w=window.open("","_blank");const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentId||"-"}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>ID</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="8">No participant records.</td></tr>'}</tbody></table><p><b>Total Participants:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);w.document.close()}
-$("search").addEventListener("input",render);$("refreshBtn").addEventListener("click",load);$("editRecordSelect").addEventListener("change",loadDbRecord);$("loadDbRecordBtn").addEventListener("click",loadDbRecord);$("clearEditBtn").addEventListener("click",clearEdit);$("saveEditBtn").addEventListener("click",saveEdit);$("printBtn").addEventListener("click",preparePrint);load();
-</script></body></html>
+
+function fillParticipantSelect(){
+  const groups=studentGroups();
+  $("editParticipantSelect").innerHTML='<option value="">Select student...</option>'+
+    groups.map(g=>`<option value="${g.studentId}">${g.studentName} — ${g.studentId} — ${g.rows.length} sport${g.rows.length===1?"":"s"}</option>`).join("");
+}
+
+function createSportRow(sport={}){
+  const row=document.createElement("div");
+  row.className="manage-sport-row";
+  row.dataset.id=String(sport._id||"");
+  row.dataset.new=sport._id?"false":"true";
+
+  row.innerHTML=`
+    <div class="field">
+      <label>SPORT EVENT</label>
+      <select class="manage-event"></select>
+    </div>
+    <div class="field">
+      <label>CATEGORY</label>
+      <select class="manage-category"></select>
+    </div>
+    <button type="button" class="button-secondary manage-sport-remove">Remove</button>`;
+
+  row.querySelector(".manage-event").innerHTML=
+    '<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");
+  row.querySelector(".manage-category").innerHTML=
+    '<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");
+
+  row.querySelector(".manage-event").value=sport.event||"";
+  row.querySelector(".manage-category").value=sport.category||"";
+
+  row.querySelector(".manage-sport-remove").addEventListener("click",()=>row.remove());
+  $("manageSportsList").appendChild(row);
+}
+
+function clearEdit(){
+  selectedStudentId="";
+  $("editParticipantSelect").value="";
+  $("editStudentName").value="";
+  $("editStudentId").value="";
+  $("editClass").value="";
+  $("editHouse").value="";
+  $("editTeacher").value="";
+  $("manageSportsList").innerHTML='<div class="empty">Load a participant to manage their sports.</div>';
+  $("selectedName").textContent="No participant selected";
+  $("selectedMeta").textContent="Choose a student above.";
+  $("selectedState").textContent="Waiting";
+  $("selectedState").className="status wait";
+  $("managerStatus").textContent="No participant selected";
+  $("managerStatus").className="status wait";
+  $("editMessage").textContent="";
+}
+
+function loadParticipant(){
+  const studentId=$("editParticipantSelect").value;
+  if(!studentId){clearEdit();return;}
+
+  const group=studentGroups().find(g=>String(g.studentId)===String(studentId));
+  if(!group)return;
+
+  selectedStudentId=String(studentId);
+  $("editStudentName").value=group.studentName;
+  $("editStudentId").value=group.studentId;
+  $("editClass").value=group.className;
+  $("editHouse").value=group.house;
+  $("editTeacher").value=group.teacher;
+
+  $("selectedName").textContent=group.studentName;
+  $("selectedMeta").textContent=`${group.studentId} · ${group.className||"No class"} · ${group.house||"No house"} · ${group.rows.length} sport${group.rows.length===1?"":"s"}`;
+  $("selectedState").textContent="Loaded";
+  $("selectedState").className="status ok";
+  $("managerStatus").textContent="Participant loaded";
+  $("managerStatus").className="status ok";
+
+  $("manageSportsList").innerHTML="";
+  group.rows.forEach(row=>createSportRow(row));
+  document.querySelector(".participant-manager").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function render(){
+  const q=$("search").value.trim().toLowerCase();
+  const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+
+  $("rows").innerHTML=rows.length
+    ?rows.map(x=>`
+      <tr>
+        <td>${x.studentName}</td>
+        <td>${x.studentId}</td>
+        <td>${x.className||"-"}</td>
+        <td>${x.event}</td>
+        <td>${x.category}</td>
+        <td>${x.house}</td>
+        <td>${x.teacher}</td>
+        <td>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <a class="button-secondary" style="min-height:30px;padding:0 8px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a>
+            <button class="button-secondary" style="min-height:30px;padding:0 8px" onclick='chooseStudentFromRow(${JSON.stringify(x.studentId)})'>Manage</button>
+            <button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join("")
+    :'<tr><td colspan="8" class="empty">No registrations found.</td></tr>';
+}
+
+function chooseStudentFromRow(studentId){
+  $("editParticipantSelect").value=String(studentId);
+  loadParticipant();
+}
+
+async function saveParticipantSports(){
+  if(!selectedStudentId){
+    $("editMessage").className="message error";
+    $("editMessage").textContent="Select a participant first.";
+    return;
+  }
+
+  const sports=[...document.querySelectorAll(".manage-sport-row")].map(row=>({
+    id:row.dataset.id,
+    event:row.querySelector(".manage-event").value,
+    category:row.querySelector(".manage-category").value
+  })).filter(x=>x.event&&x.category);
+
+  if(!sports.length){
+    $("editMessage").className="message error";
+    $("editMessage").textContent="A participant must have at least one sport.";
+    return;
+  }
+
+  try{
+    const data=await api("/api/admin?action=participantSports",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      body:JSON.stringify({
+        studentId:selectedStudentId,
+        className:$("editClass").value,
+        house:$("editHouse").value,
+        teacher:$("editTeacher").value,
+        sports
+      })
+    });
+
+    $("editMessage").className="message ok";
+    $("editMessage").textContent=`✓ ${data.message} ${data.removed?data.removed+" sport record removed.":""}`;
+    await load();
+    $("editParticipantSelect").value=selectedStudentId;
+    loadParticipant();
+  }catch(error){
+    $("editMessage").className="message error";
+    $("editMessage").textContent="✕ "+error.message;
+  }
+}
+
+async function deleteRegistration(id){
+  const row=registrations.find(x=>x._id===id);
+  if(!confirm(`Delete ${row?.studentName||"this registration"} — ${row?.event||"this sport"}?`))return;
+
+  try{
+    const d=await api("/api/admin?action=delete&id="+encodeURIComponent(id),{
+      method:"DELETE",
+      headers:{"x-admin-pin":TOKEN}
+    });
+    $("editMessage").className="message ok";
+    $("editMessage").textContent="✓ "+d.message;
+    selectedStudentId="";
+    await load();
+  }catch(error){
+    $("editMessage").className="message error";
+    $("editMessage").textContent="✕ "+error.message;
+  }
+}
+
+async function load(){
+  try{
+    const auth={"x-admin-pin":TOKEN};
+    await api("/api/master");
+    registrations=await api("/api/admin?action=registrations",{headers:auth});
+    $("dbStatus").textContent="● Database: Connected";
+    $("dbStatus").className="status ok";
+    await loadMaster();
+    render();
+    fillParticipantSelect();
+  }catch(error){
+    $("dbStatus").textContent="● Database: Error";
+    $("dbStatus").className="status bad";
+    $("rows").innerHTML=`<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
+  }
+}
+
+async function loadMaster(){
+  const m=await api("/api/master");
+  master=m;
+  fill("editClass",m.classes);
+  fill("editHouse",m.houses);
+}
+
+$("search").addEventListener("input",render);
+$("refreshBtn").addEventListener("click",load);
+$("loadParticipantBtn").addEventListener("click",loadParticipant);
+$("editParticipantSelect").addEventListener("change",loadParticipant);
+$("addManageSportBtn").addEventListener("click",()=>createSportRow({}));
+$("clearEditBtn").addEventListener("click",clearEdit);
+$("saveEditBtn").addEventListener("click",saveParticipantSports);
+$("printBtn").addEventListener("click",preparePrint);
+
+function preparePrint(){
+  const q=$("search").value.trim().toLowerCase();
+  const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+  const w=window.open("","_blank");
+  const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentId||"-"}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");
+  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>ID</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="8">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
+load();
+</script></body></html></script></body></html>

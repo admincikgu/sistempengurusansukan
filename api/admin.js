@@ -323,6 +323,169 @@ module.exports = async (req, res) => {
       });
     }
 
+
+    if (action === "participantSports" && req.method === "PUT") {
+      const body = req.body || {};
+      const studentId = String(body.studentId || "").trim();
+      const sports = Array.isArray(body.sports) ? body.sports : [];
+
+      if (!studentId) {
+        return res.status(400).json({ ok:false, message:"Invalid Student ID." });
+      }
+
+      const cleanSports = [];
+      const seen = new Set();
+
+      for (const item of sports) {
+        const event = String(item.event || "").trim().toUpperCase();
+        const category = String(item.category || "").trim().toUpperCase();
+        const id = String(item.id || "").trim();
+
+        if (!event || !category) continue;
+
+        const key = `${event}|||${category}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        cleanSports.push({
+          id: ObjectId.isValid(id) ? id : "",
+          event,
+          category
+        });
+      }
+
+      if (!cleanSports.length) {
+        return res.status(400).json({
+          ok:false,
+          message:"A participant must have at least one sport."
+        });
+      }
+
+      const config = await getMasterConfig();
+      const allowedEvents = new Set((config?.events || []).map(String));
+      const allowedCategories = new Set((config?.categories || []).map(String));
+
+      for (const sport of cleanSports) {
+        if (allowedEvents.size && !allowedEvents.has(sport.event)) {
+          return res.status(400).json({
+            ok:false,
+            message:`Sport event "${sport.event}" is not available.`
+          });
+        }
+        if (allowedCategories.size && !allowedCategories.has(sport.category)) {
+          return res.status(400).json({
+            ok:false,
+            message:`Category "${sport.category}" is not available.`
+          });
+        }
+      }
+
+      const currentRows = await registrations
+        .find({ studentId })
+        .sort({ createdAt: 1 })
+        .toArray();
+
+      if (!currentRows.length) {
+        return res.status(404).json({
+          ok:false,
+          message:"Participant registration not found."
+        });
+      }
+
+      const currentIds = new Set(currentRows.map(row => String(row._id)));
+      const requestedIds = new Set(
+        cleanSports
+          .map(row => row.id)
+          .filter(Boolean)
+      );
+
+      const duplicateWithinParticipant = await registrations.find({
+        studentId,
+        $or: cleanSports.map(row => ({
+          event: row.event,
+          category: row.category
+        }))
+      }).toArray();
+
+      const ownedByEvent = new Set(
+        duplicateWithinParticipant.map(row => `${row.event}|||${row.category}|||${String(row._id)}`)
+      );
+
+      const ops = [];
+      const keptIds = new Set();
+
+      for (const sport of cleanSports) {
+        if (sport.id && currentIds.has(sport.id)) {
+          keptIds.add(sport.id);
+          ops.push({
+            updateOne: {
+              filter: { _id:new ObjectId(sport.id), studentId },
+              update: {
+                $set: {
+                  event:sport.event,
+                  category:sport.category,
+                  updatedAt:new Date()
+                }
+              }
+            }
+          });
+        } else {
+          ops.push({
+            insertOne: {
+              document: {
+                studentName: String(currentRows[0].studentName || "").trim(),
+                studentId,
+                className: String(body.className || currentRows[0].className || "").trim().toUpperCase(),
+                house: String(body.house || currentRows[0].house || "").trim().toUpperCase(),
+                teacher: String(body.teacher || currentRows[0].teacher || "Teacher").trim(),
+                event:sport.event,
+                category:sport.category,
+                createdAt:new Date(),
+                updatedAt:new Date()
+              }
+            }
+          });
+        }
+      }
+
+      const removedIds = currentRows
+        .map(row => String(row._id))
+        .filter(id => !keptIds.has(id) && !cleanSports.some(sport => sport.id === id));
+
+      if (ops.length) {
+        await registrations.bulkWrite(ops,{ordered:true});
+      }
+
+      if (removedIds.length) {
+        const objectIds = removedIds.map(id=>new ObjectId(id));
+        await registrations.deleteMany({_id:{$in:objectIds},studentId});
+        await results.deleteMany({registrationId:{$in:objectIds}});
+      }
+
+      // Update common participant details for all remaining registrations.
+      const commonUpdate = {};
+      if (body.className) commonUpdate.className=String(body.className).trim().toUpperCase();
+      if (body.house) commonUpdate.house=String(body.house).trim().toUpperCase();
+      if (body.teacher) commonUpdate.teacher=String(body.teacher).trim();
+
+      if (Object.keys(commonUpdate).length) {
+        commonUpdate.updatedAt=new Date();
+        await registrations.updateMany({studentId},{$set:commonUpdate});
+      }
+
+      const saved = await registrations
+        .find({studentId})
+        .sort({createdAt:1})
+        .toArray();
+
+      return res.status(200).json({
+        ok:true,
+        message:"Participant sports updated successfully.",
+        data:saved.map(cleanDoc),
+        removed:removedIds.length
+      });
+    }
+
     if (action === "update" && req.method === "PUT") {
       const body = req.body || {};
       const id = String(body.id || "");
