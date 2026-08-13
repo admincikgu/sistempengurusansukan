@@ -76,6 +76,79 @@ module.exports = async (req, res) => {
       return res.status(200).json(rows.map(cleanDoc));
     }
 
+    if (action === "updateResult" && req.method === "PUT") {
+      const body = req.body || {};
+      const resultId = String(body.resultId || "");
+
+      if (!ObjectId.isValid(resultId)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid result ID."
+        });
+      }
+
+      const registrationId = String(body.registrationId || "");
+      if (!ObjectId.isValid(registrationId)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid participant ID."
+        });
+      }
+
+      const resultDoc = {
+        registrationId: new ObjectId(registrationId),
+        position: Number(body.position || 0),
+        score: Number(body.score || 0),
+        timing: String(body.timing || ""),
+        points: Number(body.points || 0),
+        updatedAt: new Date()
+      };
+
+      const result = await results.updateOne(
+        { _id: new ObjectId(resultId) },
+        { $set: resultDoc }
+      );
+
+      if (!result.matchedCount) {
+        return res.status(404).json({
+          ok: false,
+          message: "Result not found."
+        });
+      }
+
+      return res.status(200).json({
+        ok: true,
+        message: "Competition result updated successfully."
+      });
+    }
+
+    if (action === "deleteResult" && req.method === "DELETE") {
+      const resultId = String(req.query.id || "");
+
+      if (!ObjectId.isValid(resultId)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid result ID."
+        });
+      }
+
+      const deleted = await results.deleteOne({
+        _id: new ObjectId(resultId)
+      });
+
+      if (!deleted.deletedCount) {
+        return res.status(404).json({
+          ok: false,
+          message: "Result not found."
+        });
+      }
+
+      return res.status(200).json({
+        ok: true,
+        message: "Competition result deleted successfully."
+      });
+    }
+
     if (action === "update" && req.method === "PUT") {
       const body = req.body || {};
       const id = String(body.id || "");

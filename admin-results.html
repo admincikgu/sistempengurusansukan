@@ -20,8 +20,8 @@
 </div>
 <div class="table-wrap">
 <table class="table">
-<thead><tr><th>Student</th><th>Event</th><th>Category</th><th>Position</th><th>Points</th><th>Time / Score</th><th>Updated</th></tr></thead>
-<tbody id="resultRows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+<thead><tr><th>Student</th><th>Event</th><th>Category</th><th>Position</th><th>Points</th><th>Time / Score</th><th>Updated</th><th>Actions</th></tr></thead>
+<tbody id="resultRows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
 </table>
 </div>
 </section>
@@ -29,6 +29,44 @@
 
 <section class="section grid2"><section class="surface panel"><div class="panel-head"><div><h3>Leaderboard</h3><p>Highest scoring participants.</p></div></div><div id="leaders"><div class="empty">Loading...</div></div></section><section class="surface panel"><div class="panel-head"><div><h3>Result Overview</h3><p>Current competition statistics.</p></div></div><div class="quick-stat-line"><div class="quick-stat"><small>Total Results</small><strong id="resultCount">0</strong></div><div class="quick-stat"><small>Participants</small><strong id="participantCount">0</strong></div><div class="quick-stat"><small>Events</small><strong id="eventCount">0</strong></div></div></section></section>
 </main></div>
+<section id="resultEditorOverlay" class="result-editor-overlay" aria-hidden="true">
+  <div class="result-editor">
+    <div class="result-editor-head">
+      <div>
+        <span class="eyebrow">EDIT RESULT</span>
+        <h3>Manage Competition Result</h3>
+        <p>Update the selected winner or remove the old result.</p>
+      </div>
+      <button class="button-secondary" id="closeResultEditorBtn" type="button">✕</button>
+    </div>
+
+    <div class="selected-participant">
+      <div class="selected-avatar">🏆</div>
+      <div class="selected-copy">
+        <span class="eyebrow">CURRENT RECORD</span>
+        <strong id="editResultStudent">—</strong>
+        <span id="editResultEvent">—</span>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field"><label>PARTICIPANT</label><select id="editResultParticipant"></select></div>
+      <div class="field"><label>POSITION</label><input id="editResultPosition" type="number" min="1"></div>
+      <div class="field"><label>POINTS</label><input id="editResultPoints" type="number" min="0"></div>
+      <div class="field"><label>TIME / SCORE</label><input id="editResultTiming"></div>
+    </div>
+
+    <div class="manager-footer">
+      <div id="editResultMessage" class="message"></div>
+      <div class="manager-actions">
+        <button class="button-secondary" id="deleteResultBtn" type="button" style="color:var(--danger)">Delete Result</button>
+        <button class="button-secondary" id="cancelResultBtn" type="button">Cancel</button>
+        <button class="button-primary" id="saveResultChangesBtn" type="button">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <script>
 const TOKEN=sessionStorage.getItem("smkAdminToken");
 if(!TOKEN) location.href="/admin.html";
@@ -68,6 +106,8 @@ document.querySelectorAll(".admin-sidebar a").forEach(link=>{
 
 const $=id=>document.getElementById(id);
 let registrations=[];
+let savedResults=[];
+let editingResultId="";
 
 function fillParticipants(){
   $("participant").innerHTML='<option value="">Select participant...</option>'+
@@ -78,7 +118,7 @@ async function loadResults(){
   try{
     const auth={"x-admin-pin":TOKEN};
 
-    const [rows, leaderboard, savedResults, overview] = await Promise.all([
+    const [rows, leaderboard, resultRows, overview] = await Promise.all([
       api("/api/admin?action=registrations",{headers:auth}),
       api("/api/admin?action=leaderboard",{headers:auth}),
       api("/api/admin?action=results",{headers:auth}),
@@ -86,6 +126,7 @@ async function loadResults(){
     ]);
 
     registrations=rows;
+    savedResults=resultRows;
     fillParticipants();
 
     $("participantCount").textContent=rows.length;
@@ -115,13 +156,97 @@ async function loadResults(){
           <td>${x.points||0}</td>
           <td>${x.timing||"-"}</td>
           <td>${x.updatedAt?new Date(x.updatedAt).toLocaleString("en-MY"):"-"}</td>
+          <td>
+            <div style="display:flex;gap:5px">
+              <button class="button-secondary" style="min-height:30px;padding:0 8px" onclick='openResultEditor(${JSON.stringify(x)})'>Edit</button>
+              <button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteResult("${x._id}")'>Delete</button>
+            </div>
+          </td>
         </tr>
       `).join("")
-      : '<tr><td colspan="7" class="empty">No saved results yet.</td></tr>';
+      : '<tr><td colspan="8" class="empty">No saved results yet.</td></tr>';
 
   }catch(error){
     $("leaders").innerHTML=`<div class="message error">✕ ${error.message}</div>`;
-    $("resultRows").innerHTML=`<tr><td colspan="7" class="empty">${error.message}</td></tr>`;
+    $("resultRows").innerHTML=`<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
+  }
+}
+
+
+function openResultEditor(result){
+  editingResultId=String(result._id||"");
+  $("editResultParticipant").innerHTML='<option value="">Select participant...</option>'+
+    registrations.map(x=>`<option value="${x._id}">${x.studentName} — ${x.event}</option>`).join("");
+
+  $("editResultParticipant").value=String(result.registrationId||"");
+  $("editResultPosition").value=result.position||"";
+  $("editResultPoints").value=result.points||"";
+  $("editResultTiming").value=result.timing||"";
+  $("editResultStudent").textContent=result.studentName||"Participant";
+  $("editResultEvent").textContent=`${result.event||"-"} · ${result.category||"-"} · ${result.house||"-"}`;
+  $("editResultMessage").textContent="";
+  $("resultEditorOverlay").classList.add("open");
+  $("resultEditorOverlay").setAttribute("aria-hidden","false");
+}
+
+function closeResultEditor(){
+  editingResultId="";
+  $("resultEditorOverlay").classList.remove("open");
+  $("resultEditorOverlay").setAttribute("aria-hidden","true");
+}
+
+async function saveResultChanges(){
+  if(!editingResultId){
+    $("editResultMessage").className="message error";
+    $("editResultMessage").textContent="No result selected.";
+    return;
+  }
+
+  try{
+    const participant=$("editResultParticipant").value;
+    if(!participant){
+      throw new Error("Please select a participant.");
+    }
+
+    const data=await api("/api/admin?action=updateResult",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      body:JSON.stringify({
+        resultId:editingResultId,
+        registrationId:participant,
+        position:$("editResultPosition").value,
+        points:$("editResultPoints").value,
+        timing:$("editResultTiming").value,
+        score:0
+      })
+    });
+
+    $("editResultMessage").className="message ok";
+    $("editResultMessage").textContent="✓ "+data.message;
+    await loadResults();
+    setTimeout(closeResultEditor,500);
+  }catch(error){
+    $("editResultMessage").className="message error";
+    $("editResultMessage").textContent="✕ "+error.message;
+  }
+}
+
+async function deleteResult(id){
+  const row=savedResults.find(x=>String(x._id)===String(id));
+  const name=row?.studentName||"this result";
+  if(!confirm(`Delete the result for ${name}? This will remove the competition result from the leaderboard.`))return;
+
+  try{
+    const data=await api("/api/admin?action=deleteResult&id="+encodeURIComponent(id),{
+      method:"DELETE",
+      headers:{"x-admin-pin":TOKEN}
+    });
+    $("resultMessage").className="message ok";
+    $("resultMessage").textContent="✓ "+data.message;
+    await loadResults();
+  }catch(error){
+    $("resultMessage").className="message error";
+    $("resultMessage").textContent="✕ "+error.message;
   }
 }
 
@@ -168,4 +293,15 @@ $("saveResultBtn").addEventListener("click",async()=>{
 });
 
 loadResults();
+
+$("closeResultEditorBtn").addEventListener("click",closeResultEditor);
+$("cancelResultBtn").addEventListener("click",closeResultEditor);
+$("saveResultChangesBtn").addEventListener("click",saveResultChanges);
+$("deleteResultBtn").addEventListener("click",async()=>{
+  if(editingResultId) await deleteResult(editingResultId);
+  closeResultEditor();
+});
+$("resultEditorOverlay").addEventListener("click",e=>{
+  if(e.target.id==="resultEditorOverlay") closeResultEditor();
+});
 </script></body></html>
