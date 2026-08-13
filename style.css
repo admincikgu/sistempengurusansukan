@@ -2218,3 +2218,18 @@ body:before{
 .pwa-install-button{position:fixed;right:16px;bottom:16px;z-index:800;min-height:44px;padding:0 15px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:#1f334a;color:#fff;font:800 10px/1 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 14px 30px rgba(31,51,74,.20);cursor:pointer;touch-action:manipulation}
 .pwa-install-button:hover{transform:translateY(-1px)}
 @media(max-width:560px){.pwa-install-button{left:12px;right:12px;bottom:12px;width:calc(100% - 24px)}}
+
+.filter-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.filter-chip{min-height:32px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#647184;font:850 9px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;transition:.16s ease}
+.filter-chip:hover{transform:translateY(-1px);border-color:#b9c9bf}
+.filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.empty-state{min-height:160px;display:grid;place-items:center;text-align:center;padding:24px;border:1px dashed var(--line);border-radius:15px;background:linear-gradient(145deg,#fbfcfb,#f5f8f6)}
+.empty-state-icon{width:50px;height:50px;margin:0 auto 10px;display:grid;place-items:center;border-radius:15px;background:var(--sage-soft);font-size:22px}
+.empty-state h4{margin:0;color:var(--navy);font-size:13px}
+.empty-state p{margin:5px 0 0;color:var(--muted);font-size:9px;line-height:1.5}
+.success-toast{position:fixed;top:18px;right:18px;z-index:1000;display:flex;align-items:center;gap:10px;max-width:min(360px,calc(100vw - 36px));padding:12px 14px;border:1px solid #cfe2d5;border-radius:13px;background:#f4fbf6;color:#3f664c;box-shadow:0 15px 35px rgba(31,51,74,.16);transform:translateY(-14px);opacity:0;pointer-events:none}
+.success-toast.show{animation:toastInOut 2.3s ease both}
+.success-toast-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#dcefe1;font-size:15px}
+.success-toast strong{display:block;font-size:10px}.success-toast span{display:block;margin-top:2px;color:#6f8074;font-size:8px}
+@keyframes toastInOut{0%{opacity:0;transform:translateY(-14px)}12%{opacity:1;transform:translateY(0)}80%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
+@media(max-width:560px){.filter-chip{flex:1 0 auto}.success-toast{left:12px;right:12px;top:12px;max-width:none}}

@@ -92,6 +92,7 @@
 
 <script>
 const $=id=>document.getElementById(id);
+function showTeacherToast(text){const toast=document.getElementById("teacherSuccessToast");if(!toast)return;document.getElementById("teacherToastText").textContent=text||"Registration saved successfully.";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
 async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - invalid server response`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
 let master={events:[],categories:[],classes:[],houses:[]},students=[];
 function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("")}

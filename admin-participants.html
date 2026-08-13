@@ -6,9 +6,19 @@
 <meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
 <link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Participants | SMK Datuk Haji Ahmad Badawi</title><link rel="stylesheet" href="/style.css"></head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link active" href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link " href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside>
-<main class="admin-page-main">
+<div id="successToast" class="success-toast" aria-live="polite"><div class="success-toast-icon">✓</div><div><strong id="successToastTitle">Saved successfully</strong><span id="successToastText"></span></div></div><main class="admin-page-main">
 <header class="admin-page-header"><div><a class="page-nav-back" href="/admin-dashboard.html">← Dashboard</a><h1>Participants</h1><p>View, edit, delete and print registered student records.</p></div><div class="header-actions"><button class="button-secondary" id="refreshBtn">↻ Refresh</button><button class="button-primary" id="printBtn">🖨️ Print Official List</button></div></header>
-<section class="surface panel"><div class="panel-head"><div><h3>Participant Records</h3><p>Live registration data from MongoDB.</p></div><span id="dbStatus" class="status wait">● Database: Checking</span></div><div class="table-toolbar"><input id="search" placeholder="Search student, ID, class, event, category, house or teacher..."></div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div></section>
+<section class="surface panel"><div class="panel-head"><div><h3>Participant Records</h3><p>Live registration data from MongoDB.</p></div><span id="dbStatus" class="status wait">● Database: Checking</span></div><div class="table-toolbar"><input id="search" placeholder="Search student, ID, class, event, category, house or teacher..."></div>
+<div id="participantFilters" class="filter-chips">
+<button type="button" class="filter-chip active" data-filter="ALL">ALL</button>
+<button type="button" class="filter-chip" data-filter="T1">TINGKATAN 1</button>
+<button type="button" class="filter-chip" data-filter="T2-3">TINGKATAN 2&3</button>
+<button type="button" class="filter-chip" data-filter="T4-5">TINGKATAN 4&5</button>
+<button type="button" class="filter-chip" data-filter="BAHAMAN">BAHAMAN</button>
+<button type="button" class="filter-chip" data-filter="MAT KILAU">MAT KILAU</button>
+<button type="button" class="filter-chip" data-filter="DATO' SAGOR">DATO' SAGOR</button>
+<button type="button" class="filter-chip" data-filter="DATO' MAHARAJALELA">DATO' MAHARAJALELA</button>
+</div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div></section>
 
 <section class="section">
 <section class="surface participant-manager">
@@ -100,7 +110,9 @@ const $=id=>document.getElementById(id);
 let registrations=[];
 let master={events:[],categories:[],classes:[],houses:[]};
 let selectedStudentId="";
+let activeFilter="ALL";
 
+function showSuccessToast(title,text){const toast=$("successToast");if(!toast)return;$("successToastTitle").textContent=title||"Saved successfully";$("successToastText").textContent=text||"";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
 function fill(id,items){
   $(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("");
 }
@@ -201,30 +213,18 @@ function loadParticipant(){
   document.querySelector(".participant-manager").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
+function rowMatchesFilter(row,filter){
+  if(filter==="ALL")return true;
+  const cls=String(row.className||"").toUpperCase();
+  if(filter==="T1")return /^1/.test(cls);
+  if(filter==="T2-3")return /^2/.test(cls)||/^3/.test(cls);
+  if(filter==="T4-5")return /^4/.test(cls)||/^5/.test(cls);
+  return String(row.house||"").toUpperCase()===filter;
+}
 function render(){
   const q=$("search").value.trim().toLowerCase();
-  const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
-
-  $("rows").innerHTML=rows.length
-    ?rows.map(x=>`
-      <tr>
-        <td>${x.studentName}</td>
-        <td>${x.studentId}</td>
-        <td>${x.className||"-"}</td>
-        <td>${x.event}</td>
-        <td>${x.category}</td>
-        <td>${x.house}</td>
-        <td>${x.teacher}</td>
-        <td>
-          <div style="display:flex;gap:5px;flex-wrap:wrap">
-            <a class="button-secondary" style="min-height:30px;padding:0 8px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a>
-            <button class="button-secondary" style="min-height:30px;padding:0 8px" onclick='chooseStudentFromRow(${JSON.stringify(x.studentId)})'>Manage</button>
-            <button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button>
-          </div>
-        </td>
-      </tr>
-    `).join("")
-    :'<tr><td colspan="8" class="empty">No registrations found.</td></tr>';
+  const filtered=registrations.filter(x=>rowMatchesFilter(x,activeFilter)&&JSON.stringify(x).toLowerCase().includes(q));
+  $("rows").innerHTML=filtered.length?filtered.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><a class="button-secondary" style="min-height:30px;padding:0 8px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a><button class="button-secondary" style="min-height:30px;padding:0 8px" onclick='chooseStudentFromRow(${JSON.stringify(x.studentId)})'>Manage</button><button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button></div></td></tr>`).join(""):`<tr><td colspan="8"><div class="empty-state"><div><div class="empty-state-icon">👥</div><h4>No participants found</h4><p>Try another search or clear the current filter.</p></div></div></td></tr>`;
 }
 
 function chooseStudentFromRow(studentId){
@@ -336,6 +336,7 @@ function preparePrint(){
   w.document.close();
 }
 
+document.querySelectorAll("#participantFilters .filter-chip").forEach(chip=>{chip.addEventListener("click",()=>{activeFilter=chip.dataset.filter||"ALL";document.querySelectorAll("#participantFilters .filter-chip").forEach(x=>x.classList.remove("active"));chip.classList.add("active");render()})});
 load();
 </script></body></html></script>
 <script>

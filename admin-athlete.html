@@ -5,7 +5,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
 <link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Athlete Profile | SMKDHAB</title><link rel="stylesheet" href="/style.css"></head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link active" href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside><main class="admin-page-main"><header class="admin-page-header"><div><a class="page-nav-back" href="/admin-participants.html">← Participants</a><h1>Athlete Profile</h1><p>Review one participant's complete sports record.</p></div></header><section class="surface panel"><div class="panel-head"><div><h3>Select Participant</h3><p>Choose a registered participant from MongoDB.</p></div></div><div class="form-grid"><div class="field"><label>PARTICIPANT</label><select id="participantSelect"><option value="">Select participant...</option></select></div></div></section><section id="profileArea" class="section"><div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div></section></main></div><script>
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Athlete Profile | SMKDHAB</title><link rel="stylesheet" href="/style.css"></head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link active" href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside><main class="admin-page-main"><header class="admin-page-header"><div><a class="page-nav-back" href="/admin-participants.html">← Participants</a><h1>Athlete Profile</h1><p>Review one participant's complete sports record.</p></div></header><section class="surface panel"><div class="panel-head"><div><h3>Select Participant</h3><p>Choose a registered participant from MongoDB.</p></div></div><div class="form-grid"><div class="field"><label>PARTICIPANT</label><select id="participantSelect"><option value="">Select participant...</option></select></div></div></section><div id="athleteFilters" class="filter-chips" style="display:none"><button type="button" class="filter-chip active" data-filter="ALL">ALL SPORTS</button><button type="button" class="filter-chip" data-filter="RESULTS">WITH RESULTS</button><button type="button" class="filter-chip" data-filter="NO RESULTS">NO RESULTS</button></div><section id="profileArea" class="section"><div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div></section></main></div><script>
 const TOKEN=sessionStorage.getItem("smkAdminToken");
 if(!TOKEN)location.href="/admin.html";
 
@@ -78,136 +78,43 @@ function fillParticipantSelect(){
 
 function renderProfile(studentId){
   const person=grouped.find(x=>String(x.studentId)===String(studentId));
-
   if(!person){
-    $("profileArea").innerHTML='<div class="surface profile-card"><div class="empty">Select a participant to view the profile.</div></div>';
+    $("profileArea").innerHTML='<div class="surface profile-card"><div class="empty-state"><div><div class="empty-state-icon">👤</div><h4>Select a participant</h4><p>Choose a student to view their complete sports history.</p></div></div></div>';
     return;
   }
-
-  const studentResults=results.filter(result=>
-    person.sports.some(sport=>String(sport._id)===String(result.registrationId))
-  );
-
+  const studentResults=results.filter(result=>person.sports.some(sport=>String(sport._id)===String(result.registrationId)));
   const totalPoints=studentResults.reduce((sum,result)=>sum+Number(result.points||0),0);
   const gold=studentResults.filter(x=>Number(x.position)===1).length;
   const silver=studentResults.filter(x=>Number(x.position)===2).length;
   const bronze=studentResults.filter(x=>Number(x.position)===3).length;
 
-  $("profileArea").innerHTML=`
-    <div class="feature-page-grid">
-      <section class="surface profile-card">
-        <div class="profile-hero">
-          <div class="profile-avatar">👤</div>
-          <div>
-            <div class="profile-name">${person.studentName}</div>
-            <div class="profile-meta">
-              Student ID: ${person.studentId} ·
-              Class: ${person.className||"-"} ·
-              House: ${person.house||"-"}
-            </div>
-          </div>
-        </div>
+  $("athleteFilters").style.display="flex";
+  $("profileArea").innerHTML=`<div class="feature-page-grid">
+<section class="surface profile-card"><div class="profile-hero"><div class="profile-avatar">👤</div><div><div class="profile-name">${person.studentName}</div><div class="profile-meta">Student ID: ${person.studentId} · Class: ${person.className||"-"} · House: ${person.house||"-"}</div></div></div>
+<div class="profile-stats"><div class="profile-stat"><small>Registered Sports</small><strong>${person.sports.length}</strong></div><div class="profile-stat"><small>Results</small><strong>${studentResults.length}</strong></div><div class="profile-stat"><small>Total Points</small><strong>${totalPoints}</strong></div></div>
+<div class="profile-stats"><div class="profile-stat"><small>🥇 Gold</small><strong>${gold}</strong></div><div class="profile-stat"><small>🥈 Silver</small><strong>${silver}</strong></div><div class="profile-stat"><small>🥉 Bronze</small><strong>${bronze}</strong></div></div></section>
+<section class="surface profile-card"><div class="panel-head"><div><h3>Sports History</h3><p>All sports this participant has registered for.</p></div></div><div id="athleteSportHistory"></div></section></div>
+<section class="section surface panel"><div class="panel-head"><div><h3>Complete Sports Record</h3><p>One participant, all sports in one place.</p></div></div><div class="table-wrap"><table class="table"><thead><tr><th>Sport Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Result</th><th>Points</th></tr></thead><tbody id="athleteSportTable"></tbody></table></div></section>`;
 
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <small>Registered Sports</small>
-            <strong>${person.sports.length}</strong>
-          </div>
-          <div class="profile-stat">
-            <small>Results</small>
-            <strong>${studentResults.length}</strong>
-          </div>
-          <div class="profile-stat">
-            <small>Total Points</small>
-            <strong>${totalPoints}</strong>
-          </div>
-        </div>
-
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <small>🥇 Gold</small>
-            <strong>${gold}</strong>
-          </div>
-          <div class="profile-stat">
-            <small>🥈 Silver</small>
-            <strong>${silver}</strong>
-          </div>
-          <div class="profile-stat">
-            <small>🥉 Bronze</small>
-            <strong>${bronze}</strong>
-          </div>
-        </div>
-      </section>
-
-      <section class="surface profile-card">
-        <div class="panel-head">
-          <div>
-            <h3>Sports History</h3>
-            <p>All sports this participant has registered for.</p>
-          </div>
-        </div>
-
-        ${person.sports.map(sport=>{
-          const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
-          const medal=result
-            ? Number(result.position)===1?"🥇"
-            : Number(result.position)===2?"🥈"
-            : Number(result.position)===3?"🥉":"🏅"
-            : "•";
-
-          return `
-            <div class="recent-item">
-              <div class="recent-icon">${medal}</div>
-              <div class="recent-copy">
-                <strong>${sport.event}</strong>
-                <span>${sport.category} · ${sport.house||"-"}</span>
-              </div>
-              <span class="recent-time">
-                ${result?`${result.position||"-"}th · ${result.points||0} pts`:"No result"}
-              </span>
-            </div>`;
-        }).join("")}
-      </section>
-    </div>
-
-    <section class="section surface panel">
-      <div class="panel-head">
-        <div>
-          <h3>Complete Sports Record</h3>
-          <p>One participant, all sports in one place.</p>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Sport Event</th>
-              <th>Category</th>
-              <th>Sports House</th>
-              <th>Teacher</th>
-              <th>Result</th>
-              <th>Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${person.sports.map(sport=>{
-              const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
-
-              return `
-                <tr>
-                  <td>${sport.event}</td>
-                  <td>${sport.category}</td>
-                  <td>${sport.house||"-"}</td>
-                  <td>${sport.teacher||"-"}</td>
-                  <td>${result?`#${result.position||"-"} ${result.timing?`· ${result.timing}`:""}`:"Not recorded"}</td>
-                  <td>${result?Number(result.points||0):0}</td>
-                </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-      </div>
-    </section>`;
+  function renderHistory(){
+    const mode=window.__athleteFilter||"ALL";
+    const filtered=person.sports.filter(sport=>{
+      const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
+      return mode==="RESULTS"?!!result:mode==="NO RESULTS"?!result:true;
+    });
+    $("athleteSportHistory").innerHTML=filtered.length?filtered.map(sport=>{
+      const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
+      const medal=result?(Number(result.position)===1?"🥇":Number(result.position)===2?"🥈":Number(result.position)===3?"🥉":"🏅"):"•";
+      return `<div class="recent-item"><div class="recent-icon">${medal}</div><div class="recent-copy"><strong>${sport.event}</strong><span>${sport.category} · ${sport.house||"-"}</span></div><span class="recent-time">${result?`#${result.position||"-"} · ${result.points||0} pts`:"No result"}</span></div>`;
+    }).join(""):'<div class="empty-state"><div><div class="empty-state-icon">🏃</div><h4>No matching sports</h4><p>Try another filter.</p></div></div>';
+    $("athleteSportTable").innerHTML=filtered.length?filtered.map(sport=>{
+      const result=studentResults.find(x=>String(x.registrationId)===String(sport._id));
+      return `<tr><td>${sport.event}</td><td>${sport.category}</td><td>${sport.house||"-"}</td><td>${sport.teacher||"-"}</td><td>${result?`#${result.position||"-"} ${result.timing?`· ${result.timing}`:""}`:"Not recorded"}</td><td>${result?Number(result.points||0):0}</td></tr>`;
+    }).join(""):'<tr><td colspan="6"><div class="empty-state"><div><div class="empty-state-icon">🏃</div><h4>No matching sports</h4><p>Try another filter.</p></div></td></tr>';
+  }
+  window.__athleteFilter="ALL";
+  document.querySelectorAll("#athleteFilters .filter-chip").forEach(chip=>{chip.onclick=()=>{window.__athleteFilter=chip.dataset.filter||"ALL";document.querySelectorAll("#athleteFilters .filter-chip").forEach(x=>x.classList.remove("active"));chip.classList.add("active");renderHistory()}});
+  renderHistory();
 }
 
 async function load(){
