@@ -2075,3 +2075,27 @@ body:before{
   }
   .result-editor .manager-actions>*{width:100%}
 }
+
+.feature-page-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.profile-card{padding:22px}
+.profile-hero{display:flex;align-items:center;gap:15px;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#fff,#f3f7f4)}
+.profile-avatar{width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--sage-soft);font-size:25px}
+.profile-name{font-size:20px;font-weight:950;color:var(--navy)}
+.profile-meta{margin-top:3px;color:var(--muted);font-size:9px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
+.profile-stat{padding:12px;border:1px solid var(--line);border-radius:13px;background:#fbfbfa}
+.profile-stat small{display:block;color:var(--muted);font-size:8px}.profile-stat strong{display:block;margin-top:3px;color:var(--navy);font-size:18px}
+.house-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.house-card{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.house-rank{font-size:8px;color:var(--muted);font-weight:900}.house-name{margin-top:4px;color:var(--navy);font-size:15px;font-weight:950}.house-points{margin-top:3px;color:#637188;font-size:9px}
+.house-bar{height:6px;margin-top:10px;border-radius:999px;background:#edf1ef;overflow:hidden}.house-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--navy),var(--sage))}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.report-card{padding:18px;border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:var(--shadow-sm);transition:.18s ease}
+.report-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.report-card .report-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--lavSoft);font-size:17px}
+.report-card h3{margin:11px 0 4px;color:var(--navy);font-size:13px}.report-card p{margin:0;color:var(--muted);font-size:9px;line-height:1.6}
+.duplicate-warning{display:none;margin-top:10px;padding:11px 12px;border:1px solid #eed2d6;border-radius:12px;background:#fff4f5;color:var(--danger);font-size:10px;font-weight:850}
+.duplicate-warning.show{display:block}
+@media(max-width:1000px){.house-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.feature-page-grid,.report-grid{grid-template-columns:1fr}.profile-stats{grid-template-columns:1fr}}
+@media(max-width:520px){.house-grid{grid-template-columns:1fr}}

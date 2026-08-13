@@ -91,7 +91,7 @@
         
         <div class="actions"><button class="button-secondary" type="reset">Clear</button><button class="button-primary" type="submit">Save Registration</button></div>
       </div>
-      <div id="message" class="message"></div>
+      <div id="duplicateWarning" class="duplicate-warning">⚠️ This student is already registered for the same event and category.</div><div id="message" class="message"></div>
     </form>
   </section>
 
@@ -145,7 +145,7 @@ $("registrationForm").addEventListener("submit",async e=>{
     $("message").className="message ok";$("message").textContent="✓ "+data.message;
     $("studentName").value="";$("studentId").value="";$("className").value="";
     loadRows();
-  }catch(error){$("message").className="message error";$("message").textContent="✕ "+error.message}
+  }catch(error){if(error.message.includes("already registered")||error.message.includes("HTTP 409")){$("duplicateWarning").classList.add("show");$("message").className="message error";$("message").textContent=""}else{$("duplicateWarning").classList.remove("show");$("message").className="message error";$("message").textContent="✕ "+error.message}}
 });
 init();
 </script>
