@@ -1,11 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1f334a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
+<link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SMK Datuk Haji Ahmad Badawi | School Sports Management System</title>
 <link rel="stylesheet" href="/style.css">
 </head>
-<body><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
+<body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
 <header class="topbar">
   <a class="brand" href="/">
     <img class="school-logo" src="/assets/smkdhbadawi-logo.jpg" alt="SMK Datuk Haji Ahmad Badawi crest">
@@ -152,5 +159,37 @@ async function renderResults(){
 
 renderResults();
 </script>
+
+<script>
+(function(){
+  let deferredPrompt=null;
+  const installButton=document.getElementById("pwaInstallButton");
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){
+      navigator.serviceWorker.register("/sw.js").catch(function(err){
+        console.warn("PWA service worker registration failed:",err);
+      });
+    });
+  }
+  window.addEventListener("beforeinstallprompt",function(event){
+    event.preventDefault();
+    deferredPrompt=event;
+    if(installButton){installButton.hidden=false}
+  });
+  if(installButton){
+    installButton.addEventListener("click",async function(){
+      if(!deferredPrompt)return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt=null;
+      installButton.hidden=true;
+    });
+  }
+  window.addEventListener("appinstalled",function(){
+    if(installButton)installButton.hidden=true;
+  });
+})();
+</script>
+
 </body>
 </html>

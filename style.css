@@ -2214,3 +2214,7 @@ body:before{
   .manage-sports-actions{display:grid;grid-template-columns:1fr}
   .manage-sports-actions>*{width:100%}
 }
+
+.pwa-install-button{position:fixed;right:16px;bottom:16px;z-index:800;min-height:44px;padding:0 15px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:#1f334a;color:#fff;font:800 10px/1 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 14px 30px rgba(31,51,74,.20);cursor:pointer;touch-action:manipulation}
+.pwa-install-button:hover{transform:translateY(-1px)}
+@media(max-width:560px){.pwa-install-button{left:12px;right:12px;bottom:12px;width:calc(100% - 24px)}}

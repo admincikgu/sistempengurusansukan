@@ -1,11 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1f334a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
+<link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Teacher Portal | SMK Datuk Haji Ahmad Badawi</title>
 <link rel="stylesheet" href="/style.css">
 </head>
-<body><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
+<body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
 
 <div class="teacher-layout">
 <aside id="teacherSidebar" class="teacher-sidebar" aria-label="Teacher navigation">
@@ -99,5 +106,37 @@ $("addSportBtn").addEventListener("click",addSport);$("teacherFilter").addEventL
 $("registrationForm").addEventListener("submit",async e=>{e.preventDefault();const sports=collectSports();$("duplicateWarning").classList.remove("show");if(!sports.length){$("message").className="message error";$("message").textContent="Please select at least one sport.";return}try{const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,studentId:$("studentId").value,className:$("className").value,house:$("house").value,sports})});$("message").className="message ok";$("message").textContent="✓ "+d.message;$("studentName").value="";$("studentId").value="";$("className").value="";$("house").value="";$("sportRows").innerHTML="";addSport();loadRows()}catch(e){$("duplicateWarning").textContent="⚠️ "+e.message;$("duplicateWarning").classList.add("show")}});
 const teacherSidebar=document.getElementById("teacherSidebar"),teacherMenuButton=document.getElementById("teacherMenuButton"),teacherOverlay=document.getElementById("teacherOverlay");const close=()=>{teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show")};teacherMenuButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();teacherSidebar.classList.add("open");teacherOverlay.classList.add("show")});teacherOverlay?.addEventListener("click",close);document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",close));init();
 </script>
+
+<script>
+(function(){
+  let deferredPrompt=null;
+  const installButton=document.getElementById("pwaInstallButton");
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){
+      navigator.serviceWorker.register("/sw.js").catch(function(err){
+        console.warn("PWA service worker registration failed:",err);
+      });
+    });
+  }
+  window.addEventListener("beforeinstallprompt",function(event){
+    event.preventDefault();
+    deferredPrompt=event;
+    if(installButton){installButton.hidden=false}
+  });
+  if(installButton){
+    installButton.addEventListener("click",async function(){
+      if(!deferredPrompt)return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt=null;
+      installButton.hidden=true;
+    });
+  }
+  window.addEventListener("appinstalled",function(){
+    if(installButton)installButton.hidden=true;
+  });
+})();
+</script>
+
 </body>
 </html>
