@@ -2170,3 +2170,9 @@ body:before{
 .house-champ-name{color:var(--navy);font-size:12px;font-weight:950}.house-champ-meta{margin-top:2px;color:var(--muted);font-size:8px}.house-points-value{color:var(--navy);font-size:17px;font-weight:950;text-align:right}
 .house-champ-bar{height:7px;margin-top:7px;border-radius:999px;background:#edf1ef;overflow:hidden}.house-champ-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--sage));border-radius:999px}
 @media(max-width:720px){.house-champ-row{grid-template-columns:40px 1fr 80px}}
+
+.import-workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+.import-info-card{padding:18px}.import-info-card h3{margin:0;color:var(--navy);font-size:15px}.import-info-card p{margin:5px 0 0;color:var(--muted);font-size:9px;line-height:1.6}
+.csv-columns{display:grid;gap:7px;margin-top:12px}.csv-column{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:#fbfbfa}.csv-column strong{display:block;color:var(--navy);font-size:9px}.csv-column span{display:block;margin-top:2px;color:var(--muted);font-size:8px}
+.import-stat{display:inline-flex;align-items:center;min-height:30px;padding:0 9px;border-radius:999px;background:var(--sage-soft);color:#4e7059;font-size:8px;font-weight:900}
+@media(max-width:900px){.import-workspace{grid-template-columns:1fr}.admin-page-main{padding-bottom:90px}}
