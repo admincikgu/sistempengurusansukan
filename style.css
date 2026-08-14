@@ -2567,3 +2567,26 @@ div.filter-chips > button.filter-chip:focus-visible{
     padding:0 12px !important;
   }
 }
+
+/* V56 — Public Results: full-width layout */
+.public-results-wide{
+  display:block;
+  width:100%;
+}
+.public-results-panel{
+  width:100%;
+  min-height:260px;
+}
+.public-results-panel .result-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.public-results-panel .result{
+  min-width:0;
+}
+@media(max-width:760px){
+  .public-results-panel .result-list{
+    grid-template-columns:1fr;
+  }
+}
