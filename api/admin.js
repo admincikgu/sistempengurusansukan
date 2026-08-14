@@ -684,7 +684,7 @@ module.exports = async (req, res) => {
 
     if (action === "results" && req.method === "GET") {
       const resultRows = await results
-        .find(officialResultFilter)
+        .find({})
         .sort({ updatedAt: -1, createdAt: -1 })
         .limit(5000)
         .toArray();

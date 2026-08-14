@@ -12,7 +12,7 @@
 <section class="section">
 <section class="surface panel">
 <div class="panel-head">
-  <div><h3>Saved Competition Results</h3><p>Latest results stored in the database.</p></div>
+  <div><h3>Saved Competition Results</h3><p>All results stored in the database, including drafts awaiting verification.</p></div>
 </div>
 <div class="table-wrap">
 <table class="table">
@@ -139,7 +139,7 @@ async function loadResults(){
           <span class="recent-time">${x.points||0} pts</span>
         </div>
       `).join("")
-      : '<div class="empty">No verified or published results yet.</div>';
+      : '<div class="empty">No verified or published results yet. Draft results will appear in the table above.</div>';
 
     $("resultRows").innerHTML=savedResults.length
       ? savedResults.map(x=>{
