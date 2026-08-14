@@ -146,10 +146,10 @@ async function loadResults(){
           const status=x.status||"PUBLISHED";
           const badge=status==="PUBLISHED"?"status ok":status==="VERIFIED"?"status wait":"status bad";
           const actions=status==="DRAFT"
-            ? `<button class="button-secondary" style="min-height:30px;padding:0 7px" onclick='verifyResult("${x._id}")'>Verify</button>`
+            ? `<button class="button-secondary" style="min-height:32px;padding:0 9px" onclick='verifyResult("${x._id}")'>Verify</button>`
             : status==="VERIFIED"
-              ? `<button class="button-secondary" style="min-height:30px;padding:0 7px" onclick='publishResult("${x._id}")'>Publish</button>`
-              : `<button class="button-secondary" style="min-height:30px;padding:0 7px" onclick='unverifyResult("${x._id}")'>Draft</button>`;
+              ? `<button class="button-secondary" style="min-height:32px;padding:0 9px" onclick='publishResult("${x._id}")'>Publish</button>`
+              : `<button class="button-secondary" style="min-height:32px;padding:0 9px" onclick='unverifyResult("${x._id}")'>Draft</button>`;
           return `
             <tr>
               <td>${x.studentName}</td>
@@ -163,7 +163,7 @@ async function loadResults(){
               <td>
                 <div style="display:flex;gap:5px;flex-wrap:wrap">
                   ${actions}
-                  <button class="button-secondary" style="min-height:30px;padding:0 7px" onclick='openResultEditor(${JSON.stringify(x)})'>Edit</button>
+                  <button class="button-secondary" style="min-height:32px;padding:0 9px" onclick='openResultEditor(${JSON.stringify(x)})'>Edit</button>
                   <button class="button-secondary" style="min-height:30px;padding:0 7px;color:var(--danger)" onclick='deleteResult("${x._id}")'>Delete</button>
                 </div>
               </td>

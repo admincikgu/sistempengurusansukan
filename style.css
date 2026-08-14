@@ -2302,3 +2302,185 @@ body:before{
     grid-template-columns:1fr;
   }
 }
+
+/* =========================================================
+   V53 — Professional Button System
+   ========================================================= */
+
+button,
+.button-primary,
+.button-secondary,
+.nav-link{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+.button-primary,
+.button-secondary{
+  min-height:40px !important;
+  padding:0 15px !important;
+  border-radius:10px !important;
+  border:1px solid transparent !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  font-size:9px !important;
+  font-weight:850 !important;
+  letter-spacing:.01em !important;
+  line-height:1 !important;
+  text-decoration:none !important;
+  white-space:nowrap !important;
+  cursor:pointer !important;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease !important;
+}
+
+.button-primary{
+  background:var(--navy) !important;
+  color:#fff !important;
+  border-color:var(--navy) !important;
+  box-shadow:0 7px 16px rgba(31,51,74,.14) !important;
+}
+
+.button-primary:hover{
+  background:#29435f !important;
+  border-color:#29435f !important;
+  transform:translateY(-1px) !important;
+  box-shadow:0 10px 22px rgba(31,51,74,.18) !important;
+}
+
+.button-primary:active{
+  transform:translateY(0) scale(.99) !important;
+}
+
+.button-secondary{
+  background:#fff !important;
+  color:var(--navy) !important;
+  border-color:#d8e0dc !important;
+  box-shadow:0 3px 8px rgba(31,51,74,.05) !important;
+}
+
+.button-secondary:hover{
+  background:#f4f7f5 !important;
+  border-color:#bdccc3 !important;
+  transform:translateY(-1px) !important;
+}
+
+.button-secondary:active{
+  transform:translateY(0) scale(.99) !important;
+}
+
+button:disabled,
+.button-primary:disabled,
+.button-secondary:disabled{
+  opacity:.48 !important;
+  cursor:not-allowed !important;
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+.manager-actions button,
+.actions button,
+.import-actions button{
+  min-width:100px;
+}
+
+.nav-link{
+  min-height:34px;
+  padding:0 12px;
+  border:1px solid #d8e0dc;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--navy);
+  background:#fff;
+  font-size:8px;
+  font-weight:850;
+  text-decoration:none;
+  transition:.16s ease;
+}
+.nav-link:hover{background:#f4f7f5;border-color:#bdccc3}
+
+.mobile-menu-button{
+  width:42px !important;
+  height:42px !important;
+  min-height:42px !important;
+  padding:0 !important;
+  border-radius:10px !important;
+  border:1px solid #d8e0dc !important;
+  background:#fff !important;
+  color:var(--navy) !important;
+  box-shadow:0 4px 10px rgba(31,51,74,.06) !important;
+}
+
+#pwaInstallButton{
+  min-height:42px !important;
+  border-radius:10px !important;
+}
+
+/* Row action buttons: intentionally smaller but still consistent. */
+.table .button-primary,
+.table .button-secondary{
+  min-height:32px !important;
+  padding:0 10px !important;
+  border-radius:8px !important;
+  font-size:8px !important;
+}
+
+/* Status controls should stay compact and never look like malformed pills. */
+.status{
+  min-height:28px !important;
+  padding:0 10px !important;
+  border-radius:8px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:8px !important;
+  font-weight:850 !important;
+}
+
+/* Section/filter chips remain pill-like only where that pattern is intentional. */
+.filter-chips{
+  padding:6px !important;
+  border-radius:12px !important;
+  gap:5px !important;
+}
+.filter-chip{
+  min-height:32px !important;
+  border-radius:8px !important;
+  padding:0 11px !important;
+  font-size:8px !important;
+}
+.filter-chip.active{
+  border-radius:8px !important;
+  box-shadow:0 4px 10px rgba(31,51,74,.12) !important;
+}
+
+/* Better form controls */
+input,
+select,
+textarea{
+  min-height:42px !important;
+  border-radius:10px !important;
+}
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#9db4a5 !important;
+  box-shadow:0 0 0 3px rgba(127,155,135,.12) !important;
+  outline:none !important;
+}
+
+@media(max-width:720px){
+  .button-primary,
+  .button-secondary{
+    min-height:42px !important;
+    padding:0 14px !important;
+  }
+  .table .button-primary,
+  .table .button-secondary{
+    min-height:34px !important;
+  }
+}
