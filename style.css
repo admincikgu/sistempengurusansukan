@@ -2484,3 +2484,86 @@ textarea:focus{
     min-height:34px !important;
   }
 }
+
+/* V54 — FILTER CHIP VISUAL FIX */
+div.filter-chips{
+  width:100% !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  flex-wrap:wrap !important;
+  padding:6px !important;
+  margin:10px 0 0 !important;
+  border:1px solid #e1e7e3 !important;
+  border-radius:14px !important;
+  background:rgba(248,250,249,.96) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+div.filter-chips > button.filter-chip{
+  all:unset !important;
+  box-sizing:border-box !important;
+  min-height:34px !important;
+  height:34px !important;
+  padding:0 13px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border:1px solid #dce4df !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  color:#5f6b78 !important;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:8px !important;
+  font-weight:800 !important;
+  line-height:1 !important;
+  letter-spacing:.025em !important;
+  text-transform:uppercase !important;
+  white-space:nowrap !important;
+  cursor:pointer !important;
+  user-select:none !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  box-shadow:0 1px 2px rgba(31,51,74,.03) !important;
+  transition:all .15s ease !important;
+}
+div.filter-chips > button.filter-chip:hover{
+  background:#f2f6f3 !important;
+  color:#23394f !important;
+  border-color:#c5d2ca !important;
+  transform:translateY(-1px) !important;
+}
+div.filter-chips > button.filter-chip.active{
+  background:#223a53 !important;
+  color:#fff !important;
+  border-color:#223a53 !important;
+  box-shadow:0 5px 12px rgba(34,58,83,.15) !important;
+}
+div.filter-chips > button.filter-chip.active::before{
+  content:"" !important;
+  width:5px !important;
+  height:5px !important;
+  margin-right:6px !important;
+  border-radius:50% !important;
+  background:#a8c1b0 !important;
+  flex:0 0 5px !important;
+}
+div.filter-chips > button.filter-chip:focus-visible{
+  outline:3px solid rgba(127,155,135,.22) !important;
+  outline-offset:2px !important;
+}
+@media(max-width:760px){
+  div.filter-chips{
+    overflow-x:auto !important;
+    flex-wrap:nowrap !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  div.filter-chips::-webkit-scrollbar{display:none !important}
+  div.filter-chips > button.filter-chip{
+    flex:0 0 auto !important;
+    min-height:36px !important;
+    height:36px !important;
+    padding:0 12px !important;
+  }
+}
