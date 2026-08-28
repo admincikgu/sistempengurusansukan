@@ -21,7 +21,7 @@
 const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
 async function api(u,o={}){const r=await fetch(u,{...o,cache:"no-store"}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error("Invalid server response")}if(!r.ok)throw new Error(d.message||d.error||"Request failed");return d}
 async function load(){
- const auth={"x-admin-pin":TOKEN};
+ const auth={"x-admin-token":TOKEN};
  const data=await api("/api/admin?action=commandCenter",{headers:auth});
  document.getElementById("counts").innerHTML=[
   ["Draft",data.counts.draft,"Awaiting verification"],

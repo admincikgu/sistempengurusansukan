@@ -254,7 +254,7 @@ async function saveParticipantSports(){
   try{
     const data=await api("/api/admin?action=participantSports",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({
         studentId:selectedStudentId,
         className:$("editClass").value,
@@ -282,7 +282,7 @@ async function deleteRegistration(id){
   try{
     const d=await api("/api/admin?action=delete&id="+encodeURIComponent(id),{
       method:"DELETE",
-      headers:{"x-admin-pin":TOKEN}
+      headers:{"x-admin-token":TOKEN}
     });
     $("editMessage").className="message ok";
     $("editMessage").textContent="✓ "+d.message;
@@ -296,7 +296,7 @@ async function deleteRegistration(id){
 
 async function load(){
   try{
-    const auth={"x-admin-pin":TOKEN};
+    const auth={"x-admin-token":TOKEN};
     await api("/api/master");
     registrations=await api("/api/admin?action=registrations",{headers:auth});
     $("dbStatus").textContent="● Database: Connected";

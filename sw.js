@@ -1,4 +1,4 @@
-const CACHE_NAME="smkdhab-pwa-v50";
+const CACHE_NAME="smkdhab-pwa-v59";
 const APP_SHELL=["/","/index.html","/teacher.html","/admin.html","/admin-dashboard.html","/admin-participants.html","/admin-athlete.html","/admin-houses.html","/admin-events.html","/admin-results.html","/admin-reports.html","/admin-import.html","/admin-championship.html","/admin-command-center.html","/style.css","/manifest.webmanifest","/assets/pwa-icon-192.svg","/assets/pwa-icon-512.svg","/assets/pwa-maskable.svg"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

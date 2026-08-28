@@ -88,9 +88,12 @@ const ov=document.getElementById("mobileOverlay");
 if(mb)mb.addEventListener("click",()=>{
   sb.classList.add("open");ov.classList.add("show");
 });
-if(ov)ov.addEventListener("click",()=>{
-  sb.classList.remove("open");ov.classList.remove("show");
-});
+function closeAdminMenu(){
+  sb.classList.remove("open");
+  ov.classList.remove("show");
+  document.body.classList.remove("menu-open");
+}
+if(ov)ov.addEventListener("click",closeAdminMenu);
 document.getElementById("sidebarLogout")?.addEventListener("click",e=>{e.preventDefault();logout()});
 document.querySelectorAll(".admin-sidebar a").forEach(link=>{
   link.addEventListener("click",e=>{
@@ -112,7 +115,7 @@ function fillParticipants(){
 
 async function loadResults(){
   try{
-    const auth={"x-admin-pin":TOKEN};
+    const auth={"x-admin-token":TOKEN};
     const [rows, leaderboard, resultRows, overview] = await Promise.all([
       api("/api/admin?action=registrations",{headers:auth}),
       api("/api/admin?action=leaderboard",{headers:auth}),
@@ -183,7 +186,7 @@ async function verifyResult(id){
   try{
     const d=await api("/api/admin?action=verifyResult",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({resultId:id})
     });
     $("resultMessage").className="message ok";
@@ -198,7 +201,7 @@ async function publishResult(id){
   try{
     const d=await api("/api/admin?action=publishResult",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({resultId:id})
     });
     $("resultMessage").className="message ok";
@@ -213,7 +216,7 @@ async function unverifyResult(id){
   try{
     const d=await api("/api/admin?action=unverifyResult",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({resultId:id})
     });
     $("resultMessage").className="message ok";
@@ -262,7 +265,7 @@ async function saveResultChanges(){
 
     const data=await api("/api/admin?action=updateResult",{
       method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({
         resultId:editingResultId,
         registrationId:participant,
@@ -291,7 +294,7 @@ async function deleteResult(id){
   try{
     const data=await api("/api/admin?action=deleteResult&id="+encodeURIComponent(id),{
       method:"DELETE",
-      headers:{"x-admin-pin":TOKEN}
+      headers:{"x-admin-token":TOKEN}
     });
     $("resultMessage").className="message ok";
     $("resultMessage").textContent="✓ "+data.message;
@@ -317,7 +320,7 @@ $("saveResultBtn").addEventListener("click",async()=>{
   try{
     const data=await api("/api/admin?action=result",{
       method:"POST",
-      headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},
+      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
       body:JSON.stringify({
         registrationId:id,
         position:$("position").value,

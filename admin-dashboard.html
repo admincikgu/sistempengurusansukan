@@ -15,6 +15,15 @@
 <div class="overview-card"><div class="overview-icon">🏅</div><span class="overview-label">SAVED RESULTS</span><strong id="results" class="overview-value">0</strong><span class="overview-note">Official results</span></div>
 <div class="overview-card"><div class="overview-icon">☁️</div><span class="overview-label">DATABASE</span><strong id="dbCount" class="overview-value" style="font-size:15px">Checking</strong><span class="overview-note">Live connection</span></div>
 </div></section>
+<section class="section">
+<div class="section-head"><div class="section-title"><span class="eyebrow">LIVE ANALYTICS</span><h2>Sports Participation</h2><p>Registration and results activity across the current programme.</p></div></div>
+<div class="analytics-grid">
+  <section class="surface analytics-card"><div class="analytics-card-head"><strong>Registrations by Event</strong><span id="eventPeak">—</span></div><div id="eventChart" class="bar-chart"><div class="empty">Loading...</div></div></section>
+  <section class="surface analytics-card"><div class="analytics-card-head"><strong>Participation by House</strong><span id="housePeak">—</span></div><div id="houseChart" class="bar-chart"><div class="empty">Loading...</div></div></section>
+  <section class="surface analytics-card"><div class="analytics-card-head"><strong>Result Workflow</strong><span id="officialRate">—</span></div><div id="resultChart" class="workflow-grid"><div class="empty">Loading...</div></div></section>
+  <section class="surface analytics-card"><div class="analytics-card-head"><strong>House Points</strong><span id="pointsPeak">Official results</span></div><div id="pointsChart" class="bar-chart"><div class="empty">Loading...</div></div></section>
+</div>
+</section>
 <section class="section"><div class="section-head"><div class="section-title"><span class="eyebrow">QUICK ACCESS</span><h2>Choose a workspace</h2><p>Keep the dashboard simple. Open detailed management only when you need it.</p></div></div>
 <div class="dashboard-shortcuts">
 <a class="dashboard-shortcut" href="/admin-participants.html"><div class="shortcut-icon">👥</div><div><strong>Manage Participants</strong><span>Edit, delete and update participant records.</span></div></a>
@@ -63,7 +72,7 @@ document.querySelectorAll(".admin-sidebar a").forEach(link=>{
 });
 async function load(){
   try{
-    const a={"x-admin-pin":TOKEN};
+    const a={"x-admin-token":TOKEN};
 
     const [status, overview, registrations, savedResults] = await Promise.all([
       api("/api/admin?action=status",{headers:a}),
@@ -103,10 +112,25 @@ async function load(){
     const hdb=document.getElementById("healthDb");
     if(hdb){hdb.textContent="Error";hdb.style.color="var(--danger)";}
 
-    const box=document.getElementById("publicResults");
-    if(box)box.innerHTML='<div class="public-results-empty">Unable to load latest results.</div>';
+    const box=document.getElementById("recentList");
+    if(box)box.innerHTML='<div class="empty">Unable to load latest records.</div>';
   }
-}load();</script>
+}load();
+async function loadAnalytics(){
+  try{
+    const data=await api("/api/admin?action=stats",{headers:{"x-admin-token":TOKEN}});
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    const renderBars=(id,items,peakId,format)=>{const max=Math.max(1,...items.map(x=>Number(x.value||0)));document.getElementById(id).innerHTML=items.slice(0,7).map(x=>`<div class="bar-row"><div class="bar-label"><span title="${esc(x.label)}">${esc(x.label)}</span><b>${format?format(x.value):x.value}</b></div><div class="bar-track"><span style="width:${Math.max(4,Math.round(Number(x.value||0)/max*100))}%"></span></div></div>`).join("")||'<div class="empty">No data yet.</div>';const top=items[0];document.getElementById(peakId).textContent=top?`${top.label} · ${top.value}`:"—";};
+    renderBars("eventChart",data.byEvent,"eventPeak");
+    renderBars("houseChart",data.byHouse,"housePeak");
+    renderBars("pointsChart",data.housePoints,"pointsPeak",v=>`${v} pts`);
+    const statuses=data.resultStatus||{};const total=Math.max(1,data.totals.results);
+    document.getElementById("officialRate").textContent=`${Math.round((data.totals.officialResults/total)*100)}% official`;
+    document.getElementById("resultChart").innerHTML=[["DRAFT",statuses.DRAFT||0,"draft"],["VERIFIED",statuses.VERIFIED||0,"verified"],["PUBLISHED",statuses.PUBLISHED||0,"published"]].map(x=>`<div class="workflow-item"><div><span>${x[0]}</span><b>${x[1]}</b></div><div class="bar-track"><span class="${x[2]}" style="width:${Math.max(4,Math.round(x[1]/total*100))}%"></span></div></div>`).join("");
+  }catch(e){console.error("ANALYTICS",e);}
+}
+loadAnalytics();
+</script>
 
 <script>
 (function(){

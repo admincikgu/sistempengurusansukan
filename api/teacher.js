@@ -6,6 +6,24 @@ module.exports=async(req,res)=>{
     const collection=db.collection("registrations");
     const action=String(req.query.action || (req.method==="POST"?"register":"list"));
 
+    if(action==="students" && req.method==="GET"){
+      const q=String(req.query.q||"").trim();
+      const safeQ=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+      const filter=q
+        ? {$or:[
+            {studentName:{$regex:safeQ,$options:"i"}},
+            {studentId:{$regex:safeQ,$options:"i"}},
+            {className:{$regex:safeQ,$options:"i"}}
+          ]}
+        : {};
+      const studentRows=await db.collection("students")
+        .find(filter,{projection:{studentName:1,studentId:1,className:1,house:1}})
+        .sort({studentName:1})
+        .limit(q?30:1000)
+        .toArray();
+      return res.status(200).json(studentRows.map(cleanDoc));
+    }
+
     if(action==="list" && req.method==="GET"){
       const teacher=String(req.query.teacher||"").trim();
       const filter=teacher?{teacher}:{};

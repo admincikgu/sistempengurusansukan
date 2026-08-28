@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({
       ok: false,
       mongodb: "failed",
-      error: error.message
+      error: process.env.NODE_ENV === "development" ? error.message : undefined
     });
   }
 };

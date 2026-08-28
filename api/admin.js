@@ -1,4 +1,4 @@
-const { getDb, adminOK, ObjectId, cleanDoc, getMasterConfig, saveMasterConfig } = require("../lib/db");
+const { getDb, adminOK, createAdminToken, ObjectId, cleanDoc, getMasterConfig, saveMasterConfig } = require("../lib/db");
 
 module.exports = async (req, res) => {
   try {
@@ -6,7 +6,14 @@ module.exports = async (req, res) => {
 
     if (action === "unlock" && req.method === "POST") {
       const pin = String((req.body || {}).pin || "").trim();
-      const expected = String(process.env.ADMIN_PIN || "smkbadawi2026");
+      const expected = String(process.env.ADMIN_PIN || "");
+
+      if (!expected) {
+        return res.status(503).json({
+          ok:false,
+          message:"Admin access is not configured. Set ADMIN_PIN in the deployment environment."
+        });
+      }
 
       if (pin !== expected) {
         return res.status(401).json({
@@ -17,7 +24,8 @@ module.exports = async (req, res) => {
 
       return res.status(200).json({
         ok: true,
-        token: expected
+        token: createAdminToken(),
+        expiresIn: 8 * 60 * 60
       });
     }
 
@@ -36,7 +44,8 @@ module.exports = async (req, res) => {
 
     if (action === "students" && req.method === "GET") {
       const q=String(req.query.q||"").trim();
-      const filter=q?{$or:[{studentName:{$regex:q,$options:"i"}},{studentId:{$regex:q,$options:"i"}}]}:{};
+      const safeQ=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+      const filter=q?{$or:[{studentName:{$regex:safeQ,$options:"i"}},{studentId:{$regex:safeQ,$options:"i"}}]}:{};
       const rows=await students.find(filter).sort({studentName:1}).limit(5000).toArray();
       return res.status(200).json(rows.map(cleanDoc));
     }
@@ -88,19 +97,74 @@ module.exports = async (req, res) => {
       });
     }
 
+    if (action === "stats" && req.method === "GET") {
+      const [registrationRows, resultRows, config] = await Promise.all([
+        registrations.find({}).limit(10000).toArray(),
+        results.find({}).limit(10000).toArray(),
+        getMasterConfig()
+      ]);
+
+      const byEvent = new Map();
+      const byHouse = new Map();
+      const byCategory = new Map();
+      for (const row of registrationRows) {
+        const event = String(row.event || "UNASSIGNED");
+        const house = String(row.house || "UNASSIGNED");
+        const category = String(row.category || "UNASSIGNED");
+        byEvent.set(event, (byEvent.get(event) || 0) + 1);
+        byHouse.set(house, (byHouse.get(house) || 0) + 1);
+        byCategory.set(category, (byCategory.get(category) || 0) + 1);
+      }
+
+      const registrationMap = new Map(registrationRows.map(r => [String(r._id), r]));
+      const resultStatus = { DRAFT:0, VERIFIED:0, PUBLISHED:0 };
+      const housePoints = new Map();
+      let officialResults = 0;
+      for (const row of resultRows) {
+        const status = String(row.status || "PUBLISHED").toUpperCase();
+        if (resultStatus[status] === undefined) resultStatus[status] = 0;
+        resultStatus[status] += 1;
+        if (status === "VERIFIED" || status === "PUBLISHED" || !row.status) {
+          officialResults += 1;
+          const reg = registrationMap.get(String(row.registrationId));
+          const house = String(reg?.house || "UNASSIGNED");
+          housePoints.set(house, (housePoints.get(house) || 0) + Number(row.points || 0));
+        }
+      }
+
+      const totalStudents = new Set(registrationRows.map(r => String(r.studentId || ""))).size;
+      return res.status(200).json({
+        ok:true,
+        totals:{
+          registrations:registrationRows.length,
+          students:totalStudents,
+          events:new Set(registrationRows.map(r=>String(r.event||""))).size,
+          results:resultRows.length,
+          officialResults
+        },
+        resultStatus,
+        configuredEvents:(config?.events || []).length,
+        byEvent:[...byEvent.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value),
+        byHouse:[...byHouse.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value),
+        byCategory:[...byCategory.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value),
+        housePoints:[...housePoints.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value)
+      });
+    }
+
     if (action === "registrations" && req.method === "GET") {
       const q = String(req.query.q || "").trim();
+      const safeQ = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
       const filter = q
         ? {
             $or: [
-              { studentName: { $regex: q, $options: "i" } },
-              { studentId: { $regex: q, $options: "i" } },
-              { className: { $regex: q, $options: "i" } },
-              { event: { $regex: q, $options: "i" } },
-              { category: { $regex: q, $options: "i" } },
-              { house: { $regex: q, $options: "i" } },
-              { teacher: { $regex: q, $options: "i" } }
+              { studentName: { $regex: safeQ, $options: "i" } },
+              { studentId: { $regex: safeQ, $options: "i" } },
+              { className: { $regex: safeQ, $options: "i" } },
+              { event: { $regex: safeQ, $options: "i" } },
+              { category: { $regex: safeQ, $options: "i" } },
+              { house: { $regex: safeQ, $options: "i" } },
+              { teacher: { $regex: safeQ, $options: "i" } }
             ]
           }
         : {};
@@ -209,6 +273,17 @@ module.exports = async (req, res) => {
         return res.status(400).json({
           ok: false,
           message: "Invalid participant ID."
+        });
+      }
+
+      const duplicateResult = await results.findOne({
+        registrationId: new ObjectId(registrationId),
+        _id: { $ne: new ObjectId(resultId) }
+      });
+      if (duplicateResult) {
+        return res.status(409).json({
+          ok:false,
+          message:"This participant already has a competition result."
         });
       }
 
@@ -415,11 +490,19 @@ module.exports = async (req, res) => {
       const keptIds = new Set();
 
       for (const sport of cleanSports) {
-        if (sport.id && currentIds.has(sport.id)) {
-          keptIds.add(sport.id);
+        const existingByPair = currentRows.find(row =>
+          String(row.event || "") === sport.event &&
+          String(row.category || "") === sport.category
+        );
+        const targetId = sport.id && currentIds.has(sport.id)
+          ? sport.id
+          : existingByPair ? String(existingByPair._id) : "";
+
+        if (targetId) {
+          keptIds.add(targetId);
           ops.push({
             updateOne: {
-              filter: { _id:new ObjectId(sport.id), studentId },
+              filter: { _id:new ObjectId(targetId), studentId },
               update: {
                 $set: {
                   event:sport.event,
@@ -747,7 +830,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({
       ok: false,
       message: "Administrator API failed.",
-      error: error.message
+      error: process.env.NODE_ENV === "development" ? error.message : undefined
     });
   }
 };

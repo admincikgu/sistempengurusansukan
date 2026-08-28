@@ -14,7 +14,7 @@ async function load(){config=await api("/api/master");render();$("status").textC
 function render(){$("eventList").innerHTML=(config.events||[]).map((e,i)=>`<div class="event-editor-row"><input class="event-input" data-index="${i}" value="${e}"><button class="button-secondary" type="button" onclick="removeEvent(${i})">Remove</button></div>`).join("")}
 function removeEvent(i){config.events.splice(i,1);render()}
 $("addEvent").addEventListener("click",()=>{config.events.push("NEW EVENT");render()});
-$("saveEvents").addEventListener("click",async()=>{config.events=[...document.querySelectorAll(".event-input")].map(x=>x.value.trim().toUpperCase()).filter(Boolean);try{const d=await api("/api/admin?action=master",{method:"PUT",headers:{"Content-Type":"application/json","x-admin-pin":TOKEN},body:JSON.stringify(config)});$("message").className="message ok";$("message").textContent="✓ "+d.message;config.events=d.events;render()}catch(e){$("message").className="message error";$("message").textContent="✕ "+e.message}});
+$("saveEvents").addEventListener("click",async()=>{config.events=[...document.querySelectorAll(".event-input")].map(x=>x.value.trim().toUpperCase()).filter(Boolean);try{const d=await api("/api/admin?action=master",{method:"PUT",headers:{"Content-Type":"application/json","x-admin-token":TOKEN},body:JSON.stringify(config)});$("message").className="message ok";$("message").textContent="✓ "+d.message;config.events=d.events;render()}catch(e){$("message").className="message error";$("message").textContent="✕ "+e.message}});
 load().catch(e=>{$("status").textContent="● Error";$("status").className="status bad";$("message").className="message error";$("message").textContent=e.message});
 </script>
 <script>
