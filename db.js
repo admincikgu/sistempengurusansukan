@@ -29,11 +29,36 @@ async function getDb() {
     const client = await state.promise;
     state.db = client.db(DB_NAME);
     await state.db.command({ ping: 1 });
+    await ensureSchema(state.db);
     return state.db;
   } catch (error) {
     state.promise = null;
     state.db = null;
     throw error;
+  }
+}
+
+
+async function ensureSchema(db) {
+  // Student ID is intentionally not part of the application schema.
+  // Drop any legacy unique indexes that still enforce Student ID, because
+  // inserting records without that field can otherwise raise MongoDB E11000.
+  for (const collectionName of ["students", "registrations"]) {
+    const collection = db.collection(collectionName);
+    try {
+      const indexes = await collection.listIndexes().toArray();
+      for (const index of indexes) {
+        if (index.name === "_id_") continue;
+        const keys = index.key || {};
+        if (Object.keys(keys).some(key => /student[_-]?id/i.test(key))) {
+          try { await collection.dropIndex(index.name); } catch (dropError) {
+            console.warn("LEGACY_STUDENT_ID_INDEX", collectionName, index.name, dropError.message);
+          }
+        }
+      }
+    } catch (indexError) {
+      console.warn("INDEX_CHECK", collectionName, indexError.message);
+    }
   }
 }
 

@@ -101,7 +101,18 @@
 <script>const $=id=>document.getElementById(id);
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 function showTeacherToast(text){const toast=$("teacherSuccessToast");if(!toast)return;$("teacherToastText").textContent=text||"Registration saved successfully.";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
-async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - invalid server response`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
+async function api(url,options={}){
+  const r=await fetch(url,{cache:"no-store",...options});
+  const t=await r.text();
+  let d=null;
+  try{d=t?JSON.parse(t):null}catch{}
+  if(!r.ok){
+    const msg=d?.message||d?.error||t||`HTTP ${r.status}`;
+    throw new Error(`HTTP ${r.status} - ${msg}`);
+  }
+  if(!d) throw new Error("Server returned an empty response.");
+  return d;
+}
 let master={events:[],categories:[],classes:[],houses:[]},students=[];
 function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${escapeHtml(x)}</option>`).join("")}
 function addSport(){const row=document.createElement("div");row.className="sport-row";row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div><div class="field"><label>CATEGORY</label><select class="sport-category"></select></div><button type="button" class="button-secondary sport-row-remove">Remove</button>';row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${escapeHtml(x)}</option>`).join("");row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${escapeHtml(x)}</option>`).join("");row.querySelector(".sport-row-remove").onclick=()=>row.remove();$("sportRows").appendChild(row)}

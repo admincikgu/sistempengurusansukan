@@ -156,6 +156,14 @@ module.exports = async (req, res) => {
     return res.status(405).json({ok:false,message:"Invalid Teacher API action."});
   } catch (error) {
     console.error("TEACHER_API", error);
-    return res.status(500).json({ok:false,message:"Teacher API failed.",error:error.message});
+    const duplicate = error && (error.code === 11000 || String(error.message || "").includes("E11000"));
+    return res.status(duplicate ? 409 : 500).json({
+      ok:false,
+      code: duplicate ? "DUPLICATE_KEY" : "SERVER_ERROR",
+      message: duplicate
+        ? "Registration could not be saved because of a legacy database constraint. Please refresh and try again."
+        : "Teacher registration failed.",
+      error: process.env.NODE_ENV === "production" ? undefined : error.message
+    });
   }
 };
