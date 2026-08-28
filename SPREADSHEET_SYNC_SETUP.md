@@ -13,7 +13,7 @@ function doPost(e) {
 
   if (sheet.getLastRow() === 0) {
     sheet.appendRow([
-      "REGISTRATION ID","STUDENT NAME","CLASS",
+      "REGISTRATION ID","STUDENT NAME","STUDENT ID","CLASS",
       "SPORT EVENT","CATEGORY","SPORTS HOUSE","TEACHER","SESSION","CREATED AT"
     ]);
   }
@@ -21,7 +21,8 @@ function doPost(e) {
   sheet.appendRow([
     data.registrationId || "",
     data.studentName || "",
-     data.className || "",
+    data.studentId || "",
+    data.className || "",
     data.event || "",
     data.category || "",
     data.house || "",

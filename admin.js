@@ -43,52 +43,20 @@ module.exports = async (req, res) => {
 
 
     if (action === "students" && req.method === "GET") {
-      const q = String(req.query.q || "").trim();
-      const safeQ = q.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
-      const filter = q ? {
-        $or: [
-          { studentName: { $regex:safeQ, $options:"i" } },
-          { className: { $regex:safeQ, $options:"i" } },
-          { house: { $regex:safeQ, $options:"i" } }
-        ]
-      } : {};
-      const rows = await students.find(filter, {
-        projection:{ studentName:1, className:1, house:1 }
-      }).sort({studentName:1}).limit(5000).toArray();
+      const q=String(req.query.q||"").trim();
+      const safeQ=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+      const filter=q?{$or:[{studentName:{$regex:safeQ,$options:"i"}},{studentId:{$regex:safeQ,$options:"i"}}]}:{};
+      const rows=await students.find(filter).sort({studentName:1}).limit(5000).toArray();
       return res.status(200).json(rows.map(cleanDoc));
     }
-
     if (action === "importStudents" && req.method === "POST") {
-      const input = Array.isArray((req.body || {}).students) ? (req.body || {}).students : [];
-      const rows = input.map(x => ({
-        studentName:String(x.studentName || x.name || "").trim(),
-        className:String(x.className || x.class || "").trim().toUpperCase(),
-        house:String(x.house || "").trim().toUpperCase(),
-        updatedAt:new Date()
-      })).filter(x => x.studentName);
-
-      if (!rows.length) {
-        return res.status(400).json({ok:false,message:"No valid students found."});
-      }
-
-      const ops = rows.map(x => ({
-        updateOne:{
-          filter:{studentName:x.studentName,className:x.className,house:x.house},
-          update:{$set:x,$setOnInsert:{createdAt:new Date()}},
-          upsert:true
-        }
-      }));
-
-      const r = await students.bulkWrite(ops,{ordered:false});
-      return res.status(200).json({
-        ok:true,
-        message:"Student master list imported successfully.",
-        imported:rows.length,
-        updated:r.modifiedCount||0,
-        upserted:r.upsertedCount||0
-      });
+      const input=Array.isArray((req.body||{}).students)?req.body.students:[];
+      const rows=input.map(x=>({studentName:String(x.studentName||x.name||"").trim(),studentId:String(x.studentId||x.id||"").trim(),className:String(x.className||x.class||"").trim().toUpperCase(),house:String(x.house||x.sportsHouse||"").trim().toUpperCase(),updatedAt:new Date()})).filter(x=>x.studentName&&x.studentId);
+      if(!rows.length)return res.status(400).json({ok:false,message:"No valid students found."});
+      const ops=rows.map(x=>({updateOne:{filter:{studentId:x.studentId},update:{$set:x,$setOnInsert:{createdAt:new Date()}},upsert:true}}));
+      const r=await students.bulkWrite(ops,{ordered:false});
+      return res.status(200).json({ok:true,message:"Student master list imported successfully.",imported:rows.length,updated:r.modifiedCount||0,upserted:r.upsertedCount||0});
     }
-
     if (action === "master" && (req.method === "GET" || req.method === "PUT")) {
       if (req.method === "GET") {
         const config = await getMasterConfig();
@@ -164,9 +132,7 @@ module.exports = async (req, res) => {
         }
       }
 
-      const totalStudents = new Set(
-        registrationRows.map(r => `${String(r.studentName||"").trim().toUpperCase()}|||${String(r.className||"").trim().toUpperCase()}|||${String(r.house||"").trim().toUpperCase()}`)
-      ).size;
+      const totalStudents = new Set(registrationRows.map(r => String(r.studentId || ""))).size;
       return res.status(200).json({
         ok:true,
         totals:{
@@ -193,6 +159,7 @@ module.exports = async (req, res) => {
         ? {
             $or: [
               { studentName: { $regex: safeQ, $options: "i" } },
+              { studentId: { $regex: safeQ, $options: "i" } },
               { className: { $regex: safeQ, $options: "i" } },
               { event: { $regex: safeQ, $options: "i" } },
               { category: { $regex: safeQ, $options: "i" } },
@@ -434,86 +401,126 @@ module.exports = async (req, res) => {
 
     if (action === "participantSports" && req.method === "PUT") {
       const body = req.body || {};
-      const participantId = String(body.participantId || "").trim();
+      const studentId = String(body.studentId || "").trim();
       const sports = Array.isArray(body.sports) ? body.sports : [];
 
-      if (!ObjectId.isValid(participantId)) {
-        return res.status(400).json({ok:false,message:"Invalid participant reference."});
+      if (!studentId) {
+        return res.status(400).json({ ok:false, message:"Invalid Student ID." });
       }
-
-      const anchor = await registrations.findOne({_id:new ObjectId(participantId)});
-      if (!anchor) {
-        return res.status(404).json({ok:false,message:"Participant registration not found."});
-      }
-
-      const participantFilter = {
-        studentName:String(anchor.studentName||"").trim(),
-        className:String(anchor.className||"").trim().toUpperCase(),
-        house:String(anchor.house||"").trim().toUpperCase()
-      };
 
       const cleanSports = [];
       const seen = new Set();
+
       for (const item of sports) {
-        const event=String(item.event||"").trim().toUpperCase();
-        const category=String(item.category||"").trim().toUpperCase();
-        const id=String(item.id||"").trim();
-        if(!event||!category) continue;
-        const key=`${event}|||${category}`;
-        if(seen.has(key)) continue;
+        const event = String(item.event || "").trim().toUpperCase();
+        const category = String(item.category || "").trim().toUpperCase();
+        const id = String(item.id || "").trim();
+
+        if (!event || !category) continue;
+
+        const key = `${event}|||${category}`;
+        if (seen.has(key)) continue;
         seen.add(key);
-        cleanSports.push({id:ObjectId.isValid(id)?id:"",event,category});
+
+        cleanSports.push({
+          id: ObjectId.isValid(id) ? id : "",
+          event,
+          category
+        });
       }
 
-      if(!cleanSports.length) {
-        return res.status(400).json({ok:false,message:"A participant must have at least one sport."});
+      if (!cleanSports.length) {
+        return res.status(400).json({
+          ok:false,
+          message:"A participant must have at least one sport."
+        });
       }
 
-      const config=await getMasterConfig();
-      const allowedEvents=new Set((config?.events||[]).map(String));
-      const allowedCategories=new Set((config?.categories||[]).map(String));
-      for(const sport of cleanSports){
-        if(allowedEvents.size && !allowedEvents.has(sport.event))
-          return res.status(400).json({ok:false,message:`Sport event "${sport.event}" is not available.`});
-        if(allowedCategories.size && !allowedCategories.has(sport.category))
-          return res.status(400).json({ok:false,message:`Category "${sport.category}" is not available.`});
+      const config = await getMasterConfig();
+      const allowedEvents = new Set((config?.events || []).map(String));
+      const allowedCategories = new Set((config?.categories || []).map(String));
+
+      for (const sport of cleanSports) {
+        if (allowedEvents.size && !allowedEvents.has(sport.event)) {
+          return res.status(400).json({
+            ok:false,
+            message:`Sport event "${sport.event}" is not available.`
+          });
+        }
+        if (allowedCategories.size && !allowedCategories.has(sport.category)) {
+          return res.status(400).json({
+            ok:false,
+            message:`Category "${sport.category}" is not available.`
+          });
+        }
       }
 
-      const currentRows=await registrations.find(participantFilter).sort({createdAt:1}).toArray();
-      const currentIds=new Set(currentRows.map(row=>String(row._id)));
-      const keptIds=new Set();
-      const ops=[];
+      const currentRows = await registrations
+        .find({ studentId })
+        .sort({ createdAt: 1 })
+        .toArray();
 
-      for(const sport of cleanSports){
-        const existingByPair=currentRows.find(row =>
-          String(row.event||"")===sport.event && String(row.category||"")===sport.category
+      if (!currentRows.length) {
+        return res.status(404).json({
+          ok:false,
+          message:"Participant registration not found."
+        });
+      }
+
+      const currentIds = new Set(currentRows.map(row => String(row._id)));
+      const requestedIds = new Set(
+        cleanSports
+          .map(row => row.id)
+          .filter(Boolean)
+      );
+
+      const duplicateWithinParticipant = await registrations.find({
+        studentId,
+        $or: cleanSports.map(row => ({
+          event: row.event,
+          category: row.category
+        }))
+      }).toArray();
+
+      const ownedByEvent = new Set(
+        duplicateWithinParticipant.map(row => `${row.event}|||${row.category}|||${String(row._id)}`)
+      );
+
+      const ops = [];
+      const keptIds = new Set();
+
+      for (const sport of cleanSports) {
+        const existingByPair = currentRows.find(row =>
+          String(row.event || "") === sport.event &&
+          String(row.category || "") === sport.category
         );
-        const targetId=sport.id && currentIds.has(sport.id) ? sport.id : (existingByPair ? String(existingByPair._id) : "");
+        const targetId = sport.id && currentIds.has(sport.id)
+          ? sport.id
+          : existingByPair ? String(existingByPair._id) : "";
 
-        if(targetId){
+        if (targetId) {
           keptIds.add(targetId);
           ops.push({
-            updateOne:{
-              filter:{_id:new ObjectId(targetId)},
-              update:{$set:{
-                event:sport.event,
-                category:sport.category,
-                studentName:String(body.studentName||anchor.studentName||"").trim(),
-                className:String(body.className||anchor.className||"").trim().toUpperCase(),
-                house:String(body.house||anchor.house||"").trim().toUpperCase(),
-                teacher:String(body.teacher||anchor.teacher||"Teacher").trim(),
-                updatedAt:new Date()
-              }}
+            updateOne: {
+              filter: { _id:new ObjectId(targetId), studentId },
+              update: {
+                $set: {
+                  event:sport.event,
+                  category:sport.category,
+                  updatedAt:new Date()
+                }
+              }
             }
           });
-        }else{
+        } else {
           ops.push({
-            insertOne:{
-              document:{
-                studentName:String(body.studentName||anchor.studentName||"").trim(),
-                className:String(body.className||anchor.className||"").trim().toUpperCase(),
-                house:String(body.house||anchor.house||"").trim().toUpperCase(),
-                teacher:String(body.teacher||anchor.teacher||"Teacher").trim(),
+            insertOne: {
+              document: {
+                studentName: String(currentRows[0].studentName || "").trim(),
+                studentId,
+                className: String(body.className || currentRows[0].className || "").trim().toUpperCase(),
+                house: String(body.house || currentRows[0].house || "").trim().toUpperCase(),
+                teacher: String(body.teacher || currentRows[0].teacher || "Teacher").trim(),
                 event:sport.event,
                 category:sport.category,
                 createdAt:new Date(),
@@ -524,61 +531,115 @@ module.exports = async (req, res) => {
         }
       }
 
-      const removedIds=currentRows.map(row=>String(row._id)).filter(id=>!keptIds.has(id));
-      if(ops.length) await registrations.bulkWrite(ops,{ordered:true});
-      if(removedIds.length){
-        const objectIds=removedIds.map(id=>new ObjectId(id));
-        await registrations.deleteMany({_id:{$in:objectIds}});
+      const removedIds = currentRows
+        .map(row => String(row._id))
+        .filter(id => !keptIds.has(id) && !cleanSports.some(sport => sport.id === id));
+
+      if (ops.length) {
+        await registrations.bulkWrite(ops,{ordered:true});
+      }
+
+      if (removedIds.length) {
+        const objectIds = removedIds.map(id=>new ObjectId(id));
+        await registrations.deleteMany({_id:{$in:objectIds},studentId});
         await results.deleteMany({registrationId:{$in:objectIds}});
       }
+
+      // Update common participant details for all remaining registrations.
+      const commonUpdate = {};
+      if (body.className) commonUpdate.className=String(body.className).trim().toUpperCase();
+      if (body.house) commonUpdate.house=String(body.house).trim().toUpperCase();
+      if (body.teacher) commonUpdate.teacher=String(body.teacher).trim();
+
+      if (Object.keys(commonUpdate).length) {
+        commonUpdate.updatedAt=new Date();
+        await registrations.updateMany({studentId},{$set:commonUpdate});
+      }
+
+      const saved = await registrations
+        .find({studentId})
+        .sort({createdAt:1})
+        .toArray();
 
       return res.status(200).json({
         ok:true,
         message:"Participant sports updated successfully.",
-        data:(await registrations.find({
-          studentName:String(body.studentName||anchor.studentName||"").trim(),
-          className:String(body.className||anchor.className||"").trim().toUpperCase(),
-          house:String(body.house||anchor.house||"").trim().toUpperCase()
-        }).sort({createdAt:1}).toArray()).map(cleanDoc),
+        data:saved.map(cleanDoc),
         removed:removedIds.length
       });
     }
 
     if (action === "update" && req.method === "PUT") {
-      const body=req.body||{};
-      const id=String(body.id||"");
-      if(!ObjectId.isValid(id)) return res.status(400).json({ok:false,message:"Invalid registration ID."});
+      const body = req.body || {};
+      const id = String(body.id || "");
 
-      const updated={
-        studentName:String(body.studentName||"").trim(),
-        className:String(body.className||"").trim(),
-        event:String(body.event||"").trim(),
-        category:String(body.category||"").trim(),
-        house:String(body.house||"").trim(),
-        teacher:String(body.teacher||"Teacher").trim(),
-        updatedAt:new Date()
-      };
-
-      if(!updated.studentName||!updated.className||!updated.event||!updated.category||!updated.house){
-        return res.status(400).json({ok:false,message:"Please complete all required fields."});
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid registration ID."
+        });
       }
 
-      const duplicate=await registrations.findOne({
-        _id:{$ne:new ObjectId(id)},
-        studentName:updated.studentName,
-        className:updated.className,
-        house:updated.house,
-        event:updated.event,
-        category:updated.category
+      const updated = {
+        studentName: String(body.studentName || "").trim(),
+        studentId: String(body.studentId || "").trim(),
+        className: String(body.className || "").trim(),
+        event: String(body.event || "").trim(),
+        category: String(body.category || "").trim(),
+        house: String(body.house || "").trim(),
+        teacher: String(body.teacher || "Teacher").trim(),
+        updatedAt: new Date()
+      };
+
+      if (
+        !updated.studentName ||
+        !updated.studentId ||
+        !updated.className ||
+        !updated.event ||
+        !updated.category ||
+        !updated.house
+      ) {
+        return res.status(400).json({
+          ok: false,
+          message: "Please complete all required fields."
+        });
+      }
+
+      const duplicate = await registrations.findOne({
+        _id: { $ne: new ObjectId(id) },
+        studentId: updated.studentId,
+        event: updated.event,
+        category: updated.category
       });
 
-      if(duplicate) return res.status(409).json({ok:false,message:"This participant is already registered for that event and category."});
+      if (duplicate) {
+        return res.status(409).json({
+          ok: false,
+          message: "Another registration already uses this student, event and category."
+        });
+      }
 
-      const result=await registrations.updateOne({_id:new ObjectId(id)},{$set:updated});
-      if(!result.matchedCount) return res.status(404).json({ok:false,message:"Registration not found."});
+      const result = await registrations.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updated }
+      );
 
-      const saved=await registrations.findOne({_id:new ObjectId(id)});
-      return res.status(200).json({ok:true,message:"Registration updated successfully.",data:cleanDoc(saved)});
+      if (!result.matchedCount) {
+        return res.status(404).json({
+          ok: false,
+          message: "Registration not found."
+        });
+      }
+
+      const saved = await registrations.findOne({
+        _id: new ObjectId(id)
+      });
+
+      return res.status(200).json({
+        ok: true,
+        message: "Registration updated successfully.",
+        data: cleanDoc(saved)
+      });
     }
 
     if (action === "delete" && req.method === "DELETE") {
@@ -683,8 +744,9 @@ module.exports = async (req, res) => {
         const reg = registrationMap.get(row.registrationId ? String(row.registrationId) : "");
         if (!reg) continue;
 
-        const key = `${String(reg.studentName||"").trim().toUpperCase()}|||${String(reg.className||"").trim().toUpperCase()}|||${String(reg.house||"").trim().toUpperCase()}`;
+        const key = String(reg.studentId || reg._id);
         const current = totals.get(key) || {
+          studentId: reg.studentId || "-",
           studentName: reg.studentName || "Unknown",
           house: reg.house || "-",
           points: 0,
@@ -742,6 +804,7 @@ module.exports = async (req, res) => {
             _id: row._id ? String(row._id) : null,
             registrationId: String(reg._id),
             studentName: reg.studentName || "Unknown",
+            studentId: reg.studentId || "-",
             className: reg.className || "-",
             event: reg.event || "-",
             category: reg.category || "-",

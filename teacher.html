@@ -89,7 +89,7 @@
     <div class="section-head"><div class="section-title"><span class="eyebrow">REGISTRATION RECORDS</span><h2>Recent Registrations</h2><p>Latest entries created through this portal.</p></div></div>
     <section class="surface panel sports-panel">
       <div class="table-toolbar"><input id="teacherFilter" placeholder="Search student, event, class or house..."><button class="button-secondary" id="refreshBtn" type="button">Refresh</button></div>
-      <div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Date</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div>
+      <div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Date</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div>
     </section>
   </section>
 </main>
@@ -98,30 +98,77 @@
 </div>
 </div>
 
-<script>const $=id=>document.getElementById(id);
-function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
-function showTeacherToast(text){const toast=$("teacherSuccessToast");if(!toast)return;$("teacherToastText").textContent=text||"Registration saved successfully.";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
-async function api(url,options={}){
-  const r=await fetch(url,{cache:"no-store",...options});
-  const t=await r.text();
-  let d=null;
-  try{d=t?JSON.parse(t):null}catch{}
-  if(!r.ok){
-    const msg=d?.message||d?.error||t||(r.status?`HTTP ${r.status}`:"Server did not return a valid response.");
-    throw new Error(`HTTP ${r.status} - ${msg}`);
-  }
-  if(!d) throw new Error("Server returned an empty response.");
-  return d;
+<script>
+const $=id=>document.getElementById(id);
+function escapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 }
+
+function showTeacherToast(text){const toast=document.getElementById("teacherSuccessToast");if(!toast)return;document.getElementById("teacherToastText").textContent=text||"Registration saved successfully.";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
+async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options}),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - invalid server response`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
 let master={events:[],categories:[],classes:[],houses:[]},students=[];
-function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${escapeHtml(x)}</option>`).join("")}
-function addSport(){const row=document.createElement("div");row.className="sport-row";row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div><div class="field"><label>CATEGORY</label><select class="sport-category"></select></div><button type="button" class="button-secondary sport-row-remove">Remove</button>';row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${escapeHtml(x)}</option>`).join("");row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${escapeHtml(x)}</option>`).join("");row.querySelector(".sport-row-remove").onclick=()=>row.remove();$("sportRows").appendChild(row)}
+function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("")}
+function addSport(){const row=document.createElement("div");row.className="sport-row";row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div><div class="field"><label>CATEGORY</label><select class="sport-category"></select></div><button type="button" class="button-secondary sport-row-remove">Remove</button>';row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");row.querySelector(".sport-row-remove").onclick=()=>row.remove();$("sportRows").appendChild(row)}
 function collectSports(){return [...document.querySelectorAll(".sport-row")].map(r=>({event:r.querySelector(".sport-event").value,category:r.querySelector(".sport-category").value})).filter(x=>x.event&&x.category)}
 function selectStudent(s){$("studentName").value=s.studentName||"";$("className").value=s.className||"";$("house").value=s.house||"";$("studentSuggestions").classList.remove("show")}
-$("studentName").addEventListener("input",()=>{const q=$("studentName").value.trim().toLowerCase();if(q.length<2){$("studentSuggestions").classList.remove("show");return}const matches=students.filter(s=>String(s.studentName||"").toLowerCase().includes(q)||String(s.className||"").toLowerCase().includes(q)||String(s.house||"").toLowerCase().includes(q)).slice(0,8);$("studentSuggestions").innerHTML=matches.map(s=>`<div class="student-suggestion" data-id="${s._id}"><strong>${escapeHtml(s.studentName)}</strong><span>${escapeHtml(s.className||"-")} · ${escapeHtml(s.house||"-")}</span></div>`).join("");matches.length?$("studentSuggestions").classList.add("show"):$("studentSuggestions").classList.remove("show");document.querySelectorAll(".student-suggestion").forEach(el=>el.onmousedown=e=>{e.preventDefault();const s=students.find(x=>String(x._id)===el.dataset.id);if(s)selectStudent(s)})});
+$("studentName").addEventListener("input",()=>{const q=$("studentName").value.trim().toLowerCase();if(q.length<2){$("studentSuggestions").classList.remove("show");return}const matches=students.filter(s=>String(s.studentName||"").toLowerCase().includes(q)).slice(0,8);$("studentSuggestions").innerHTML=matches.map(s=>`<div class="student-suggestion" data-id="${s._id}"><strong>${s.studentName}</strong><span>${s.className||"-"} · ${s.house||"-"}</span></div>`).join("");matches.length?$("studentSuggestions").classList.add("show"):$("studentSuggestions").classList.remove("show");document.querySelectorAll(".student-suggestion").forEach(el=>el.onmousedown=e=>{e.preventDefault();const s=students.find(x=>String(x._id)===el.dataset.id);if(s)selectStudent(s)})});
 document.addEventListener("click",e=>{if(!e.target.closest(".student-search-wrap"))$("studentSuggestions").classList.remove("show")});
-async function loadRows(){try{const q=$("teacherFilter").value.trim();const data=await api("/api/teacher?action=list"+(q?"&teacher="+encodeURIComponent(q):""));const uniqueStudents=new Set(data.map(x=>`${String(x.studentName||"").trim().toUpperCase()}|||${String(x.className||"").trim().toUpperCase()}|||${String(x.house||"").trim().toUpperCase()}`));$("teacherStudentCount").textContent=uniqueStudents.size;$("teacherRegistrationCount").textContent=data.length;$("teacherEventCount").textContent=new Set(data.map(x=>x.event).filter(Boolean)).size;$("rows").innerHTML=data.length?data.map(x=>`<tr><td>${escapeHtml(x.studentName)}</td><td>${escapeHtml(x.className||"-")}</td><td>${escapeHtml(x.event)}</td><td>${escapeHtml(x.category)}</td><td>${escapeHtml(x.house)}</td><td>${escapeHtml(x.teacher)}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td></tr>`).join(""):'<tr><td colspan="7" class="empty">No registrations found.</td></tr>'}catch(e){$("rows").innerHTML=`<tr><td colspan="7" class="empty">${escapeHtml(e.message)}</td></tr>`}}
-async function init(){try{master=await api("/api/master");fill("className",master.classes);fill("house",master.houses);addSport();try{students=await api("/api/teacher?action=students")}catch{students=[]}$("dbBadge").textContent="● Database: Connected";$("dbBadge").className="status ok"}catch(e){$("dbBadge").textContent="● Database: Offline";$("dbBadge").className="status bad";console.error(e)}await loadRows()}
+async function loadRows(){
+  try{
+    const q=$("teacherFilter").value.trim();
+    const data=await api("/api/teacher?action=list"+(q?"&teacher="+encodeURIComponent(q):""));
+    const uniqueStudents=new Set(data.map(x=>`${x.studentName||""}|||${x.className||""}|||${x.house||""}`));
+    $("teacherStudentCount").textContent=uniqueStudents.size;
+    $("teacherRegistrationCount").textContent=data.length;
+    $("teacherEventCount").textContent=new Set(data.map(x=>x.event).filter(Boolean)).size;
+    $("rows").innerHTML=data.length?data.map(x=>`<tr>
+      <td>${escapeHtml(x.studentName)}</td><td>${escapeHtml(x.className||"-")}</td>
+      <td>${escapeHtml(x.event)}</td><td>${escapeHtml(x.category)}</td><td>${escapeHtml(x.house)}</td>
+      <td>${escapeHtml(x.teacher)}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td>
+    </tr>`).join(""):'<tr><td colspan="7" class="empty">No registrations found.</td></tr>';
+  }catch(e){
+    $("rows").innerHTML=`<tr><td colspan="7" class="empty">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+async function init(){try{master=await api("/api/master");fill("className",master.classes);fill("house",master.houses);addSport();try{students=await api("/api/teacher?action=students")}catch{students=[]}await api("/api/teacher?action=list");$("dbBadge").textContent="● Database: Connected";$("dbBadge").className="status ok"}catch(e){$("dbBadge").textContent="● Database: Offline";$("dbBadge").className="status bad";console.error(e)}await loadRows()}
 $("addSportBtn").addEventListener("click",addSport);$("teacherFilter").addEventListener("input",loadRows);$("refreshBtn").addEventListener("click",loadRows);
-$("registrationForm").addEventListener("submit",async e=>{e.preventDefault();const sports=collectSports();$("duplicateWarning").classList.remove("show");if(!sports.length){$("message").className="message error";$("message").textContent="Please select at least one sport.";return}const keys=sports.map(x=>`${x.event}|||${x.category}`);if(new Set(keys).size!==keys.length){$("message").className="message error";$("message").textContent="Please remove duplicate event/category selections.";return}try{const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,className:$("className").value,house:$("house").value,sports})});$("message").className="message ok";$("message").textContent="✓ "+d.message;showTeacherToast(d.message);$("studentName").value="";$("className").value="";$("house").value="";$("sportRows").innerHTML="";addSport();loadRows()}catch(e){$("duplicateWarning").textContent="⚠️ "+e.message;$("duplicateWarning").classList.add("show")}});const teacherSidebar=document.getElementById("teacherSidebar"),teacherMenuButton=document.getElementById("teacherMenuButton"),teacherOverlay=document.getElementById("teacherOverlay");const close=()=>{teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show")};teacherMenuButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();teacherSidebar.classList.add("open");teacherOverlay.classList.add("show")});teacherOverlay?.addEventListener("click",close);document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",close));init();</script>
+$("registrationForm").addEventListener("submit",async e=>{e.preventDefault();const sports=collectSports();$("duplicateWarning").classList.remove("show");if(!sports.length){$("message").className="message error";$("message").textContent="Please select at least one sport.";return}
+const keys=sports.map(x=>`${x.event}|||${x.category}`);
+if(new Set(keys).size!==keys.length){$("message").className="message error";$("message").textContent="Please remove duplicate event/category selections.";return}
+try{const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,className:$("className").value,house:$("house").value,sports})});$("message").className="message ok";$("message").textContent="✓ "+d.message;showTeacherToast(d.message);$("studentName").value="";$("className").value="";$("house").value="";$("sportRows").innerHTML="";addSport();loadRows()}catch(e){$("duplicateWarning").textContent="⚠️ "+e.message;$("duplicateWarning").classList.add("show")}});
+const teacherSidebar=document.getElementById("teacherSidebar"),teacherMenuButton=document.getElementById("teacherMenuButton"),teacherOverlay=document.getElementById("teacherOverlay");const close=()=>{teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show")};teacherMenuButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();teacherSidebar.classList.add("open");teacherOverlay.classList.add("show")});teacherOverlay?.addEventListener("click",close);document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",close));init();
+</script>
 
+<script>
+(function(){
+  let deferredPrompt=null;
+  const installButton=document.getElementById("pwaInstallButton");
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){
+      navigator.serviceWorker.register("/sw.js").catch(function(err){
+        console.warn("PWA service worker registration failed:",err);
+      });
+    });
+  }
+  window.addEventListener("beforeinstallprompt",function(event){
+    event.preventDefault();
+    deferredPrompt=event;
+    if(installButton){installButton.hidden=false}
+  });
+  if(installButton){
+    installButton.addEventListener("click",async function(){
+      if(!deferredPrompt)return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt=null;
+      installButton.hidden=true;
+    });
+  }
+  window.addEventListener("appinstalled",function(){
+    if(installButton)installButton.hidden=true;
+  });
+})();
+</script>
+
+</body>
+</html>
