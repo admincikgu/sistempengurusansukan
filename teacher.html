@@ -107,7 +107,7 @@ async function api(url,options={}){
   let d=null;
   try{d=t?JSON.parse(t):null}catch{}
   if(!r.ok){
-    const msg=d?.message||d?.error||t||`HTTP ${r.status}`;
+    const msg=d?.message||d?.error||t||(r.status?`HTTP ${r.status}`:"Server did not return a valid response.");
     throw new Error(`HTTP ${r.status} - ${msg}`);
   }
   if(!d) throw new Error("Server returned an empty response.");

@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
     }
 
     if (action === "register" && req.method === "POST") {
-      const body = req.body || {};
+      const body = (req.body && typeof req.body === "object") ? req.body : {};
       const teacher = String(body.teacher || "Teacher").trim();
       const studentName = String(body.studentName || "").trim();
       const className = String(body.className || "").trim().toUpperCase();

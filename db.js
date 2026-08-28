@@ -19,9 +19,11 @@ async function getDb() {
 
   if (!state.promise) {
     state.promise = MongoClient.connect(uri, {
-      serverSelectionTimeoutMS: 10000,
-      connectTimeoutMS: 10000,
-      maxPoolSize: 10
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
+      maxPoolSize: 5,
+      minPoolSize: 0
     });
   }
 
@@ -29,7 +31,7 @@ async function getDb() {
     const client = await state.promise;
     state.db = client.db(DB_NAME);
     await state.db.command({ ping: 1 });
-    await ensureSchema(state.db);
+    ensureSchema(state.db).catch(err => console.warn("SCHEMA_CHECK", err.message));
     return state.db;
   } catch (error) {
     state.promise = null;
@@ -40,18 +42,22 @@ async function getDb() {
 
 
 async function ensureSchema(db) {
-  // Student ID is intentionally not part of the application schema.
-  // Drop any legacy unique indexes that still enforce Student ID, because
-  // inserting records without that field can otherwise raise MongoDB E11000.
+  // Legacy Student ID indexes are removed at most once per warm serverless
+  // instance. Never let index maintenance block a registration request.
+  if (global.__SMKDHAB_SCHEMA_CHECKED__) return;
+  global.__SMKDHAB_SCHEMA_CHECKED__ = true;
+
   for (const collectionName of ["students", "registrations"]) {
-    const collection = db.collection(collectionName);
     try {
+      const collection = db.collection(collectionName);
       const indexes = await collection.listIndexes().toArray();
       for (const index of indexes) {
         if (index.name === "_id_") continue;
         const keys = index.key || {};
         if (Object.keys(keys).some(key => /student[_-]?id/i.test(key))) {
-          try { await collection.dropIndex(index.name); } catch (dropError) {
+          try {
+            await collection.dropIndex(index.name);
+          } catch (dropError) {
             console.warn("LEGACY_STUDENT_ID_INDEX", collectionName, index.name, dropError.message);
           }
         }
@@ -139,11 +145,19 @@ async function syncRegistrationToSpreadsheet(row) {
   const webhook = process.env.SPREADSHEET_WEBHOOK_URL;
   if (!webhook) return { ok:false, skipped:true };
 
-  const response = await fetch(webhook,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(row)
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2500);
+  let response;
+  try {
+    response = await fetch(webhook,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(row),
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!response.ok) {
     throw new Error(`Spreadsheet sync failed (HTTP ${response.status})`);
