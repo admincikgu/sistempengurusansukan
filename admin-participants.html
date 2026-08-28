@@ -18,7 +18,7 @@
 <button type="button" class="filter-chip" data-filter="MAT KILAU">MAT KILAU</button>
 <button type="button" class="filter-chip" data-filter="DATO' SAGOR">DATO' SAGOR</button>
 <button type="button" class="filter-chip" data-filter="DATO' MAHARAJALELA">DATO' MAHARAJALELA</button>
-</div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div></section>
+</div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div></section>
 
 <section class="section">
 <section class="surface participant-manager">
@@ -55,6 +55,7 @@
 <div class="manager-form">
   <div class="form-grid">
     <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
+    
     <div class="field"><label>CLASS</label><select id="editClass"></select></div>
     <div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div>
     <div class="field"><label>TEACHER</label><input id="editTeacher"></div>
@@ -84,239 +85,78 @@
 </section>
 
 </main></div>
-<script>
-const TOKEN=sessionStorage.getItem("smkAdminToken");
+<script>const TOKEN=sessionStorage.getItem("smkAdminToken");
 if(!TOKEN)location.href="/admin.html";
-
-async function api(url,options={}){
-  const r=await fetch(url,{cache:"no-store",...options});
-  const t=await r.text();
-  let d;
-  try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}
-  if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);
-  return d;
-}
+async function api(url,options={}){const r=await fetch(url,{cache:"no-store",...options});const t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error(`HTTP ${r.status} - server returned non-JSON`)}if(!r.ok)throw new Error(d.message||d.error||`HTTP ${r.status}`);return d}
 function logout(){sessionStorage.removeItem("smkAdminToken");location.href="/admin.html"}
 const sb=document.getElementById("adminSidebar"),mb=document.getElementById("mobileMenuButton"),ov=document.getElementById("mobileOverlay");
 function openAdminMenu(){sb.classList.add("open");ov.classList.add("show");document.body.classList.add("menu-open")}
 function closeAdminMenu(){sb.classList.remove("open");ov.classList.remove("show");document.body.classList.remove("menu-open")}
-mb?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openAdminMenu()});
-ov?.addEventListener("click",closeAdminMenu);
-document.getElementById("sidebarLogout")?.addEventListener("click",logout);
-document.querySelectorAll(".admin-sidebar a").forEach(a=>a.addEventListener("click",closeAdminMenu));
-
+mb?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openAdminMenu()});ov?.addEventListener("click",closeAdminMenu);document.getElementById("sidebarLogout")?.addEventListener("click",logout);document.querySelectorAll(".admin-sidebar a").forEach(a=>a.addEventListener("click",closeAdminMenu));
 const $=id=>document.getElementById(id);
-let registrations=[];
-let master={events:[],categories:[],classes:[],houses:[]};
-let activeFilter="ALL";
-
-function showSuccessToast(title,text){const toast=$("successToast");if(!toast)return;$("successToastTitle").textContent=title||"Saved successfully";$("successToastText").textContent=text||"";toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show")}
-function fill(id,items){
-  $(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("");
-}
-
-function studentGroups(){
+let registrations=[],master={events:[],categories:[],classes:[],houses:[]},selectedParticipantId="",activeFilter="ALL";
+function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("")}
+function participantGroups(){
   const map=new Map();
   for(const row of registrations){
+    const key=`${String(row.studentName||"").trim().toUpperCase()}|||${String(row.className||"").trim().toUpperCase()}|||${String(row.house||"").trim().toUpperCase()}`;
     if(!map.has(key))map.set(key,[]);
     map.get(key).push(row);
   }
-    studentName:rows[0].studentName||"Unknown",
-    className:rows[0].className||"",
-    house:rows[0].house||"",
-    teacher:rows[0].teacher||"",
-    rows
-  })).sort((a,b)=>a.studentName.localeCompare(b.studentName));
+  return [...map.entries()].map(([key,rows])=>({key,participantId:String(rows[0]._id),studentName:rows[0].studentName||"Unknown",className:rows[0].className||"",house:rows[0].house||"",teacher:rows[0].teacher||"",rows})).sort((a,b)=>a.studentName.localeCompare(b.studentName));
 }
-
 function fillParticipantSelect(){
-  const groups=studentGroups();
-  $("editParticipantSelect").innerHTML='<option value="">Select student...</option>'+
+  const groups=participantGroups();
+  $("editParticipantSelect").innerHTML='<option value="">Select student...</option>'+groups.map(g=>`<option value="${g.participantId}">${g.studentName} — ${g.className||"-"} · ${g.house||"-"} · ${g.rows.length} sport${g.rows.length===1?"":"s"}</option>`).join("");
 }
-
 function createSportRow(sport={}){
-  const row=document.createElement("div");
-  row.className="manage-sport-row";
-  row.dataset.id=String(sport._id||"");
-  row.dataset.new=sport._id?"false":"true";
-
-  row.innerHTML=`
-    <div class="field">
-      <label>SPORT EVENT</label>
-      <select class="manage-event"></select>
-    </div>
-    <div class="field">
-      <label>CATEGORY</label>
-      <select class="manage-category"></select>
-    </div>
-    <button type="button" class="button-secondary manage-sport-remove">Remove</button>`;
-
-  row.querySelector(".manage-event").innerHTML=
-    '<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");
-  row.querySelector(".manage-category").innerHTML=
-    '<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");
-
-  row.querySelector(".manage-event").value=sport.event||"";
-  row.querySelector(".manage-category").value=sport.category||"";
-
-  row.querySelector(".manage-sport-remove").addEventListener("click",()=>row.remove());
-  $("manageSportsList").appendChild(row);
+  const row=document.createElement("div");row.className="manage-sport-row";row.dataset.id=String(sport._id||"");
+  row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="manage-event"></select></div><div class="field"><label>CATEGORY</label><select class="manage-category"></select></div><button type="button" class="button-secondary manage-sport-remove">Remove</button>';
+  row.querySelector(".manage-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");
+  row.querySelector(".manage-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");
+  row.querySelector(".manage-event").value=sport.event||"";row.querySelector(".manage-category").value=sport.category||"";
+  row.querySelector(".manage-sport-remove").onclick=()=>row.remove();$("manageSportsList").appendChild(row);
 }
-
 function clearEdit(){
-  $("editParticipantSelect").value="";
-  $("editStudentName").value="";
-  $("editClass").value="";
-  $("editHouse").value="";
-  $("editTeacher").value="";
+  selectedParticipantId="";$("editParticipantSelect").value="";$("editStudentName").value="";$("editClass").value="";$("editHouse").value="";$("editTeacher").value="";
   $("manageSportsList").innerHTML='<div class="empty">Load a participant to manage their sports.</div>';
-  $("selectedName").textContent="No participant selected";
-  $("selectedMeta").textContent="Choose a student above.";
-  $("selectedState").textContent="Waiting";
-  $("selectedState").className="status wait";
-  $("managerStatus").textContent="No participant selected";
-  $("managerStatus").className="status wait";
-  $("editMessage").textContent="";
+  $("selectedName").textContent="No participant selected";$("selectedMeta").textContent="Choose a student above."; $("selectedState").textContent="Waiting";$("selectedState").className="status wait";$("managerStatus").textContent="No participant selected";$("managerStatus").className="status wait";$("editMessage").textContent="";
 }
-
 function loadParticipant(){
-
-  if(!group)return;
-
-  $("editStudentName").value=group.studentName;
-  $("editClass").value=group.className;
-  $("editHouse").value=group.house;
-  $("editTeacher").value=group.teacher;
-
-  $("selectedName").textContent=group.studentName;
-  $("selectedState").textContent="Loaded";
-  $("selectedState").className="status ok";
-  $("managerStatus").textContent="Participant loaded";
-  $("managerStatus").className="status ok";
-
-  $("manageSportsList").innerHTML="";
-  group.rows.forEach(row=>createSportRow(row));
-  document.querySelector(".participant-manager").scrollIntoView({behavior:"smooth",block:"start"});
+  const participantId=$("editParticipantSelect").value;if(!participantId){clearEdit();return}
+  const group=participantGroups().find(g=>String(g.participantId)===String(participantId));if(!group)return;
+  selectedParticipantId=String(participantId);$("editStudentName").value=group.studentName;$("editClass").value=group.className;$("editHouse").value=group.house;$("editTeacher").value=group.teacher;
+  $("selectedName").textContent=group.studentName;$("selectedMeta").textContent=`${group.className||"No class"} · ${group.house||"No house"} · ${group.rows.length} sport${group.rows.length===1?"":"s"}`;
+  $("selectedState").textContent="Loaded";$("selectedState").className="status ok";$("managerStatus").textContent="Participant loaded";$("managerStatus").className="status ok";
+  $("manageSportsList").innerHTML="";group.rows.forEach(createSportRow);document.querySelector(".participant-manager")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
-
-function rowMatchesFilter(row,filter){
-  if(filter==="ALL")return true;
-  const cls=String(row.className||"").toUpperCase();
-  if(filter==="T1")return /^1/.test(cls);
-  if(filter==="T2-3")return /^2/.test(cls)||/^3/.test(cls);
-  if(filter==="T4-5")return /^4/.test(cls)||/^5/.test(cls);
-  return String(row.house||"").toUpperCase()===filter;
-}
+function rowMatchesFilter(row,filter){if(filter==="ALL")return true;const cls=String(row.className||"").toUpperCase();if(filter==="T1")return /^1/.test(cls);if(filter==="T2-3")return /^2/.test(cls)||/^3/.test(cls);if(filter==="T4-5")return /^4/.test(cls)||/^5/.test(cls);return String(row.house||"").toUpperCase()===filter}
 function render(){
-  const q=$("search").value.trim().toLowerCase();
-  const filtered=registrations.filter(x=>rowMatchesFilter(x,activeFilter)&&JSON.stringify(x).toLowerCase().includes(q));
+  const q=$("search").value.trim().toLowerCase();const filtered=registrations.filter(x=>rowMatchesFilter(x,activeFilter)&&JSON.stringify(x).toLowerCase().includes(q));
+  $("rows").innerHTML=filtered.length?filtered.map(x=>`<tr><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><a class="button-secondary" href="/admin-athlete.html?participantId=${encodeURIComponent(x._id)}">View</a><button class="button-secondary" onclick='chooseParticipantFromRow(${JSON.stringify(x._id)})'>Manage</button><button class="button-secondary" style="color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button></div></td></tr>`).join(""):'<tr><td colspan="7"><div class="empty-state"><div><div class="empty-state-icon">👥</div><h4>No participants found</h4><p>Try another search or clear the current filter.</p></div></div></td></tr>';
 }
-
-  loadParticipant();
-}
-
+function chooseParticipantFromRow(id){$("editParticipantSelect").value=String(id);loadParticipant()}
 async function saveParticipantSports(){
-    $("editMessage").className="message error";
-    $("editMessage").textContent="Select a participant first.";
-    return;
-  }
-
-  const sports=[...document.querySelectorAll(".manage-sport-row")].map(row=>({
-    id:row.dataset.id,
-    event:row.querySelector(".manage-event").value,
-    category:row.querySelector(".manage-category").value
-  })).filter(x=>x.event&&x.category);
-
-  if(!sports.length){
-    $("editMessage").className="message error";
-    $("editMessage").textContent="A participant must have at least one sport.";
-    return;
-  }
-
+  if(!selectedParticipantId){$("editMessage").className="message error";$("editMessage").textContent="Select a participant first.";return}
+  const sports=[...document.querySelectorAll(".manage-sport-row")].map(row=>({id:row.dataset.id,event:row.querySelector(".manage-event").value,category:row.querySelector(".manage-category").value})).filter(x=>x.event&&x.category);
+  if(!sports.length){$("editMessage").className="message error";$("editMessage").textContent="A participant must have at least one sport.";return}
   try{
-    const data=await api("/api/admin?action=participantSports",{
-      method:"PUT",
-      headers:{"Content-Type":"application/json","x-admin-token":TOKEN},
-      body:JSON.stringify({
-        className:$("editClass").value,
-        house:$("editHouse").value,
-        teacher:$("editTeacher").value,
-        sports
-      })
-    });
-
-    $("editMessage").className="message ok";
-    $("editMessage").textContent=`✓ ${data.message} ${data.removed?data.removed+" sport record removed.":""}`;
-    await load();
-    loadParticipant();
-  }catch(error){
-    $("editMessage").className="message error";
-    $("editMessage").textContent="✕ "+error.message;
-  }
+    const data=await api("/api/admin?action=participantSports",{method:"PUT",headers:{"Content-Type":"application/json","x-admin-token":TOKEN},body:JSON.stringify({participantId:selectedParticipantId,studentName:$("editStudentName").value,className:$("editClass").value,house:$("editHouse").value,teacher:$("editTeacher").value,sports})});
+    $("editMessage").className="message ok";$("editMessage").textContent=`✓ ${data.message} ${data.removed?data.removed+" sport record removed.":""}`;await load();$("editParticipantSelect").value=selectedParticipantId;loadParticipant();
+  }catch(error){$("editMessage").className="message error";$("editMessage").textContent="✕ "+error.message}
 }
-
 async function deleteRegistration(id){
-  const row=registrations.find(x=>x._id===id);
-  if(!confirm(`Delete ${row?.studentName||"this registration"} — ${row?.event||"this sport"}?`))return;
-
-  try{
-    const d=await api("/api/admin?action=delete&id="+encodeURIComponent(id),{
-      method:"DELETE",
-      headers:{"x-admin-token":TOKEN}
-    });
-    $("editMessage").className="message ok";
-    $("editMessage").textContent="✓ "+d.message;
-    await load();
-  }catch(error){
-    $("editMessage").className="message error";
-    $("editMessage").textContent="✕ "+error.message;
-  }
+  const row=registrations.find(x=>x._id===id);if(!confirm(`Delete ${row?.studentName||"this registration"} — ${row?.event||"this sport"}?`))return;
+  try{const d=await api("/api/admin?action=delete&id="+encodeURIComponent(id),{method:"DELETE",headers:{"x-admin-token":TOKEN}});$("editMessage").className="message ok";$("editMessage").textContent="✓ "+d.message;selectedParticipantId="";await load()}catch(error){$("editMessage").className="message error";$("editMessage").textContent="✕ "+error.message}
 }
-
 async function load(){
-  try{
-    const auth={"x-admin-token":TOKEN};
-    await api("/api/master");
-    registrations=await api("/api/admin?action=registrations",{headers:auth});
-    $("dbStatus").textContent="● Database: Connected";
-    $("dbStatus").className="status ok";
-    await loadMaster();
-    render();
-    fillParticipantSelect();
-  }catch(error){
-    $("dbStatus").textContent="● Database: Error";
-    $("dbStatus").className="status bad";
-    $("rows").innerHTML=`<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
-  }
+  try{const auth={"x-admin-token":TOKEN};registrations=await api("/api/admin?action=registrations",{headers:auth});$("dbStatus").textContent="● Database: Connected";$("dbStatus").className="status ok";await loadMaster();render();fillParticipantSelect()}
+  catch(error){$("dbStatus").textContent="● Database: Error";$("dbStatus").className="status bad";$("rows").innerHTML=`<tr><td colspan="7" class="empty">${error.message}</td></tr>`}
 }
-
-async function loadMaster(){
-  const m=await api("/api/master");
-  master=m;
-  fill("editClass",m.classes);
-  fill("editHouse",m.houses);
-}
-
-$("search").addEventListener("input",render);
-$("refreshBtn").addEventListener("click",load);
-$("loadParticipantBtn").addEventListener("click",loadParticipant);
-$("editParticipantSelect").addEventListener("change",loadParticipant);
-$("addManageSportBtn").addEventListener("click",()=>createSportRow({}));
-$("clearEditBtn").addEventListener("click",clearEdit);
-$("saveEditBtn").addEventListener("click",saveParticipantSports);
-$("printBtn").addEventListener("click",preparePrint);
-
-function preparePrint(){
-  const q=$("search").value.trim().toLowerCase();
-  const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
-  const w=window.open("","_blank");
-  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>ID</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="8">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);
-  w.document.close();
-}
-
-document.querySelectorAll("#participantFilters .filter-chip").forEach(chip=>{chip.addEventListener("click",()=>{activeFilter=chip.dataset.filter||"ALL";document.querySelectorAll("#participantFilters .filter-chip").forEach(x=>x.classList.remove("active"));chip.classList.add("active");render()})});
-load();
-</script></body></html></script>
+async function loadMaster(){const m=await api("/api/master");master=m;fill("editClass",m.classes);fill("editHouse",m.houses)}
+$("search").addEventListener("input",render);$("refreshBtn").addEventListener("click",load);$("loadParticipantBtn").addEventListener("click",loadParticipant);$("editParticipantSelect").addEventListener("change",loadParticipant);$("addManageSportBtn").addEventListener("click",()=>createSportRow({}));$("clearEditBtn").addEventListener("click",clearEdit);$("saveEditBtn").addEventListener("click",saveParticipantSports);$("printBtn").addEventListener("click",preparePrint);
+function preparePrint(){const q=$("search").value.trim().toLowerCase();const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));const w=window.open("","_blank");const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="7">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);w.document.close()}
+document.querySelectorAll("#participantFilters .filter-chip").forEach(chip=>chip.addEventListener("click",()=>{activeFilter=chip.dataset.filter||"ALL";document.querySelectorAll("#participantFilters .filter-chip").forEach(x=>x.classList.remove("active"));chip.classList.add("active");render()}));load();</script></body></html></script>
 <script>
 (function(){
   let deferredPrompt=null;
