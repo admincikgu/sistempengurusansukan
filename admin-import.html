@@ -5,12 +5,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
 <link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Import Students | SMKDHAB</title><link rel="stylesheet" href="/style.css"></head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link " href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link active" href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside><main class="admin-page-main"><header class="admin-page-header"><div><a class="page-nav-back" href="/admin-dashboard.html">← Dashboard</a><h1>Import Students</h1><p>Build the school's student master list for fast teacher registration.</p></div></header><section class="import-workspace"><section class="surface panel"><div class="panel-head"><div><span class="eyebrow">STUDENT MASTER DATA</span><h3>Upload Student List</h3><p>CSV: STUDENT NAME, STUDENT ID, CLASS, SPORTS HOUSE</p></div><span id="fileStatus" class="import-stat">No file selected</span></div><div id="uploadDrop" class="import-drop" role="button" tabindex="0" aria-controls="csvFile" aria-label="Choose CSV file">
   <div class="import-drop-icon">⇧</div>
   <div class="import-drop-title">Choose CSV File</div>
   <div class="import-drop-subtitle">Click to browse · CSV format</div>
 </div>
-<input id="csvFile" type="file" accept=".csv,text/csv" hidden><div id="preview" style="margin-top:14px"><div class="empty">No file loaded.</div></div><div style="display:flex;justify-content:flex-end;gap:7px;margin-top:14px"><button id="clearBtn" class="button-secondary" type="button">Clear</button><button id="importBtn" class="button-primary" type="button" disabled>Import Students</button></div><div id="message" class="message"></div></section><aside class="surface import-info-card"><span class="eyebrow">CSV FORMAT</span><h3>Columns</h3><p>Student Name and Student ID are required. Class and Sports House are optional.</p><div class="csv-columns"><div class="csv-column"><strong>STUDENT NAME</strong><span>Required</span></div><div class="csv-column"><strong>STUDENT ID</strong><span>Required · unique identifier</span></div><div class="csv-column"><strong>CLASS</strong><span>Example: 4UM</span></div><div class="csv-column"><strong>SPORTS HOUSE</strong><span>Example: BAHAMAN</span></div></div></aside></section></main></div><script>
 const TOKEN=sessionStorage.getItem("smkAdminToken");if(!TOKEN)location.href="/admin.html";
 async function api(u,o){const r=await fetch(u,Object.assign({cache:"no-store"},o||{})),t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error("Invalid server response")}if(!r.ok)throw new Error(d.message||d.error||"Request failed");return d}
 const file=document.getElementById("csvFile"),uploadDrop=document.getElementById("uploadDrop"),preview=document.getElementById("preview"),btn=document.getElementById("importBtn"),clear=document.getElementById("clearBtn"),msg=document.getElementById("message"),status=document.getElementById("fileStatus");let rows=[];
@@ -40,21 +38,16 @@ function parseCSV(t){
     return -1;
   };
   const ni=idx("student name","name","student");
-  const ii=idx("student id","studentid","id");
   const ci=idx("class","class name");
   const hi=idx("sports house","house","sportshouse");
-  if(ni<0||ii<0)throw new Error("CSV needs STUDENT NAME and STUDENT ID columns.");
   return lines.slice(1).map(l=>{
     const c=line(l);
     return {
       studentName:c[ni]||"",
-      studentId:c[ii]||"",
       className:ci>=0?(c[ci]||""):"",
       house:hi>=0?(c[hi]||""):""
     };
-  }).filter(x=>x.studentName&&x.studentId);
 }
-function render(){const a=rows.slice(0,15);preview.innerHTML=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>Student Name</th><th>Student ID</th><th>Class</th><th>Sports House</th></tr></thead><tbody>'+a.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.house||"-"}</td></tr>`).join("")+'</tbody></table></div><div class="field-help">Showing '+a.length+' of '+rows.length+' valid records.</div>':'<div class="empty">No valid student records found.</div>';btn.disabled=!rows.length;status.textContent=rows.length?rows.length+" students ready":"No file selected"}
 file.onchange=async()=>{try{rows=parseCSV(await file.files[0].text());render();msg.textContent=""}catch(e){rows=[];btn.disabled=true;status.textContent="Invalid file";msg.className="message error";msg.textContent="✕ "+e.message}}
 clear.onclick=()=>{file.value="";rows=[];preview.innerHTML='<div class="empty">No file loaded.</div>';status.textContent="No file selected";btn.disabled=true;msg.textContent=""}
 btn.onclick=async()=>{btn.disabled=true;try{const d=await api("/api/admin?action=importStudents",{method:"POST",headers:{"Content-Type":"application/json","x-admin-token":TOKEN},body:JSON.stringify({students:rows})});msg.className="message ok";msg.textContent="✓ "+d.message+" Imported: "+d.imported+".";status.textContent="Import complete"}catch(e){msg.className="message error";msg.textContent="✕ "+e.message}finally{btn.disabled=false}}

@@ -60,7 +60,6 @@ module.exports = async (req, res) => {
 
         return {
           studentName: String(registration.studentName || "Participant"),
-          studentId: String(registration.studentId || ""),
           className: String(registration.className || ""),
           event: String(registration.event || ""),
           category: String(registration.category || ""),

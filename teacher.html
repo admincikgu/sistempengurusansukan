@@ -73,7 +73,6 @@
   
 <section class="surface form-panel sports-panel"><form id="registrationForm">
 <div class="form-section"><div class="section-marker"><span class="section-marker-icon">👩‍🏫</span><strong>TEACHER INFORMATION</strong></div><div class="form-grid"><div class="field"><label>TEACHER NAME</label><input id="teacher" placeholder="Teacher name" required></div></div></div>
-<div class="form-section"><div class="section-marker"><span class="section-marker-icon">🎓</span><strong>PARTICIPANT INFORMATION</strong></div><div class="form-grid"><div class="field student-search-wrap"><label>STUDENT NAME</label><input id="studentName" placeholder="Start typing student name..." autocomplete="off" required><div id="studentSuggestions" class="student-suggestions"></div></div><div class="field"><label>STUDENT ID</label><input id="studentId" placeholder="Student ID" required></div><div class="field"><label>CLASS</label><select id="className" required></select></div><div class="field"><label>SPORTS HOUSE</label><select id="house" required></select></div></div></div>
 <div class="form-section"><div class="section-marker"><span class="section-marker-icon">🏃</span><strong>SPORTS SELECTION</strong></div><div class="field"><label>SELECT ONE OR MORE SPORTS</label><div id="sportRows"></div><button class="button-secondary" type="button" id="addSportBtn" style="margin-top:8px">＋ Add Another Sport</button><span class="field-help">Each selected sport is saved as a separate registration.</span></div></div>
 <div class="form-actions"><div class="actions"><button class="button-secondary" type="reset">Clear</button><button class="button-primary" type="submit">Save Registration</button></div></div><div id="duplicateWarning" class="duplicate-warning"></div><div id="message" class="message"></div>
 </form></section>
@@ -110,19 +109,15 @@ let master={events:[],categories:[],classes:[],houses:[]},students=[];
 function fill(id,items){$(id).innerHTML='<option value="">Select...</option>'+items.map(x=>`<option>${x}</option>`).join("")}
 function addSport(){const row=document.createElement("div");row.className="sport-row";row.innerHTML='<div class="field"><label>SPORT EVENT</label><select class="sport-event"></select></div><div class="field"><label>CATEGORY</label><select class="sport-category"></select></div><button type="button" class="button-secondary sport-row-remove">Remove</button>';row.querySelector(".sport-event").innerHTML='<option value="">Select...</option>'+master.events.map(x=>`<option>${x}</option>`).join("");row.querySelector(".sport-category").innerHTML='<option value="">Select...</option>'+master.categories.map(x=>`<option>${x}</option>`).join("");row.querySelector(".sport-row-remove").onclick=()=>row.remove();$("sportRows").appendChild(row)}
 function collectSports(){return [...document.querySelectorAll(".sport-row")].map(r=>({event:r.querySelector(".sport-event").value,category:r.querySelector(".sport-category").value})).filter(x=>x.event&&x.category)}
-function selectStudent(s){$("studentName").value=s.studentName||"";$("studentId").value=s.studentId||"";$("className").value=s.className||"";$("house").value=s.house||"";$("studentSuggestions").classList.remove("show")}
-$("studentName").addEventListener("input",()=>{const q=$("studentName").value.trim().toLowerCase();if(q.length<2){$("studentSuggestions").classList.remove("show");return}const matches=students.filter(s=>String(s.studentName||"").toLowerCase().includes(q)||String(s.studentId||"").toLowerCase().includes(q)).slice(0,8);$("studentSuggestions").innerHTML=matches.map(s=>`<div class="student-suggestion" data-id="${s._id}"><strong>${s.studentName}</strong><span>${s.studentId} · ${s.className||"-"} · ${s.house||"-"}</span></div>`).join("");matches.length?$("studentSuggestions").classList.add("show"):$("studentSuggestions").classList.remove("show");document.querySelectorAll(".student-suggestion").forEach(el=>el.onmousedown=e=>{e.preventDefault();const s=students.find(x=>String(x._id)===el.dataset.id);if(s)selectStudent(s)})});
 document.addEventListener("click",e=>{if(!e.target.closest(".student-search-wrap"))$("studentSuggestions").classList.remove("show")});
 async function loadRows(){
   try{
     const q=$("teacherFilter").value.trim();
     const data=await api("/api/teacher?action=list"+(q?"&teacher="+encodeURIComponent(q):""));
-    const uniqueStudents=new Set(data.map(x=>String(x.studentId||"")).filter(Boolean));
     $("teacherStudentCount").textContent=uniqueStudents.size;
     $("teacherRegistrationCount").textContent=data.length;
     $("teacherEventCount").textContent=new Set(data.map(x=>x.event).filter(Boolean)).size;
     $("rows").innerHTML=data.length?data.map(x=>`<tr>
-      <td>${escapeHtml(x.studentName)}</td><td>${escapeHtml(x.studentId)}</td><td>${escapeHtml(x.className||"-")}</td>
       <td>${escapeHtml(x.event)}</td><td>${escapeHtml(x.category)}</td><td>${escapeHtml(x.house)}</td>
       <td>${escapeHtml(x.teacher)}</td><td>${x.createdAt?new Date(x.createdAt).toLocaleString("en-MY"):"-"}</td>
     </tr>`).join(""):'<tr><td colspan="8" class="empty">No registrations found.</td></tr>';
@@ -135,7 +130,6 @@ $("addSportBtn").addEventListener("click",addSport);$("teacherFilter").addEventL
 $("registrationForm").addEventListener("submit",async e=>{e.preventDefault();const sports=collectSports();$("duplicateWarning").classList.remove("show");if(!sports.length){$("message").className="message error";$("message").textContent="Please select at least one sport.";return}
 const keys=sports.map(x=>`${x.event}|||${x.category}`);
 if(new Set(keys).size!==keys.length){$("message").className="message error";$("message").textContent="Please remove duplicate event/category selections.";return}
-try{const d=await api("/api/teacher?action=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacher:$("teacher").value,studentName:$("studentName").value,studentId:$("studentId").value,className:$("className").value,house:$("house").value,sports})});$("message").className="message ok";$("message").textContent="✓ "+d.message;showTeacherToast(d.message);$("studentName").value="";$("studentId").value="";$("className").value="";$("house").value="";$("sportRows").innerHTML="";addSport();loadRows()}catch(e){$("duplicateWarning").textContent="⚠️ "+e.message;$("duplicateWarning").classList.add("show")}});
 const teacherSidebar=document.getElementById("teacherSidebar"),teacherMenuButton=document.getElementById("teacherMenuButton"),teacherOverlay=document.getElementById("teacherOverlay");const close=()=>{teacherSidebar.classList.remove("open");teacherOverlay.classList.remove("show")};teacherMenuButton?.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();teacherSidebar.classList.add("open");teacherOverlay.classList.add("show")});teacherOverlay?.addEventListener("click",close);document.querySelectorAll(".teacher-sidebar a").forEach(a=>a.addEventListener("click",close));init();
 </script>
 
