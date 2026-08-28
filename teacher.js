@@ -35,6 +35,7 @@ module.exports=async(req,res)=>{
       const body=req.body||{};
       const teacher=String(body.teacher||"Teacher").trim();
       const studentName=String(body.studentName||"").trim();
+      const studentId=String(body.studentId||"").trim();
       const className=String(body.className||"").trim();
       const house=String(body.house||"").trim();
       const sports=Array.isArray(body.sports)?body.sports:[];
@@ -49,7 +50,7 @@ module.exports=async(req,res)=>{
         if(!seen.has(key)){seen.add(key);pairs.push({event,category});}
       }
 
-      if(!studentName||!className||!house||!pairs.length){
+      if(!studentName||!studentId||!className||!house||!pairs.length){
         return res.status(400).json({ok:false,message:"Please complete the participant details and select at least one sport."});
       }
 
@@ -66,8 +67,6 @@ module.exports=async(req,res)=>{
         }
       }
 
-      const crypto=require("crypto");
-      const studentId=crypto.createHash("sha256").update(`${studentName.toLowerCase()}|||${className.toUpperCase()}|||${house.toUpperCase()}`).digest("hex").slice(0,24);
       const existing=await collection.find({
         studentId,
         $or:pairs.map(pair=>({event:pair.event,category:pair.category}))

@@ -1,0 +1,5 @@
+WORKING BASELINE
+This build restores the last syntax-clean functional baseline (V59-upgraded).
+No database schema, registration endpoint, MongoDB connection, or API flow was changed in this build.
+Student ID fields are intentionally left as-is in this baseline so existing database/registration behavior is preserved.
+JavaScript syntax errors: 0
