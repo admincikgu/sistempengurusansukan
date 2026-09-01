@@ -2914,3 +2914,132 @@ div.filter-chips > button.filter-chip:focus-visible{
 .admin-sidebar .nav-group.collapsed .nav-group-title{
   color:rgba(255,255,255,.68) !important;
 }
+
+/* FORCE ADMIN SIDEBAR BLACK */
+.admin-main > .admin-sidebar,
+aside.admin-sidebar,
+#adminSidebar{
+  background:#111111 !important;
+  background-image:none !important;
+  color:#ffffff !important;
+  border-right:1px solid #252525 !important;
+  box-shadow:12px 0 30px rgba(0,0,0,.20) !important;
+}
+.admin-sidebar::before,#adminSidebar::before{display:none!important}
+#adminSidebar .admin-sidebar-brand{
+  background:#111111!important;
+  border-bottom:1px solid #2a2a2a!important;
+}
+#adminSidebar .admin-sidebar-brand strong,
+#adminSidebar .admin-sidebar-brand span{
+  color:#fff!important;
+}
+#adminSidebar .admin-sidebar-nav,
+#adminSidebar .admin-sidebar-nav *{
+  color:#fff!important;
+}
+#adminSidebar .nav-group-title{color:#929292!important}
+#adminSidebar .nav-group-title span{color:inherit!important}
+#adminSidebar .nav-group-title .chevron{
+  color:#999!important;
+  border-color:#999!important;
+}
+#adminSidebar .admin-sidebar-link{
+  background:transparent!important;
+  color:#ededed!important;
+  border:1px solid transparent!important;
+}
+#adminSidebar .admin-sidebar-link .ico{
+  color:#fff!important;
+  background:#1e1e1e!important;
+  border:1px solid #2d2d2d!important;
+}
+#adminSidebar .admin-sidebar-link:hover{
+  background:#202020!important;
+  color:#fff!important;
+  border-color:#303030!important;
+}
+#adminSidebar .admin-sidebar-link.active{
+  background:#252525!important;
+  color:#fff!important;
+  border-color:#393939!important;
+  box-shadow:inset 3px 0 #d3a334,0 6px 16px rgba(0,0,0,.16)!important;
+}
+#adminSidebar .admin-sidebar-link.active .ico{
+  background:#302b1d!important;
+  color:#f4c84b!important;
+  border-color:#594b25!important;
+}
+
+/* ===== FINAL: WHITE SIDEBAR + BLACK TEXT ===== */
+.admin-main > .admin-sidebar,
+aside.admin-sidebar,
+#adminSidebar{
+  background:#ffffff !important;
+  background-image:none !important;
+  color:#111111 !important;
+  border-right:1px solid #e5e7eb !important;
+  box-shadow:8px 0 26px rgba(17,24,39,.08) !important;
+}
+.admin-sidebar::before,#adminSidebar::before{display:none!important}
+
+#adminSidebar .admin-sidebar-brand{
+  background:#ffffff!important;
+  border-bottom:1px solid #e5e7eb!important;
+}
+#adminSidebar .admin-sidebar-brand strong{
+  color:#111111!important;
+}
+#adminSidebar .admin-sidebar-brand span{
+  color:#6b7280!important;
+}
+
+#adminSidebar .admin-sidebar-nav,
+#adminSidebar .admin-sidebar-nav *{
+  color:#111111!important;
+}
+#adminSidebar .nav-group-title{
+  color:#6b7280!important;
+}
+#adminSidebar .nav-group-title span{
+  color:inherit!important;
+}
+#adminSidebar .nav-group-title .chevron{
+  color:#6b7280!important;
+  border-color:#6b7280!important;
+}
+
+#adminSidebar .admin-sidebar-link{
+  background:transparent!important;
+  color:#1f2937!important;
+  border:1px solid transparent!important;
+}
+#adminSidebar .admin-sidebar-link .ico{
+  color:#111111!important;
+  background:#f3f4f6!important;
+  border:1px solid #e5e7eb!important;
+}
+#adminSidebar .admin-sidebar-link:hover{
+  background:#f3f6f9!important;
+  color:#111111!important;
+  border-color:#e5e7eb!important;
+  transform:translateX(3px)!important;
+}
+#adminSidebar .admin-sidebar-link:hover .ico{
+  background:#e9eef3!important;
+}
+#adminSidebar .admin-sidebar-link.active{
+  background:linear-gradient(90deg,#fff8df,#f3f7fb)!important;
+  color:#102f52!important;
+  border-color:#eadfbf!important;
+  box-shadow:inset 3px 0 #d3a334,0 4px 14px rgba(16,47,82,.06)!important;
+}
+#adminSidebar .admin-sidebar-link.active .ico{
+  background:#fff3c7!important;
+  color:#102f52!important;
+  border-color:#ead58c!important;
+}
+#adminSidebar .sidebar-school-logo{
+  background:#fff!important;
+  border:2px solid #e5e7eb!important;
+}
