@@ -3044,193 +3044,183 @@ aside.admin-sidebar,
   border:2px solid #e5e7eb!important;
 }
 
-/* ==========================================================
-   ALL-PAGES MOTION PRO
-   Subtle contextual movement; no API / DB / form logic changes.
-   ========================================================== */
-
-/* Global ambient field */
+/* ===== ALL PAGES MOTION — built from WHITE/BLACK sidebar baseline ===== */
 body:not(:has(#login)){
-  --motion-blue:rgba(29,93,143,.075);
-  --motion-gold:rgba(211,163,52,.065);
   position:relative;
   overflow-x:hidden;
+  --ambient-blue:rgba(29,93,143,.055);
+  --ambient-gold:rgba(211,163,52,.045);
 }
 body:not(:has(#login))::before{
   content:"";
   position:fixed;
-  width:46vw;height:46vw;
-  max-width:620px;max-height:620px;
-  left:-18vw;top:8vh;
+  width:430px;height:430px;
+  left:-180px;top:80px;
   border-radius:50%;
-  background:radial-gradient(circle,var(--motion-blue),transparent 68%);
-  filter:blur(4px);
+  background:radial-gradient(circle,var(--ambient-blue),transparent 70%);
   pointer-events:none;
   z-index:-1;
-  animation:ambientDriftA 18s ease-in-out infinite alternate;
+  animation:ambientOne 18s ease-in-out infinite alternate;
 }
 body:not(:has(#login))::after{
   content:"";
   position:fixed;
-  width:42vw;height:42vw;
-  max-width:560px;max-height:560px;
-  right:-16vw;bottom:4vh;
+  width:390px;height:390px;
+  right:-150px;bottom:40px;
   border-radius:50%;
-  background:radial-gradient(circle,var(--motion-gold),transparent 68%);
-  filter:blur(5px);
+  background:radial-gradient(circle,var(--ambient-gold),transparent 70%);
   pointer-events:none;
   z-index:-1;
-  animation:ambientDriftB 22s ease-in-out infinite alternate;
+  animation:ambientTwo 21s ease-in-out infinite alternate;
 }
-@keyframes ambientDriftA{
+@keyframes ambientOne{
   0%{transform:translate3d(0,0,0) scale(1)}
-  50%{transform:translate3d(8vw,5vh,0) scale(1.08)}
-  100%{transform:translate3d(2vw,11vh,0) scale(.94)}
+  50%{transform:translate3d(90px,35px,0) scale(1.07)}
+  100%{transform:translate3d(40px,95px,0) scale(.94)}
 }
-@keyframes ambientDriftB{
+@keyframes ambientTwo{
   0%{transform:translate3d(0,0,0) scale(.95)}
-  50%{transform:translate3d(-7vw,-5vh,0) scale(1.06)}
-  100%{transform:translate3d(-2vw,-10vh,0) scale(.92)}
+  50%{transform:translate3d(-70px,-35px,0) scale(1.06)}
+  100%{transform:translate3d(-25px,-95px,0) scale(.92)}
 }
 
-/* Decorative motion line */
-body:not(:has(#login)) .admin-content::after,
-body:not(:has(#login)) .main-content::after{
-  content:"";
-  position:fixed;
-  left:-30vw;
-  top:16vh;
-  width:72vw;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(29,93,143,.12),rgba(211,163,52,.18),transparent);
-  transform:rotate(-8deg);
-  pointer-events:none;
-  animation:lightSweep 13s linear infinite;
-}
-@keyframes lightSweep{
-  from{translate:0 0;opacity:.2}
-  40%{opacity:.65}
-  to{translate:100vw 14vh;opacity:.05}
-}
-
-/* More natural page entrance */
-body:not(:has(#login)) .admin-page-header,
-body:not(:has(#login)) .page-header{
-  animation:pageHeaderIn .65s var(--portal-ease, cubic-bezier(.2,.7,.25,1)) both;
+/* Gentle page reveal */
+body:not(:has(#login)) .admin-page-header{
+  animation:pageReveal .55s cubic-bezier(.2,.7,.25,1) both;
 }
 body:not(:has(#login)) .surface,
 body:not(:has(#login)) .panel,
 body:not(:has(#login)) .card{
-  animation:panelIn .55s var(--portal-ease, cubic-bezier(.2,.7,.25,1)) both;
+  animation:panelReveal .48s cubic-bezier(.2,.7,.25,1) both;
 }
-@keyframes pageHeaderIn{
-  from{opacity:0;transform:translateY(8px)}
+@keyframes pageReveal{
+  from{opacity:0;transform:translateY(9px)}
   to{opacity:1;transform:translateY(0)}
 }
-@keyframes panelIn{
-  from{opacity:0;transform:translateY(12px)}
+@keyframes panelReveal{
+  from{opacity:0;transform:translateY(10px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-/* Stagger common dashboard components */
+/* Gentle stagger */
 body:not(:has(#login)) .surface:nth-of-type(2),
-body:not(:has(#login)) .card:nth-of-type(2),
-body:not(:has(#login)) .panel:nth-of-type(2){animation-delay:.04s}
+body:not(:has(#login)) .panel:nth-of-type(2),
+body:not(:has(#login)) .card:nth-of-type(2){animation-delay:.04s}
 body:not(:has(#login)) .surface:nth-of-type(3),
-body:not(:has(#login)) .card:nth-of-type(3),
-body:not(:has(#login)) .panel:nth-of-type(3){animation-delay:.08s}
+body:not(:has(#login)) .panel:nth-of-type(3),
+body:not(:has(#login)) .card:nth-of-type(3){animation-delay:.08s}
 body:not(:has(#login)) .surface:nth-of-type(4),
-body:not(:has(#login)) .card:nth-of-type(4),
-body:not(:has(#login)) .panel:nth-of-type(4){animation-delay:.12s}
-body:not(:has(#login)) .surface:nth-of-type(5),
-body:not(:has(#login)) .card:nth-of-type(5),
-body:not(:has(#login)) .panel:nth-of-type(5){animation-delay:.16s}
+body:not(:has(#login)) .panel:nth-of-type(4),
+body:not(:has(#login)) .card:nth-of-type(4){animation-delay:.12s}
 
-/* Dashboard/stat cards: tiny floating rhythm */
-.stat-card,.metric-card,.summary-card,.kpi-card{
-  will-change:transform;
-  animation:softFloat 6s ease-in-out infinite;
+/* Dashboard numbers/cards — only when these classes exist */
+.kpi-card,.metric-card,.stat-card,.summary-card{
+  animation:microFloat 6s ease-in-out infinite;
 }
-.stat-card:nth-child(2),.metric-card:nth-child(2),.summary-card:nth-child(2),.kpi-card:nth-child(2){
-  animation-delay:-1.5s;
-}
-.stat-card:nth-child(3),.metric-card:nth-child(3),.summary-card:nth-child(3),.kpi-card:nth-child(3){
-  animation-delay:-3s;
-}
-@keyframes softFloat{
+.kpi-card:nth-child(2),.metric-card:nth-child(2),.stat-card:nth-child(2),.summary-card:nth-child(2){animation-delay:-1.7s}
+.kpi-card:nth-child(3),.metric-card:nth-child(3),.stat-card:nth-child(3),.summary-card:nth-child(3){animation-delay:-3.1s}
+@keyframes microFloat{
   0%,100%{transform:translateY(0)}
   50%{transform:translateY(-3px)}
 }
 
-/* Progress bars get a subtle flowing sheen */
-.progress,.house-bar,.progress-bar,.score-bar{
-  position:relative;
-  overflow:hidden;
-}
-.progress::after,.house-bar::after,.progress-bar::after,.score-bar::after{
-  content:"";
-  position:absolute;
-  top:0;bottom:0;
-  left:-35%;
-  width:28%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
-  transform:skewX(-18deg);
-  animation:barShine 4s ease-in-out infinite;
-}
-@keyframes barShine{
-  0%,55%{left:-35%;opacity:0}
-  65%{opacity:1}
-  100%{left:115%;opacity:0}
-}
-
-/* Sidebar stays visually stable; only its links respond */
-.admin-sidebar-link{
-  transition:transform .24s var(--portal-ease, ease),background-color .24s ease,color .24s ease,box-shadow .24s ease;
-}
-
-/* Table rows have a tiny reveal when a page loads */
+/* Table content reveal */
 .table tbody tr{
-  animation:rowReveal .42s ease both;
+  animation:rowIn .36s ease both;
 }
-.table tbody tr:nth-child(2){animation-delay:.025s}
-.table tbody tr:nth-child(3){animation-delay:.05s}
-.table tbody tr:nth-child(4){animation-delay:.075s}
-.table tbody tr:nth-child(5){animation-delay:.1s}
-@keyframes rowReveal{
-  from{opacity:.25;transform:translateY(3px)}
+.table tbody tr:nth-child(2){animation-delay:.02s}
+.table tbody tr:nth-child(3){animation-delay:.04s}
+.table tbody tr:nth-child(4){animation-delay:.06s}
+.table tbody tr:nth-child(5){animation-delay:.08s}
+.table tbody tr:nth-child(6){animation-delay:.10s}
+@keyframes rowIn{
+  from{opacity:.45;transform:translateY(3px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-/* Inputs: gentle focus glow, no layout shift */
-input:focus,select:focus,textarea:focus{
-  animation:focusPulse 1.4s ease-out;
+/* Existing sidebar remains white + black; only interactive movement */
+.admin-sidebar .admin-sidebar-link{
+  transition:transform .2s ease,background-color .2s ease,box-shadow .2s ease,color .2s ease;
 }
-@keyframes focusPulse{
-  0%{box-shadow:0 0 0 0 rgba(29,93,143,.18)}
-  100%{box-shadow:0 0 0 4px rgba(29,93,143,.08)}
+.admin-sidebar .admin-sidebar-link:hover{
+  transform:translateX(3px);
 }
 
-/* Floating install button */
+/* Progress bars */
+.progress,.progress-bar,.house-bar,.score-bar{
+  position:relative;
+  overflow:hidden;
+}
+.progress::after,.progress-bar::after,.house-bar::after,.score-bar::after{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:-35%;
+  width:25%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-16deg);
+  animation:barLight 4.5s ease-in-out infinite;
+}
+@keyframes barLight{
+  0%,55%{left:-35%;opacity:0}
+  66%{opacity:1}
+  100%{left:120%;opacity:0}
+}
+
+/* Floating PWA/install action */
 .pwa-install-button{
-  animation:installFloat 5s ease-in-out infinite;
+  animation:pwaFloat 5.5s ease-in-out infinite;
 }
-@keyframes installFloat{
+@keyframes pwaFloat{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-4px)}
+  50%{transform:translateY(-3px)}
 }
 
+@media(max-width:640px){
+  .table tbody tr{animation:none}
+  .kpi-card,.metric-card,.stat-card,.summary-card{animation:none}
+}
 @media(prefers-reduced-motion:reduce){
   body:not(:has(#login))::before,
   body:not(:has(#login))::after,
-  body:not(:has(#login)) .admin-content::after,
   body:not(:has(#login)) .admin-page-header,
-  body:not(:has(#login)) .page-header,
   body:not(:has(#login)) .surface,
   body:not(:has(#login)) .panel,
   body:not(:has(#login)) .card,
-  .stat-card,.metric-card,.summary-card,.kpi-card,
-  .progress::after,.house-bar::after,.progress-bar::after,.score-bar::after,
-  .table tbody tr,.pwa-install-button{
+  .kpi-card,.metric-card,.stat-card,.summary-card,
+  .table tbody tr,.progress::after,.progress-bar::after,
+  .house-bar::after,.score-bar::after,.pwa-install-button{
     animation:none!important;
   }
+}
+
+/* FINAL SIDEBAR PALETTE: WHITE BACKGROUND + BLACK TEXT */
+.admin-main > .admin-sidebar,
+aside.admin-sidebar,
+#adminSidebar{
+  background:#fff !important;
+  background-image:none !important;
+  color:#111 !important;
+}
+#adminSidebar .admin-sidebar-brand,
+#adminSidebar .admin-sidebar-nav{
+  background:#fff !important;
+}
+#adminSidebar .admin-sidebar-brand strong,
+#adminSidebar .admin-sidebar-brand span,
+#adminSidebar .admin-sidebar-link,
+#adminSidebar .admin-sidebar-link .ico,
+#adminSidebar .admin-sidebar-nav,
+#adminSidebar .admin-sidebar-nav *{
+  color:#111 !important;
+}
+#adminSidebar .nav-group-title{color:#6b7280 !important}
+#adminSidebar .admin-sidebar-link:hover{background:#f3f6f9 !important;color:#111 !important}
+#adminSidebar .admin-sidebar-link.active{
+  color:#102f52 !important;
+  background:linear-gradient(90deg,#fff8df,#f3f7fb) !important;
+  box-shadow:inset 3px 0 #d3a334,0 4px 14px rgba(16,47,82,.06) !important;
+}
+#adminSidebar .admin-sidebar-link.active .ico{
+  color:#102f52 !important;
+  background:#fff3c7 !important;
 }
