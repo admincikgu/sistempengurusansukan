@@ -50,7 +50,7 @@ module.exports=async(req,res)=>{
         if(!seen.has(key)){seen.add(key);pairs.push({event,category});}
       }
 
-      if(!studentName||!studentId||!className||!house||!pairs.length){
+      if(!studentName||!className||!house||!pairs.length){
         return res.status(400).json({ok:false,message:"Please complete the participant details and select at least one sport."});
       }
 
@@ -67,8 +67,12 @@ module.exports=async(req,res)=>{
         }
       }
 
+      const participantFilter = studentId
+        ? { studentId }
+        : { studentName, className, house };
+
       const existing=await collection.find({
-        studentId,
+        ...participantFilter,
         $or:pairs.map(pair=>({event:pair.event,category:pair.category}))
       }).toArray();
 
@@ -84,8 +88,20 @@ module.exports=async(req,res)=>{
       }
 
       const createdAt=new Date();
+      const internalStudentKey = studentId || `AUTO-${Buffer.from(
+        `${studentName}|${className}|${house}`.toUpperCase()
+      ).toString("base64url").slice(0,24)}`;
+
       const docs=pairs.map(pair=>({
-        studentName,studentId,className,event:pair.event,category:pair.category,house,teacher,createdAt,updatedAt:createdAt
+        studentName,
+        studentId: internalStudentKey,
+        className,
+        event:pair.event,
+        category:pair.category,
+        house,
+        teacher,
+        createdAt,
+        updatedAt:createdAt
       }));
 
       const inserted=await collection.insertMany(docs);
