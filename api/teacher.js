@@ -12,10 +12,12 @@ module.exports=async(req,res)=>{
       const filter=q
         ? {$or:[
             {studentName:{$regex:safeQ,$options:"i"}},
+            {studentId:{$regex:safeQ,$options:"i"}},
             {className:{$regex:safeQ,$options:"i"}}
           ]}
         : {};
       const studentRows=await db.collection("students")
+        .find(filter,{projection:{studentName:1,studentId:1,className:1,house:1}})
         .sort({studentName:1})
         .limit(q?30:1000)
         .toArray();
@@ -33,6 +35,7 @@ module.exports=async(req,res)=>{
       const body=req.body||{};
       const teacher=String(body.teacher||"Teacher").trim();
       const studentName=String(body.studentName||"").trim();
+      const studentId=String(body.studentId||"").trim();
       const className=String(body.className||"").trim();
       const house=String(body.house||"").trim();
       const sports=Array.isArray(body.sports)?body.sports:[];
@@ -47,6 +50,7 @@ module.exports=async(req,res)=>{
         if(!seen.has(key)){seen.add(key);pairs.push({event,category});}
       }
 
+      if(!studentName||!studentId||!className||!house||!pairs.length){
         return res.status(400).json({ok:false,message:"Please complete the participant details and select at least one sport."});
       }
 
@@ -64,6 +68,7 @@ module.exports=async(req,res)=>{
       }
 
       const existing=await collection.find({
+        studentId,
         $or:pairs.map(pair=>({event:pair.event,category:pair.category}))
       }).toArray();
 
@@ -80,6 +85,7 @@ module.exports=async(req,res)=>{
 
       const createdAt=new Date();
       const docs=pairs.map(pair=>({
+        studentName,studentId,className,event:pair.event,category:pair.category,house,teacher,createdAt,updatedAt:createdAt
       }));
 
       const inserted=await collection.insertMany(docs);
@@ -92,6 +98,7 @@ module.exports=async(req,res)=>{
           await syncRegistrationToSpreadsheet({
             registrationId:String(row._id),
             studentName:row.studentName,
+            studentId:row.studentId,
             className:row.className,
             event:row.event,
             category:row.category,
@@ -117,6 +124,6 @@ module.exports=async(req,res)=>{
     return res.status(405).json({ok:false,message:"Invalid Teacher API action."});
   }catch(error){
     console.error("TEACHER_API",error);
-    return res.status(500).json({ok:false,message:"Teacher API failed.",error:error.message});
+    return res.status(503).json({ok:false,message:"Database/API unavailable.",error:error.message,code:error.code||null,codeName:error.codeName||null});
   }
 };

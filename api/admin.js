@@ -45,12 +45,15 @@ module.exports = async (req, res) => {
     if (action === "students" && req.method === "GET") {
       const q=String(req.query.q||"").trim();
       const safeQ=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+      const filter=q?{$or:[{studentName:{$regex:safeQ,$options:"i"}},{studentId:{$regex:safeQ,$options:"i"}}]}:{};
       const rows=await students.find(filter).sort({studentName:1}).limit(5000).toArray();
       return res.status(200).json(rows.map(cleanDoc));
     }
     if (action === "importStudents" && req.method === "POST") {
       const input=Array.isArray((req.body||{}).students)?req.body.students:[];
+      const rows=input.map(x=>({studentName:String(x.studentName||x.name||"").trim(),studentId:String(x.studentId||x.id||"").trim(),className:String(x.className||x.class||"").trim().toUpperCase(),house:String(x.house||x.sportsHouse||"").trim().toUpperCase(),updatedAt:new Date()})).filter(x=>x.studentName&&x.studentId);
       if(!rows.length)return res.status(400).json({ok:false,message:"No valid students found."});
+      const ops=rows.map(x=>({updateOne:{filter:{studentId:x.studentId},update:{$set:x,$setOnInsert:{createdAt:new Date()}},upsert:true}}));
       const r=await students.bulkWrite(ops,{ordered:false});
       return res.status(200).json({ok:true,message:"Student master list imported successfully.",imported:rows.length,updated:r.modifiedCount||0,upserted:r.upsertedCount||0});
     }
@@ -129,6 +132,7 @@ module.exports = async (req, res) => {
         }
       }
 
+      const totalStudents = new Set(registrationRows.map(r => String(r.studentId || ""))).size;
       return res.status(200).json({
         ok:true,
         totals:{
@@ -155,6 +159,7 @@ module.exports = async (req, res) => {
         ? {
             $or: [
               { studentName: { $regex: safeQ, $options: "i" } },
+              { studentId: { $regex: safeQ, $options: "i" } },
               { className: { $regex: safeQ, $options: "i" } },
               { event: { $regex: safeQ, $options: "i" } },
               { category: { $regex: safeQ, $options: "i" } },
@@ -396,8 +401,11 @@ module.exports = async (req, res) => {
 
     if (action === "participantSports" && req.method === "PUT") {
       const body = req.body || {};
+      const studentId = String(body.studentId || "").trim();
       const sports = Array.isArray(body.sports) ? body.sports : [];
 
+      if (!studentId) {
+        return res.status(400).json({ ok:false, message:"Invalid Student ID." });
       }
 
       const cleanSports = [];
@@ -448,6 +456,7 @@ module.exports = async (req, res) => {
       }
 
       const currentRows = await registrations
+        .find({ studentId })
         .sort({ createdAt: 1 })
         .toArray();
 
@@ -466,6 +475,7 @@ module.exports = async (req, res) => {
       );
 
       const duplicateWithinParticipant = await registrations.find({
+        studentId,
         $or: cleanSports.map(row => ({
           event: row.event,
           category: row.category
@@ -492,6 +502,7 @@ module.exports = async (req, res) => {
           keptIds.add(targetId);
           ops.push({
             updateOne: {
+              filter: { _id:new ObjectId(targetId), studentId },
               update: {
                 $set: {
                   event:sport.event,
@@ -506,6 +517,7 @@ module.exports = async (req, res) => {
             insertOne: {
               document: {
                 studentName: String(currentRows[0].studentName || "").trim(),
+                studentId,
                 className: String(body.className || currentRows[0].className || "").trim().toUpperCase(),
                 house: String(body.house || currentRows[0].house || "").trim().toUpperCase(),
                 teacher: String(body.teacher || currentRows[0].teacher || "Teacher").trim(),
@@ -529,6 +541,7 @@ module.exports = async (req, res) => {
 
       if (removedIds.length) {
         const objectIds = removedIds.map(id=>new ObjectId(id));
+        await registrations.deleteMany({_id:{$in:objectIds},studentId});
         await results.deleteMany({registrationId:{$in:objectIds}});
       }
 
@@ -540,9 +553,11 @@ module.exports = async (req, res) => {
 
       if (Object.keys(commonUpdate).length) {
         commonUpdate.updatedAt=new Date();
+        await registrations.updateMany({studentId},{$set:commonUpdate});
       }
 
       const saved = await registrations
+        .find({studentId})
         .sort({createdAt:1})
         .toArray();
 
@@ -567,6 +582,7 @@ module.exports = async (req, res) => {
 
       const updated = {
         studentName: String(body.studentName || "").trim(),
+        studentId: String(body.studentId || "").trim(),
         className: String(body.className || "").trim(),
         event: String(body.event || "").trim(),
         category: String(body.category || "").trim(),
@@ -577,6 +593,7 @@ module.exports = async (req, res) => {
 
       if (
         !updated.studentName ||
+        !updated.studentId ||
         !updated.className ||
         !updated.event ||
         !updated.category ||
@@ -590,6 +607,7 @@ module.exports = async (req, res) => {
 
       const duplicate = await registrations.findOne({
         _id: { $ne: new ObjectId(id) },
+        studentId: updated.studentId,
         event: updated.event,
         category: updated.category
       });
@@ -726,7 +744,9 @@ module.exports = async (req, res) => {
         const reg = registrationMap.get(row.registrationId ? String(row.registrationId) : "");
         if (!reg) continue;
 
+        const key = String(reg.studentId || reg._id);
         const current = totals.get(key) || {
+          studentId: reg.studentId || "-",
           studentName: reg.studentName || "Unknown",
           house: reg.house || "-",
           points: 0,
@@ -784,6 +804,7 @@ module.exports = async (req, res) => {
             _id: row._id ? String(row._id) : null,
             registrationId: String(reg._id),
             studentName: reg.studentName || "Unknown",
+            studentId: reg.studentId || "-",
             className: reg.className || "-",
             event: reg.event || "-",
             category: reg.category || "-",
