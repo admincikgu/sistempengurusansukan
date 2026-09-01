@@ -1,7 +1,7 @@
 <!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Database Status</title><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:20px}pre{background:#111;color:#eee;padding:16px;border-radius:10px;white-space:pre-wrap}</style></head>
-<body><h1>Database Status</h1><pre id="out">Checking...</pre>
+<body data-motion-page="db-status"><h1>Database Status</h1><pre id="out">Checking...</pre>
 <script>
 fetch('/api/db-test').then(async r=>{const t=await r.text(); try{document.querySelector('#out').textContent=JSON.stringify(JSON.parse(t),null,2)}catch{document.querySelector('#out').textContent=t}})
 .catch(e=>document.querySelector('#out').textContent=e.message);

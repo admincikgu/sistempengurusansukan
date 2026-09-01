@@ -3043,3 +3043,194 @@ aside.admin-sidebar,
   background:#fff!important;
   border:2px solid #e5e7eb!important;
 }
+
+/* ==========================================================
+   ALL-PAGES MOTION PRO
+   Subtle contextual movement; no API / DB / form logic changes.
+   ========================================================== */
+
+/* Global ambient field */
+body:not(:has(#login)){
+  --motion-blue:rgba(29,93,143,.075);
+  --motion-gold:rgba(211,163,52,.065);
+  position:relative;
+  overflow-x:hidden;
+}
+body:not(:has(#login))::before{
+  content:"";
+  position:fixed;
+  width:46vw;height:46vw;
+  max-width:620px;max-height:620px;
+  left:-18vw;top:8vh;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--motion-blue),transparent 68%);
+  filter:blur(4px);
+  pointer-events:none;
+  z-index:-1;
+  animation:ambientDriftA 18s ease-in-out infinite alternate;
+}
+body:not(:has(#login))::after{
+  content:"";
+  position:fixed;
+  width:42vw;height:42vw;
+  max-width:560px;max-height:560px;
+  right:-16vw;bottom:4vh;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--motion-gold),transparent 68%);
+  filter:blur(5px);
+  pointer-events:none;
+  z-index:-1;
+  animation:ambientDriftB 22s ease-in-out infinite alternate;
+}
+@keyframes ambientDriftA{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(8vw,5vh,0) scale(1.08)}
+  100%{transform:translate3d(2vw,11vh,0) scale(.94)}
+}
+@keyframes ambientDriftB{
+  0%{transform:translate3d(0,0,0) scale(.95)}
+  50%{transform:translate3d(-7vw,-5vh,0) scale(1.06)}
+  100%{transform:translate3d(-2vw,-10vh,0) scale(.92)}
+}
+
+/* Decorative motion line */
+body:not(:has(#login)) .admin-content::after,
+body:not(:has(#login)) .main-content::after{
+  content:"";
+  position:fixed;
+  left:-30vw;
+  top:16vh;
+  width:72vw;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(29,93,143,.12),rgba(211,163,52,.18),transparent);
+  transform:rotate(-8deg);
+  pointer-events:none;
+  animation:lightSweep 13s linear infinite;
+}
+@keyframes lightSweep{
+  from{translate:0 0;opacity:.2}
+  40%{opacity:.65}
+  to{translate:100vw 14vh;opacity:.05}
+}
+
+/* More natural page entrance */
+body:not(:has(#login)) .admin-page-header,
+body:not(:has(#login)) .page-header{
+  animation:pageHeaderIn .65s var(--portal-ease, cubic-bezier(.2,.7,.25,1)) both;
+}
+body:not(:has(#login)) .surface,
+body:not(:has(#login)) .panel,
+body:not(:has(#login)) .card{
+  animation:panelIn .55s var(--portal-ease, cubic-bezier(.2,.7,.25,1)) both;
+}
+@keyframes pageHeaderIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes panelIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Stagger common dashboard components */
+body:not(:has(#login)) .surface:nth-of-type(2),
+body:not(:has(#login)) .card:nth-of-type(2),
+body:not(:has(#login)) .panel:nth-of-type(2){animation-delay:.04s}
+body:not(:has(#login)) .surface:nth-of-type(3),
+body:not(:has(#login)) .card:nth-of-type(3),
+body:not(:has(#login)) .panel:nth-of-type(3){animation-delay:.08s}
+body:not(:has(#login)) .surface:nth-of-type(4),
+body:not(:has(#login)) .card:nth-of-type(4),
+body:not(:has(#login)) .panel:nth-of-type(4){animation-delay:.12s}
+body:not(:has(#login)) .surface:nth-of-type(5),
+body:not(:has(#login)) .card:nth-of-type(5),
+body:not(:has(#login)) .panel:nth-of-type(5){animation-delay:.16s}
+
+/* Dashboard/stat cards: tiny floating rhythm */
+.stat-card,.metric-card,.summary-card,.kpi-card{
+  will-change:transform;
+  animation:softFloat 6s ease-in-out infinite;
+}
+.stat-card:nth-child(2),.metric-card:nth-child(2),.summary-card:nth-child(2),.kpi-card:nth-child(2){
+  animation-delay:-1.5s;
+}
+.stat-card:nth-child(3),.metric-card:nth-child(3),.summary-card:nth-child(3),.kpi-card:nth-child(3){
+  animation-delay:-3s;
+}
+@keyframes softFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
+/* Progress bars get a subtle flowing sheen */
+.progress,.house-bar,.progress-bar,.score-bar{
+  position:relative;
+  overflow:hidden;
+}
+.progress::after,.house-bar::after,.progress-bar::after,.score-bar::after{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;
+  left:-35%;
+  width:28%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+  transform:skewX(-18deg);
+  animation:barShine 4s ease-in-out infinite;
+}
+@keyframes barShine{
+  0%,55%{left:-35%;opacity:0}
+  65%{opacity:1}
+  100%{left:115%;opacity:0}
+}
+
+/* Sidebar stays visually stable; only its links respond */
+.admin-sidebar-link{
+  transition:transform .24s var(--portal-ease, ease),background-color .24s ease,color .24s ease,box-shadow .24s ease;
+}
+
+/* Table rows have a tiny reveal when a page loads */
+.table tbody tr{
+  animation:rowReveal .42s ease both;
+}
+.table tbody tr:nth-child(2){animation-delay:.025s}
+.table tbody tr:nth-child(3){animation-delay:.05s}
+.table tbody tr:nth-child(4){animation-delay:.075s}
+.table tbody tr:nth-child(5){animation-delay:.1s}
+@keyframes rowReveal{
+  from{opacity:.25;transform:translateY(3px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Inputs: gentle focus glow, no layout shift */
+input:focus,select:focus,textarea:focus{
+  animation:focusPulse 1.4s ease-out;
+}
+@keyframes focusPulse{
+  0%{box-shadow:0 0 0 0 rgba(29,93,143,.18)}
+  100%{box-shadow:0 0 0 4px rgba(29,93,143,.08)}
+}
+
+/* Floating install button */
+.pwa-install-button{
+  animation:installFloat 5s ease-in-out infinite;
+}
+@keyframes installFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body:not(:has(#login))::before,
+  body:not(:has(#login))::after,
+  body:not(:has(#login)) .admin-content::after,
+  body:not(:has(#login)) .admin-page-header,
+  body:not(:has(#login)) .page-header,
+  body:not(:has(#login)) .surface,
+  body:not(:has(#login)) .panel,
+  body:not(:has(#login)) .card,
+  .stat-card,.metric-card,.summary-card,.kpi-card,
+  .progress::after,.house-bar::after,.progress-bar::after,.score-bar::after,
+  .table tbody tr,.pwa-install-button{
+    animation:none!important;
+  }
+}
