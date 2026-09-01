@@ -5,7 +5,39 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SMKDHAB Sports">
 <link rel="apple-touch-icon" href="/assets/pwa-icon-192.svg">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Participants | SMK Datuk Haji Ahmad Badawi</title><link rel="stylesheet" href="/style.css"></head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a><a class="admin-sidebar-link active" href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link " href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside>
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Participants | SMK Datuk Haji Ahmad Badawi</title><link rel="stylesheet" href="/style.css">
+<style id="organized-admin-sidebar">
+.admin-sidebar-nav .nav-group{margin:18px 0 6px}
+.admin-sidebar-nav .nav-group-title{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px 6px;
+  color:rgba(255,255,255,.48);
+  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;user-select:none;
+}
+.admin-sidebar-nav .nav-group-title .chevron{
+  width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg) translateY(-2px);
+  transition:transform .22s ease;
+}
+.admin-sidebar-nav .nav-group.collapsed .chevron{transform:rotate(-45deg) translateY(2px)}
+.admin-sidebar-nav .nav-group-items{
+  overflow:hidden;max-height:600px;
+  transition:max-height .28s ease,opacity .2s ease;
+  opacity:1;
+}
+.admin-sidebar-nav .nav-group.collapsed .nav-group-items{max-height:0;opacity:0}
+.admin-sidebar-nav .admin-sidebar-link{margin:3px 8px}
+.admin-sidebar-nav .nav-group:first-child{margin-top:7px}
+@media (max-width:900px){
+  .admin-sidebar-nav .nav-group-title{padding-left:12px}
+}
+</style>
+
+</head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div><div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><div class="nav-group"><div class="nav-group-title"><span>Overview</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link " href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a></div></div>
+<div class="nav-group"><div class="nav-group-title"><span>Participants</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link active" href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link " href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a></div></div>
+<div class="nav-group"><div class="nav-group-title"><span>Sports Management</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link " href="/admin-events.html"><span class="ico">🏃</span>Sports Events</a><a class="admin-sidebar-link " href="/admin-results.html"><span class="ico">🏆</span>Results</a></div></div>
+<div class="nav-group"><div class="nav-group-title"><span>Reports & Data</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link " href="/admin-reports.html"><span class="ico">📄</span>Reports</a><a class="admin-sidebar-link " href="/admin-import.html"><span class="ico">⇩</span>Import Students</a></div></div></nav><div class="admin-sidebar-footer"><a class="admin-sidebar-link home-link" href="/"><span class="ico">⌂</span>Main Dashboard</a><button class="admin-sidebar-link" id="sidebarLogout" type="button"><span class="ico">↪</span>Log Out</button></div></aside>
 <div id="successToast" class="success-toast" aria-live="polite"><div class="success-toast-icon">✓</div><div><strong id="successToastTitle">Saved successfully</strong><span id="successToastText"></span></div></div><main class="admin-page-main">
 <header class="admin-page-header"><div><a class="page-nav-back" href="/admin-dashboard.html">← Dashboard</a><h1>Participants</h1><p>View, edit, delete and print registered student records.</p></div><div class="header-actions"><button class="button-secondary" id="refreshBtn">↻ Refresh</button><button class="button-primary" id="printBtn">🖨️ Print Official List</button></div></header>
 <section class="surface panel"><div class="panel-head"><div><h3>Participant Records</h3><p>Live registration data from MongoDB.</p></div><span id="dbStatus" class="status wait">● Database: Checking</span></div><div class="table-toolbar"><input id="search" placeholder="Search student, ID, class, event, category, house or teacher..."></div>
@@ -331,7 +363,22 @@ function preparePrint(){
   const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
   const w=window.open("","_blank");
   const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");
-  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="7">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);
+  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="7">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script>
+<script id="organized-admin-sidebar-js">
+(function(){
+  const nav=document.querySelector(".admin-sidebar-nav");
+  if(!nav || nav.dataset.organized==="1") return;
+  nav.dataset.organized="1";
+  nav.querySelectorAll(".nav-group-title").forEach(title=>{
+    title.addEventListener("click",()=>{
+      const group=title.closest(".nav-group");
+      group.classList.toggle("collapsed");
+    });
+  });
+})();
+</script>
+
+</body></html>`);
   w.document.close();
 }
 
