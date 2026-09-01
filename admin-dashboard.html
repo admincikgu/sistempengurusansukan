@@ -34,6 +34,50 @@
 }
 </style>
 
+
+<style id="admin-sidebar-text-fix">
+/* Explicit sidebar contrast fix */
+.admin-sidebar .admin-sidebar-nav,
+.admin-sidebar .admin-sidebar-nav *{
+  color:rgba(255,255,255,.92);
+}
+.admin-sidebar .admin-sidebar-link{
+  color:#fff !important;
+  opacity:1 !important;
+  text-decoration:none !important;
+}
+.admin-sidebar .admin-sidebar-link .ico{
+  color:#fff !important;
+  opacity:.96 !important;
+  filter:none !important;
+}
+.admin-sidebar .admin-sidebar-link:hover{
+  color:#fff !important;
+  background:rgba(255,255,255,.11) !important;
+}
+.admin-sidebar .admin-sidebar-link.active{
+  color:#fff !important;
+  background:linear-gradient(90deg,rgba(212,167,44,.28),rgba(255,255,255,.09)) !important;
+}
+.admin-sidebar .admin-sidebar-link.active .ico{
+  color:#fff !important;
+}
+.admin-sidebar .nav-group-title{
+  color:rgba(255,255,255,.62) !important;
+}
+.admin-sidebar .nav-group-title span{
+  color:inherit !important;
+}
+.admin-sidebar .nav-group-title .chevron{
+  border-color:currentColor !important;
+  color:rgba(255,255,255,.62) !important;
+}
+.admin-sidebar-brand strong,
+.admin-sidebar-brand span{
+  color:#fff !important;
+}
+</style>
+
 </head><body><button id="pwaInstallButton" class="pwa-install-button" type="button" hidden>＋ Install App</button><div class="motion-field" aria-hidden="true"><span class="lane"></span><span class="lane"></span><span class="lane"></span></div>
 <div class="admin-main"><div class="admin-mobile-top"><button id="mobileMenuButton" class="mobile-menu-button" type="button">☰</button><strong style="color:var(--navy);font-size:11px">Admin</strong><a class="nav-link" href="/">Home</a></div><div id="mobileOverlay" class="mobile-overlay"></div><aside id="adminSidebar" class="admin-sidebar"><div class="admin-sidebar-brand"><img class="sidebar-school-logo" src="/assets/smkdhbadawi-logo.jpg"><div><strong>SMKDHAB</strong><span>Sports Administration</span></div></div><div class="admin-sidebar-label">MAIN</div><nav class="admin-sidebar-nav"><div class="nav-group"><div class="nav-group-title"><span>Overview</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link active" href="/admin-dashboard.html"><span class="ico">⌂</span>Dashboard</a><a class="admin-sidebar-link " href="/admin-command-center.html"><span class="ico">🎛️</span>Command Center</a></div></div>
 <div class="nav-group"><div class="nav-group-title"><span>Participants</span><span class="chevron"></span></div><div class="nav-group-items"><a class="admin-sidebar-link " href="/admin-participants.html"><span class="ico">👥</span>Participants</a><a class="admin-sidebar-link " href="/admin-athlete.html"><span class="ico">👤</span>Athlete Profile</a><a class="admin-sidebar-link " href="/admin-houses.html"><span class="ico">🏠</span>Sports Houses</a></div></div>
