@@ -18,7 +18,7 @@
 <button type="button" class="filter-chip" data-filter="MAT KILAU">MAT KILAU</button>
 <button type="button" class="filter-chip" data-filter="DATO' SAGOR">DATO' SAGOR</button>
 <button type="button" class="filter-chip" data-filter="DATO' MAHARAJALELA">DATO' MAHARAJALELA</button>
-</div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody></table></div></section>
+</div><div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Class</th><th>Event</th><th>Category</th><th>Sports House</th><th>Teacher</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody></table></div></section>
 
 <section class="section">
 <section class="surface participant-manager">
@@ -55,7 +55,7 @@
 <div class="manager-form">
   <div class="form-grid">
     <div class="field"><label>STUDENT NAME</label><input id="editStudentName" class="db-readonly" readonly></div>
-    <div class="field"><label>STUDENT ID</label><input id="editStudentId" class="db-readonly" readonly></div>
+    
     <div class="field"><label>CLASS</label><select id="editClass"></select></div>
     <div class="field"><label>SPORTS HOUSE</label><select id="editHouse"></select></div>
     <div class="field"><label>TEACHER</label><input id="editTeacher"></div>
@@ -137,7 +137,7 @@ function studentGroups(){
 function fillParticipantSelect(){
   const groups=studentGroups();
   $("editParticipantSelect").innerHTML='<option value="">Select student...</option>'+
-    groups.map(g=>`<option value="${g.studentId}">${g.studentName} — ${g.studentId} — ${g.rows.length} sport${g.rows.length===1?"":"s"}</option>`).join("");
+    groups.map(g=>`<option value="${g.studentId}">${g.studentName} — ${g.rows.length} sport${g.rows.length===1?"":"s"}</option>`).join("");
 }
 
 function createSportRow(sport={}){
@@ -196,13 +196,12 @@ function loadParticipant(){
 
   selectedStudentId=String(studentId);
   $("editStudentName").value=group.studentName;
-  $("editStudentId").value=group.studentId;
-  $("editClass").value=group.className;
+    $("editClass").value=group.className;
   $("editHouse").value=group.house;
   $("editTeacher").value=group.teacher;
 
   $("selectedName").textContent=group.studentName;
-  $("selectedMeta").textContent=`${group.studentId} · ${group.className||"No class"} · ${group.house||"No house"} · ${group.rows.length} sport${group.rows.length===1?"":"s"}`;
+  $("selectedMeta").textContent=`${group.className||"No class"} · ${group.house||"No house"} · ${group.rows.length} sport${group.rows.length===1?"":"s"}`;
   $("selectedState").textContent="Loaded";
   $("selectedState").className="status ok";
   $("managerStatus").textContent="Participant loaded";
@@ -224,7 +223,7 @@ function rowMatchesFilter(row,filter){
 function render(){
   const q=$("search").value.trim().toLowerCase();
   const filtered=registrations.filter(x=>rowMatchesFilter(x,activeFilter)&&JSON.stringify(x).toLowerCase().includes(q));
-  $("rows").innerHTML=filtered.length?filtered.map(x=>`<tr><td>${x.studentName}</td><td>${x.studentId}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><a class="button-secondary" style="min-height:32px;padding:0 10px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a><button class="button-secondary" style="min-height:32px;padding:0 10px" onclick='chooseStudentFromRow(${JSON.stringify(x.studentId)})'>Manage</button><button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button></div></td></tr>`).join(""):`<tr><td colspan="8"><div class="empty-state"><div><div class="empty-state-icon">👥</div><h4>No participants found</h4><p>Try another search or clear the current filter.</p></div></div></td></tr>`;
+  $("rows").innerHTML=filtered.length?filtered.map(x=>`<tr><td>${x.studentName}</td><td>${x.className||"-"}</td><td>${x.event}</td><td>${x.category}</td><td>${x.house}</td><td>${x.teacher}</td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><a class="button-secondary" style="min-height:32px;padding:0 10px" href="/admin-athlete.html?studentId=${encodeURIComponent(x.studentId)}">View</a><button class="button-secondary" style="min-height:32px;padding:0 10px" onclick='chooseStudentFromRow(${JSON.stringify(x.studentId)})'>Manage</button><button class="button-secondary" style="min-height:30px;padding:0 8px;color:var(--danger)" onclick='deleteRegistration("${x._id}")'>Delete</button></div></td></tr>`).join(""):`<tr><td colspan="7"><div class="empty-state"><div><div class="empty-state-icon">👥</div><h4>No participants found</h4><p>Try another search or clear the current filter.</p></div></div></td></tr>`;
 }
 
 function chooseStudentFromRow(studentId){
@@ -307,7 +306,7 @@ async function load(){
   }catch(error){
     $("dbStatus").textContent="● Database: Error";
     $("dbStatus").className="status bad";
-    $("rows").innerHTML=`<tr><td colspan="8" class="empty">${error.message}</td></tr>`;
+    $("rows").innerHTML=`<tr><td colspan="7" class="empty">${error.message}</td></tr>`;
   }
 }
 
@@ -331,8 +330,8 @@ function preparePrint(){
   const q=$("search").value.trim().toLowerCase();
   const rows=registrations.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
   const w=window.open("","_blank");
-  const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentId||"-"}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");
-  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>ID</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="8">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);
+  const table=rows.map((x,i)=>`<tr><td>${i+1}</td><td>${x.studentName||"-"}</td><td>${x.className||"-"}</td><td>${x.event||"-"}</td><td>${x.category||"-"}</td><td>${x.house||"-"}</td><td>${x.teacher||"-"}</td></tr>`).join("");
+  w.document.write(`<html><head><title>Official Participant Registration List</title><style>@page{size:A4 portrait;margin:15mm}body{font-family:Arial,sans-serif;color:#111;font-size:9px}h1,h2{text-align:center;margin:2px}h1{font-size:15px}h2{font-size:11px}.meta{margin:15px 0 10px;border:1px solid #777;padding:7px}.meta strong{display:block}.meta span{font-size:7px;color:#555}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px}th{background:#eef1f2;font-size:7px;text-transform:uppercase}td{font-size:8px}.foot{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:80px;text-align:center}.line{height:35px;border-bottom:1px solid #555}</style></head><body><h1>SMK DATUK HAJI AHMAD BADAWI</h1><h2>Official Participant Registration List</h2><div class="meta"><span>Session</span><strong>2026</strong><span>Printed</span><strong>${new Date().toLocaleString("en-MY")}</strong></div><table><thead><tr><th>No.</th><th>Name</th><th>Class</th><th>Event</th><th>Category</th><th>House</th><th>Teacher</th></tr></thead><tbody>${table||'<tr><td colspan="7">No participant records.</td></tr>'}</tbody></table><p><b>Total Sport Registrations:</b> ${rows.length}</p><div class="foot"><div><div class="line"></div>Teacher / Advisor</div><div><div class="line"></div>Sports Administrator</div></div><script>window.print();<\/script></body></html>`);
   w.document.close();
 }
 

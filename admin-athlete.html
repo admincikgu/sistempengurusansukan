@@ -71,7 +71,7 @@ function fillParticipantSelect(){
     '<option value="">Select participant...</option>'+
     grouped.map(person=>
       `<option value="${person.studentId}">
-        ${person.studentName} — ${person.studentId} — ${person.sports.length} sport${person.sports.length===1?"":"s"}
+        ${person.studentName} — ${person.sports.length} sport${person.sports.length===1?"":"s"}
       </option>`
     ).join("");
 }
@@ -90,7 +90,7 @@ function renderProfile(studentId){
 
   $("athleteFilters").style.display="flex";
   $("profileArea").innerHTML=`<div class="feature-page-grid">
-<section class="surface profile-card"><div class="profile-hero"><div class="profile-avatar">👤</div><div><div class="profile-name">${person.studentName}</div><div class="profile-meta">Student ID: ${person.studentId} · Class: ${person.className||"-"} · House: ${person.house||"-"}</div></div></div>
+<section class="surface profile-card"><div class="profile-hero"><div class="profile-avatar">👤</div><div><div class="profile-name">${person.studentName}</div><div class="profile-meta">Class: ${person.className||"-"} · House: ${person.house||"-"}</div></div></div>
 <div class="profile-stats"><div class="profile-stat"><small>Registered Sports</small><strong>${person.sports.length}</strong></div><div class="profile-stat"><small>Results</small><strong>${studentResults.length}</strong></div><div class="profile-stat"><small>Total Points</small><strong>${totalPoints}</strong></div></div>
 <div class="profile-stats"><div class="profile-stat"><small>🥇 Gold</small><strong>${gold}</strong></div><div class="profile-stat"><small>🥈 Silver</small><strong>${silver}</strong></div><div class="profile-stat"><small>🥉 Bronze</small><strong>${bronze}</strong></div></div></section>
 <section class="surface profile-card"><div class="panel-head"><div><h3>Sports History</h3><p>All sports this participant has registered for.</p></div></div><div id="athleteSportHistory"></div></section></div>
