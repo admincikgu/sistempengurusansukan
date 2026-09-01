@@ -2845,3 +2845,59 @@ div.filter-chips > button.filter-chip:focus-visible{
   .command-actions .button-primary,.command-actions .button-secondary{width:100%}
   .analytics-card-head strong{font-size:11px}
 }
+
+/* Sidebar is intentionally WHITE — use BLACK/DARK text for contrast */
+.admin-sidebar{
+  background:#fff !important;
+  color:#111827 !important;
+  border-right:1px solid rgba(17,24,39,.10) !important;
+  box-shadow:8px 0 28px rgba(17,24,39,.08) !important;
+}
+.admin-sidebar .admin-sidebar-brand strong,
+.admin-sidebar .admin-sidebar-brand span{
+  color:#111827 !important;
+}
+.admin-sidebar .admin-sidebar-nav,
+.admin-sidebar .admin-sidebar-nav *{
+  color:#111827 !important;
+}
+.admin-sidebar .admin-sidebar-link{
+  color:#1f2937 !important;
+  opacity:1 !important;
+  text-decoration:none !important;
+}
+.admin-sidebar .admin-sidebar-link .ico{
+  color:#1f2937 !important;
+  background:rgba(17,24,39,.045) !important;
+}
+.admin-sidebar .admin-sidebar-link:hover{
+  color:#111827 !important;
+  background:rgba(29,93,143,.07) !important;
+}
+.admin-sidebar .admin-sidebar-link:hover .ico{
+  color:#111827 !important;
+  background:rgba(29,93,143,.10) !important;
+}
+.admin-sidebar .admin-sidebar-link.active{
+  color:#102f52 !important;
+  background:linear-gradient(90deg,rgba(211,163,52,.18),rgba(29,93,143,.055)) !important;
+  box-shadow:inset 3px 0 #d3a334,0 5px 16px rgba(16,47,82,.06) !important;
+}
+.admin-sidebar .admin-sidebar-link.active .ico{
+  color:#102f52 !important;
+  background:rgba(211,163,52,.15) !important;
+}
+.admin-sidebar .nav-group-title{
+  color:#6b7280 !important;
+}
+.admin-sidebar .nav-group-title span{
+  color:inherit !important;
+}
+.admin-sidebar .nav-group-title .chevron{
+  color:#6b7280 !important;
+  border-color:currentColor !important;
+}
+.sidebar-school-logo{
+  background:#fff !important;
+  box-shadow:0 5px 16px rgba(17,24,39,.12) !important;
+}
